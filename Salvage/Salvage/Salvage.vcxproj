@@ -21,12 +21,16 @@
   <ItemGroup>
     <ClCompile Include="EngineMain.cpp" />
     <ClCompile Include="GraphicResources.cpp" />
+    <ClCompile Include="PixelShader.cpp" />
+    <ClCompile Include="VertexShader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphicResources.h" />
+    <ClInclude Include="PixelShader.h" />
+    <ClInclude Include="VertexShader.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
