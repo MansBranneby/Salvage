@@ -1,6 +1,6 @@
 #include "PixelShader.h"
 
-HRESULT pixelShader::createPixelShader(LPCWSTR fileName, ID3D11Device* device)
+HRESULT PixelShader::createPixelShader(LPCWSTR fileName, ID3D11Device* device)
 {
 	//create pixel shader
 	ID3DBlob* pPS = nullptr;
@@ -31,12 +31,16 @@ HRESULT pixelShader::createPixelShader(LPCWSTR fileName, ID3D11Device* device)
 	if (errorBlob) errorBlob->Release();
 }
 
-pixelShader::pixelShader(LPCWSTR fileName, ID3D11Device * device)
+PixelShader::PixelShader()
+{
+}
+
+PixelShader::PixelShader(LPCWSTR fileName, ID3D11Device * device)
 {
 	createPixelShader(fileName, device);
 }
 
-ID3D11PixelShader & pixelShader::getPixelShader() const
+ID3D11PixelShader & PixelShader::getPixelShader() const
 {
 	return *_pixelShader;
 }

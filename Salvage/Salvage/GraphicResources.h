@@ -1,13 +1,13 @@
 #pragma once
 #include <d3d11.h>
 
-#define WIDTH 1920.0f
-#define HEIGHT 1080.0f
+#define WIDTH 768.0f
+#define HEIGHT 768.0f
 
 class GraphicResources
 {
 private:
-	void initializeResources();
+	void initializeResources(HWND wndHandle);
 	void createDepthStencil();
 	void setViewPort();
 	void setRasterizerState();
@@ -34,6 +34,7 @@ public:
 	
 	// Member functions
 	GraphicResources();
+	GraphicResources(HWND wndHandle);
 	~GraphicResources();
 
 	ID3D11Device* getDevice() const;

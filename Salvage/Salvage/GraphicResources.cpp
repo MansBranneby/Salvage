@@ -1,6 +1,6 @@
 #include "GraphicResources.h"
 
-void GraphicResources::initializeResources()
+void GraphicResources::initializeResources(HWND wndHandle)
 {
 	_device = nullptr;
 	_deviceContext = nullptr;
@@ -10,7 +10,9 @@ void GraphicResources::initializeResources()
 	_backbufferRTV = nullptr;
 	_samplerState = nullptr;
 
+	createDirect3DContext(wndHandle);
 	createDepthStencil();
+	setRasterizerState();
 	setViewPort();
 }
 
@@ -36,9 +38,21 @@ void GraphicResources::createDepthStencil()
 	D3D11_DEPTH_STENCIL_DESC dsDesc;
 
 	// Depth test parameters
-	dsDesc.DepthEnable = true;
+	dsDesc.DepthEnable = false; //SET TRUE WHEN WE HAVE A CAMERA
 	dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 	dsDesc.DepthFunc = D3D11_COMPARISON_LESS;
+
+	// Stencil operations if pixel is front-facing
+	dsDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	dsDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
+	dsDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	dsDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+	// Stencil operations if pixel is back-facing
+	dsDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	dsDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
+	dsDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	dsDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
 	// Create depth stencil state
 	ID3D11DepthStencilState * pDSState;
@@ -76,7 +90,7 @@ void GraphicResources::setRasterizerState()
 {
 	D3D11_RASTERIZER_DESC rasterizerDesc;
 	rasterizerDesc.FillMode = D3D11_FILL_SOLID;
-	rasterizerDesc.CullMode = D3D11_CULL_NONE;
+	rasterizerDesc.CullMode = D3D11_CULL_BACK;
 	rasterizerDesc.FrontCounterClockwise = true;
 	rasterizerDesc.DepthBias = false;
 	rasterizerDesc.DepthBiasClamp = 0;
@@ -139,7 +153,11 @@ HRESULT GraphicResources::createDirect3DContext(HWND wndHandle)
 
 GraphicResources::GraphicResources()
 {
-	initializeResources();
+}
+
+GraphicResources::GraphicResources(HWND wndHandle)
+{
+	initializeResources(wndHandle);
 }
 
 GraphicResources::~GraphicResources()

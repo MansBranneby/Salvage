@@ -1,23 +1,20 @@
 #include "VertexShader.h"
 
 // Help function to create VertexBuffer
-HRESULT vertexShader::createVertexBuffer(LPCWSTR fileName, ID3D11Device * device, ID3DBlob* pVS, ID3DBlob* errorBlob)
+HRESULT VertexShader::createVertexShader(LPCWSTR fileName, ID3D11Device * device, ID3DBlob** pVS, ID3DBlob** errorBlob)
 {
-	ID3DBlob* pVS = nullptr;
-	ID3DBlob* errorBlob = nullptr;
-
-	HRESULT result = D3DCompileFromFile(fileName, nullptr, nullptr, "VS_main", "vs_5_0", D3DCOMPILE_DEBUG, 0, &pVS, &errorBlob);
+	HRESULT result = D3DCompileFromFile(fileName, nullptr, nullptr, "VS_main", "vs_5_0", D3DCOMPILE_DEBUG, 0, pVS, errorBlob);
 
 	// compilation failed?
 	if (FAILED(result))
 	{
 		if (errorBlob)
 		{
-			OutputDebugStringA((char*)errorBlob->GetBufferPointer());
-			errorBlob->Release();
+			OutputDebugStringA((char*)(*errorBlob)->GetBufferPointer());
+			(*errorBlob)->Release();
 		}
 		if (pVS)
-			pVS->Release();
+			(*pVS)->Release();
 
 		if (FAILED(result))
 			MessageBox(NULL, L"Error", L"Error: createVertexShader in VertexShader.cpp has failed", MB_OK | MB_ICONERROR);
@@ -25,10 +22,11 @@ HRESULT vertexShader::createVertexBuffer(LPCWSTR fileName, ID3D11Device * device
 		return result;
 	}
 
-	device->CreateVertexShader(pVS->GetBufferPointer(), pVS->GetBufferSize(), nullptr, &_vertexShader);
+	device->CreateVertexShader((*pVS)->GetBufferPointer(), (*pVS)->GetBufferSize(), nullptr, &_vertexShader);
+	return result;
 }
 
-void vertexShader::createInputLayout(ID3D11Device* device, ID3DBlob* pVS, ID3DBlob* errorBlob)
+void VertexShader::createInputLayout(ID3D11Device* device, ID3DBlob** pVS, ID3DBlob** errorBlob)
 {
 	D3D11_INPUT_ELEMENT_DESC inputDesc[] = {
 		{
@@ -41,7 +39,7 @@ void vertexShader::createInputLayout(ID3D11Device* device, ID3DBlob* pVS, ID3DBl
 			0							 // used for INSTANCING (ignore)
 		},
 		{
-			"COLOR",
+			"COLOUR",
 			0,				// same slot as previous (same vertexBuffer)
 			DXGI_FORMAT_R32G32B32_FLOAT,
 			0,
@@ -51,31 +49,35 @@ void vertexShader::createInputLayout(ID3D11Device* device, ID3DBlob* pVS, ID3DBl
 		},
 	};
 
-	device->CreateInputLayout(inputDesc, ARRAYSIZE(inputDesc), pVS->GetBufferPointer(), pVS->GetBufferSize(), &_vertexLayout);
+	device->CreateInputLayout(inputDesc, ARRAYSIZE(inputDesc), (*pVS)->GetBufferPointer(), (*pVS)->GetBufferSize(), &_vertexLayout);
 
-	pVS->Release();
+	(*pVS)->Release();
+}
+
+VertexShader::VertexShader()
+{
 }
 
 // Constructor
-vertexShader::vertexShader(LPCWSTR fileName, ID3D11Device* device)
+VertexShader::VertexShader(LPCWSTR fileName, ID3D11Device* device)
 {
 	ID3DBlob* pVS = nullptr;
 	ID3DBlob* errorBlob = nullptr;
 
-	createVertexBuffer(fileName, device, pVS, errorBlob);
-	createInputLayout(device, pVS, errorBlob);
+	createVertexShader(fileName, device, &pVS, &errorBlob);
+	createInputLayout(device, &pVS, &errorBlob);
 
 	// Release "refence" to pVS and errorBlob interface object
 	if(pVS) pVS->Release();
 	if (errorBlob) errorBlob->Release();
 }
 
-ID3D11VertexShader & vertexShader::getVertexShader() const
+ID3D11VertexShader & VertexShader::getVertexShader() const
 {
 	return *_vertexShader;
 }
 
-ID3D11InputLayout & vertexShader::getvertexLayout() const
+ID3D11InputLayout & VertexShader::getvertexLayout() const
 {
 	return *_vertexLayout;
 }
