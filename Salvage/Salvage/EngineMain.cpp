@@ -19,6 +19,7 @@
 
 // Own classes
 #include "GraphicResources.h"
+#include "Camera.h"
 #include "VertexShader.h"
 #include "PixelShader.h"
 
@@ -50,11 +51,14 @@ HWND InitWindow(HINSTANCE hInstance);
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 //Behövs dessa kopior. Finns i GraphicsResources
-#define WIDTH 768.0f
-#define HEIGHT 768.0f
+#define WIDTH 1920.0f
+#define HEIGHT 1080.0f
 
 // GLOBALS //
 GraphicResources gGR;
+Camera gCamera;
+
+ID3D11Buffer* constantBuffer; //TILLFÄLLIG
 
 // SHADERS //
 VertexShader gVS;
@@ -81,15 +85,25 @@ PosCol vertexData[3]
 
 void initializeResources(HWND wndHandle)
 {
+	//GRAPHIC RESOURCES
+	gGR = GraphicResources(wndHandle);
+
+	//CAMERA
+	gCamera = Camera(gGR.getDevice(), WIDTH, HEIGHT);
+
+	//SHADERS
+	gVS = VertexShader(L"VertexShader.hlsl", gGR.getDevice());
+	gPS = PixelShader(L"PixelShader.hlsl", gGR.getDevice());
+
+	//IMGUI
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO(); // (void)io;
+	ImGuiIO& io = ImGui::GetIO();
 	ImGui_ImplWin32_Init(wndHandle);
 	ImGui_ImplDX11_Init(gGR.getDevice(), gGR.getDeviceContext());
 	ImGui::StyleColorsDark();
 
-
-	// VERTEX BUFFER
+	// VERTEX BUFFER (TILLFÄLLIGT)
 	D3D11_BUFFER_DESC bufferDesc;
 	memset(&bufferDesc, 0, sizeof(bufferDesc));
 	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
@@ -120,10 +134,24 @@ void imGuiUpdate()
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 }
 
+void transform()
+{
+}
+
+void updateBuffers()
+{
+	//D3D11_MAPPED_SUBRESOURCE mappedMemory;
+	//gGR.getDeviceContext()->Map(*gCamera.getConstantBuffer(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedMemory);
+	//memcpy(mappedMemory.pData, gCamera.getWVP(), sizeof(*gCamera.getWVP()));
+	//gGR.getDeviceContext()->Unmap(*gCamera.getConstantBuffer(), 0);
+}
+
 void update()
 {
-
+	updateBuffers();
+	transform();
 }
+
 
 void render()
 {
@@ -136,11 +164,12 @@ void render()
 	UINT32 vertexSize = sizeof(float)*6;
 	UINT32 offset = 0;
 
-	gGR.getDeviceContext()->IASetVertexBuffers(0, 1, &_vertexBuffer, &vertexSize, &offset);
 	gGR.getDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	gGR.getDeviceContext()->IASetInputLayout(&gVS.getvertexLayout());
-
 	//gGR.getDeviceContext()->PSSetSamplers(0, 1, gGR.getSamplerState());
+	
+	gGR.getDeviceContext()->VSSetConstantBuffers(0, 1, gCamera.getConstantBuffer());
+	gGR.getDeviceContext()->IASetVertexBuffers(0, 1, &_vertexBuffer, &vertexSize, &offset);
 
 	gGR.getDeviceContext()->Draw(3, 0);
 }
@@ -156,11 +185,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 	if (wndHandle)
 	{
-		gGR = GraphicResources(wndHandle);
-		gVS = VertexShader(L"VertexShader.hlsl", gGR.getDevice());
-		gPS = PixelShader(L"PixelShader.hlsl", gGR.getDevice());
-		// setup textures meshes shaders triangledata constantbuffers etc.
-		initializeResources(wndHandle);
+		initializeResources(wndHandle); //GR, SHADERS, IMGUI
 
 		ShowWindow(wndHandle, nCmdShow);
 
@@ -176,8 +201,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			{
 				// RENDER //
 				gGR.getDeviceContext()->RSSetState(gGR.getRasterizerState());
-				float clearColour[3] = {};
-				clearColour[3] = 1.0;
+				float clearColour[] = {0.0f,0.0f,0.0f};
 
 				gGR.getDeviceContext()->ClearRenderTargetView(*gGR.getBackBuffer(), clearColour);
 				gGR.getDeviceContext()->OMSetRenderTargets(1, gGR.getBackBuffer(), gGR.getDepthStencilView());//ENABLE DEPTH TEST WHEN WE HAVE A CAMERA

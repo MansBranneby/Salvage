@@ -1,8 +1,8 @@
 #pragma once
 #include <d3d11.h>
 
-#define WIDTH 768.0f
-#define HEIGHT 768.0f
+#define WIDTH 1920.0f
+#define HEIGHT 1080.0f
 
 class GraphicResources
 {
@@ -37,7 +37,7 @@ public:
 	GraphicResources(HWND wndHandle);
 	~GraphicResources();
 
-	ID3D11Device* getDevice() const;
+	ID3D11Device* getDevice();
 	ID3D11DeviceContext* getDeviceContext() const;
 	IDXGISwapChain* getSwapChain() const;
 	ID3D11RasterizerState* getRasterizerState() const;
