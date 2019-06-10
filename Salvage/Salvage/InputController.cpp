@@ -38,7 +38,7 @@ DirectX::Mouse::State InputController::getMouseState()
 
 DirectX::Keyboard::State InputController::getKeyboardState()
 {
-	return DirectX::Mouse::State();
+	return DirectX::Keyboard::State();
 }
 
 DirectX::GamePad::State InputController::getGamePadState()
