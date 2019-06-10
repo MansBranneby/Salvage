@@ -140,7 +140,7 @@ HRESULT GraphicResources::createDirect3DContext(HWND wndHandle)
 		// get the address of the back buffer
 		ID3D11Texture2D* pBackBuffer = nullptr;
 		_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
-
+		//_swapChain->SetFullscreenState(false, NULL); //FULLSCREEN ON/OFF
 		// use the back buffer address to create the render target
 		_device->CreateRenderTargetView(pBackBuffer, NULL, &_backbufferRTV);
 		pBackBuffer->Release();
@@ -164,7 +164,7 @@ GraphicResources::~GraphicResources()
 {
 }
 
-ID3D11Device * GraphicResources::getDevice() const
+ID3D11Device * GraphicResources::getDevice()
 {
 	return _device;
 }
