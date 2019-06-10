@@ -22,6 +22,8 @@
 #include "Camera.h"
 #include "VertexShader.h"
 #include "PixelShader.h"
+#include "InputController.h"
+#include "Clock.h"
 
 // DirectXTK
 #include "CommonStates.h"
@@ -57,7 +59,8 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 // GLOBALS //
 GraphicResources gGR;
 Camera gCamera;
-
+InputController gController;
+Clock gClock;
 ID3D11Buffer* constantBuffer; //TILLFÄLLIG
 
 // SHADERS //
@@ -136,19 +139,44 @@ void imGuiUpdate()
 
 void transform()
 {
+	gCamera.updatePositon();
 }
 
 void updateBuffers()
 {
-	//D3D11_MAPPED_SUBRESOURCE mappedMemory;
-	//gGR.getDeviceContext()->Map(*gCamera.getConstantBuffer(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedMemory);
-	//memcpy(mappedMemory.pData, gCamera.getWVP(), sizeof(*gCamera.getWVP()));
-	//gGR.getDeviceContext()->Unmap(*gCamera.getConstantBuffer(), 0);
+	D3D11_MAPPED_SUBRESOURCE mappedMemory;
+	gGR.getDeviceContext()->Map(*gCamera.getConstantBuffer(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedMemory);
+	memcpy(mappedMemory.pData, gCamera.getWVP(), sizeof(*gCamera.getWVP()));
+	gGR.getDeviceContext()->Unmap(*gCamera.getConstantBuffer(), 0);
+}
+
+void updateCamera()
+{
+
+
+	gCamera.setVelocity(XMFLOAT3(0.0f, 0.0f, 0.0f));
+	
+	if (gController.getKeyboardState().W)
+		gCamera.setVelocity(XMFLOAT3(0.0f, 0.0f, gCamera.getVelocity().z + 5.0f * gClock.getDeltaSeconds()));
+	if (gController.getKeyboardState().S)
+		gCamera.setVelocity(XMFLOAT3(0.0f, 0.0f, gCamera.getVelocity().z - 5.0f * gClock.getDeltaSeconds()));
+	if (gController.getKeyboardState().A)
+		gCamera.setVelocity(XMFLOAT3(gCamera.getVelocity().x - 5.0f * gClock.getDeltaSeconds(), 0.0f, 0.0f));
+	if (gController.getKeyboardState().D)
+		gCamera.setVelocity(XMFLOAT3(gCamera.getVelocity().x + 5.0f * gClock.getDeltaSeconds(), 0.0f, 0.0f));
+	if (gController.getKeyboardState().Space)
+		gCamera.setVelocity(XMFLOAT3(0.0f, gCamera.getVelocity().y + 5.0f * gClock.getDeltaSeconds(), 0.0f));
+	if (gController.getKeyboardState().LeftControl)
+		gCamera.setVelocity(XMFLOAT3(0.0f, gCamera.getVelocity().y - 5.0f * gClock.getDeltaSeconds(), 0.0f));
+	
+	// Refresh clock
+	gClock.refreshClock();
 }
 
 void update()
 {
 	updateBuffers();
+	updateCamera();
 	transform();
 }
 
@@ -194,6 +222,12 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		{
 			if (PeekMessage(&msg, wndHandle, 0, 0, PM_REMOVE))
 			{
+				gController.translateMessage(msg);
+
+				 // PRESS ESC TO QUIT PROGRAM
+				if (gController.getKeyboardState().Escape)
+					msg.message = WM_QUIT;
+				
 				TranslateMessage(&msg);
 				DispatchMessage(&msg);
 			}

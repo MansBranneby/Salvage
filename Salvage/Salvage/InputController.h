@@ -22,7 +22,7 @@ public:
 	InputController();
 	~InputController();
 
-	void translateMessage(MSG* message);
+	void translateMessage(MSG message);
 
 	DirectX::Mouse::State getMouseState();
 	DirectX::Keyboard::State getKeyboardState();

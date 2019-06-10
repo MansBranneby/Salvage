@@ -10,20 +10,23 @@ Camera::Camera()
 
 Camera::Camera(ID3D11Device* device, float width, float height)
 {
+	// Default mode for camera
+	_cameraMode = DEBUG;
+
 	// Setup starting camera properties
 	_position = XMFLOAT4(0.0f, 0.0f, -2.0f, 1.0f);
 	
-	_up = XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f);
+	_up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 	_right = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
 	_forward = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
 
 	_lookAt = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 	_lookAt = XMVector3Normalize(_lookAt);
 
-	_velocity = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+	_velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 
 	// Setup space matricies
-	_world = XMMatrixTranslation(_position.x, _position.y, _position.z);
+	_world = XMMatrixTranslation(0.0f, 0.0f, 0.0f);
 	_view = XMMatrixLookAtLH(XMLoadFloat4(&_position), _lookAt, _up);
 	_projection = XMMatrixPerspectiveFovLH(0.45f * DirectX::XM_PI, width / height, 0.1f, 200.0f);
 
@@ -61,16 +64,50 @@ void Camera::updateRotation(float deltaAngle)
 {
 }
 
-//XMMATRIX* Camera::getWVP()
-//{
-//	return &_WVP;
-//}
+void Camera::setVelocity(XMFLOAT3 velocity)
+{
+	_velocity = velocity;
+}
+
+XMFLOAT3 Camera::getVelocity() const
+{
+	return _velocity;
+}
+
+void Camera::setMode(cameraMode cameraMode)
+{
+	_cameraMode = cameraMode;
+}
+
+XMMATRIX* Camera::getWVP()
+{
+	return &_WVP;
+}
 
 ID3D11Buffer** Camera::getConstantBuffer()
 {
 	return &_constantBuffer;
 }
 
-void Camera::updatePositon(XMVECTOR deltaPos)
+void Camera::updatePositon()
 {
+	//Update camera position
+	if (_cameraMode == DEBUG)
+	{
+		XMVECTOR pos = XMLoadFloat4(&_position);
+
+		pos += _velocity.x * _right;
+		pos += _velocity.y * _up;
+		pos += _velocity.z * _forward;
+		_lookAt += pos;
+		_lookAt = XMVector3Normalize(_lookAt);
+		_position = XMFLOAT4(XMVectorGetX(pos), XMVectorGetY(pos), XMVectorGetZ(pos), 1.0f);
+		
+	
+		//Update camera matrices	
+		_view = XMMatrixLookAtLH(XMLoadFloat4(&_position), _lookAt, _up);
+		_view = XMMatrixTranspose(_view);
+		_WVP = XMMatrixMultiply(_projection, XMMatrixMultiply(_view, _world));
+	}
+
 }

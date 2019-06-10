@@ -29,6 +29,8 @@ HRESULT PixelShader::createPixelShader(LPCWSTR fileName, ID3D11Device* device)
 	
 	if (pPS) pPS->Release();
 	if (errorBlob) errorBlob->Release();
+
+	return result;
 }
 
 PixelShader::PixelShader()

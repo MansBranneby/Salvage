@@ -5,9 +5,14 @@
 
 using namespace DirectX;
 
+enum cameraMode {DEBUG, GAME};
+
 class Camera
 {
 private:
+	// Cameramode decides which mode the camera should be in
+	cameraMode _cameraMode;
+
 	XMFLOAT4 _position;
 	
 	XMVECTOR _lookAt;
@@ -15,7 +20,7 @@ private:
 	XMVECTOR _right;
 	XMVECTOR _forward;
 
-	XMVECTOR _velocity;
+	XMFLOAT3 _velocity;
 	XMMATRIX _rotation;
 	float _angle;
 
@@ -34,9 +39,15 @@ public:
 	Camera(ID3D11Device* device, float width, float height);
 	~Camera();
 
-	void updatePositon(XMVECTOR deltaPos);
+	void updatePositon();
 	void updateRotation(float deltaAngle);
 
-	//XMMATRIX* getWVP();
+	void setVelocity(XMFLOAT3 velocity);
+	XMFLOAT3 getVelocity() const;
+	
+	// DEBUG and GAME mode
+	void setMode(cameraMode cameraMode);
+
+	XMMATRIX* getWVP();
 	ID3D11Buffer** getConstantBuffer();
 };
