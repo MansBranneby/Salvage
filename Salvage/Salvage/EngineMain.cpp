@@ -58,6 +58,8 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 GraphicResources gGR;
 Camera gCamera;
 
+ID3D11Buffer* constantBuffer; //TILLFÄLLIG
+
 // SHADERS //
 VertexShader gVS;
 PixelShader gPS;

@@ -22,9 +22,10 @@ private:
 	XMMATRIX _world;
 	XMMATRIX _view;
 	XMMATRIX _projection;
+
 	XMMATRIX _WVP;
 
-	ConstantBuffer _constantBuffer;
+	ID3D11Buffer* _constantBuffer;
 
 	void updateWVP();
 
@@ -36,6 +37,6 @@ public:
 	void updatePositon(XMVECTOR deltaPos);
 	void updateRotation(float deltaAngle);
 
-	XMMATRIX* getWVP();
+	//XMMATRIX* getWVP();
 	ID3D11Buffer** getConstantBuffer();
 };

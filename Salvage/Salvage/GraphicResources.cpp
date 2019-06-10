@@ -144,9 +144,6 @@ HRESULT GraphicResources::createDirect3DContext(HWND wndHandle)
 		// use the back buffer address to create the render target
 		_device->CreateRenderTargetView(pBackBuffer, NULL, &_backbufferRTV);
 		pBackBuffer->Release();
-
-		//DepthBuffer
-		createDepthStencil();
 	}
 	return hr;
 }
