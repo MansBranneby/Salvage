@@ -65,7 +65,7 @@ Camera gCamera;
 InputController gController;
 Clock gClock;
 ID3D11Buffer* constantBuffer; //TILLFÄLLIG
-Model model;
+Model gModel;
 
 
 // SHADERS //
@@ -102,6 +102,9 @@ void initializeResources(HWND wndHandle)
 	//SHADERS
 	gVS = VertexShader(L"VertexShader.hlsl", gGR.getDevice());
 	gPS = PixelShader(L"PixelShader.hlsl", gGR.getDevice());
+
+	//TESTMODEL
+	gModel = Model(gGR.getDevice());
 
 	//IMGUI
 	IMGUI_CHECKVERSION();
@@ -202,9 +205,10 @@ void render()
 	//gGR.getDeviceContext()->PSSetSamplers(0, 1, gGR.getSamplerState());
 	
 	gGR.getDeviceContext()->VSSetConstantBuffers(0, 1, gCamera.getConstantBuffer());
-	gGR.getDeviceContext()->IASetVertexBuffers(0, 1, &_vertexBuffer, &vertexSize, &offset);
+	//gGR.getDeviceContext()->IASetVertexBuffers(0, 1, &_vertexBuffer, &vertexSize, &offset);
 
-	gGR.getDeviceContext()->Draw(3, 0);
+	gModel.draw(gGR.getDeviceContext());
+	//gGR.getDeviceContext()->Draw(3, 0);
 }
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
@@ -255,6 +259,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 				ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 			}
 		}
+
 	}
 }
 
