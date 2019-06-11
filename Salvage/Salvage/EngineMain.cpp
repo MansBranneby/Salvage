@@ -250,12 +250,17 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 				ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 			}
 		}
+
+		ImGui_ImplDX11_Shutdown();
+		ImGui_ImplWin32_Shutdown();
+		ImGui::DestroyContext();
+
+		_vertexBuffer->Release();
+		
 		delete gGR;
 		delete gCamera;
 		delete gVS;
 		delete gPS;
-
-		_vertexBuffer->Release();
 	}
 }
 
