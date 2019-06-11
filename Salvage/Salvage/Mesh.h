@@ -1,7 +1,8 @@
 #pragma once
 #define NOMINMAX
-#include <d3d11.h>
+
 #include "Drawable.h"
+#include "Texture.h"
 #include "Vertex.h"
 #include <vector>
 

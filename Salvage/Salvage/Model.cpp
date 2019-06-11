@@ -18,13 +18,7 @@ Mesh Model::processMesh(ID3D11Device* device, aiMesh * mesh, const aiScene * sce
 {
 	std::vector<Vertex> vertices;
 	std::vector<int> indices;
-
-	if (mesh->mMaterialIndex >= 0)
-	{
-		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-		
-		//Determine texture type here later
-	}
+	std::vector<Texture> textures;
 
 	//Loop vertices
 	for (int i = 0; i < mesh->mNumVertices; i++)
@@ -50,9 +44,21 @@ Mesh Model::processMesh(ID3D11Device* device, aiMesh * mesh, const aiScene * sce
 			indices.push_back(face.mIndices[j]);
 	}
 
-	//textures here
+	//Textures
+	if (mesh->mMaterialIndex >= 0)
+	{
+		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+		std::vector<Texture> texture = loadTextures(material, aiTextureType_DIFFUSE, scene);
+		textures.insert(textures.end(), texture.begin(), texture.end());
+	}
 
 	return Mesh(device, vertices, indices);
+}
+
+std::vector<Texture> Model::loadTextures(aiMaterial* material, aiTextureType textureType, const aiScene * scene)
+{
+	//Load texture
+	return std::vector<Texture>();
 }
 
 Model::Model()
@@ -63,7 +69,7 @@ Model::Model(ID3D11Device* device)
 {
 	//Load model from file
 	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile(".\\Resources\\Models\\monkey.dae", aiProcess_Triangulate | aiProcess_ConvertToLeftHanded);
+	const aiScene* scene = importer.ReadFile(".\\Resources\\Models\\moremodels.dae", aiProcess_Triangulate | aiProcess_ConvertToLeftHanded);
 	
 	processNode(device, scene->mRootNode, scene);
 }
