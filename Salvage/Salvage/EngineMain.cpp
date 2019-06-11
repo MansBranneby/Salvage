@@ -1,5 +1,6 @@
 #pragma once
 
+#define NOMINMAX
 #include <windows.h>
 
 #include <iostream>
@@ -24,6 +25,8 @@
 #include "PixelShader.h"
 #include "InputController.h"
 #include "Clock.h"
+#include "Drawable.h"
+#include "Model.h"
 
 // DirectXTK
 #include "CommonStates.h"
@@ -62,6 +65,8 @@ Camera gCamera;
 InputController gController;
 Clock gClock;
 ID3D11Buffer* constantBuffer; //TILLFÄLLIG
+Model model;
+
 
 // SHADERS //
 VertexShader gVS;
