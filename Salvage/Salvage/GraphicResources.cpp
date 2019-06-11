@@ -20,6 +20,7 @@ void GraphicResources::createDepthStencil()
 {
 	ID3D11Texture2D* pDepthStencil = NULL;
 	D3D11_TEXTURE2D_DESC descDepth;
+	ZeroMemory(&descDepth, sizeof(descDepth));
 	descDepth.Width = (UINT)WIDTH;
 	descDepth.Height = (UINT)HEIGHT;
 	descDepth.MipLevels = 1;
@@ -36,7 +37,7 @@ void GraphicResources::createDepthStencil()
 		MessageBox(NULL, L"pDepthStencil", L"Error", MB_OK | MB_ICONERROR);
 
 	D3D11_DEPTH_STENCIL_DESC dsDesc;
-
+	ZeroMemory(&dsDesc, sizeof(dsDesc));
 	// Depth test parameters
 	dsDesc.DepthEnable = false; //SET TRUE WHEN WE HAVE A CAMERA
 	dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
@@ -73,6 +74,9 @@ void GraphicResources::createDepthStencil()
 	hr = _device->CreateDepthStencilView(pDepthStencil, &descDSV, &_depthStencilView);
 	if (FAILED(hr))
 		MessageBox(NULL, L"_depthStencilView", L"Error", MB_OK | MB_ICONERROR);
+
+	pDepthStencil->Release();
+	pDSState->Release();
 }
 
 void GraphicResources::setViewPort()
@@ -114,6 +118,8 @@ HRESULT GraphicResources::createDirect3DContext(HWND wndHandle)
 	ZeroMemory(&scd, sizeof(DXGI_SWAP_CHAIN_DESC));
 
 	// fill the swap chain description struct
+	scd.BufferDesc.Width = (UINT)WIDTH;
+	scd.BufferDesc.Height = (UINT)HEIGHT;
 	scd.BufferCount = 1;                                    // one back buffer
 	scd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;     // use 32-bit color
 	scd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;      // how swap chain is to be used
@@ -159,6 +165,20 @@ GraphicResources::GraphicResources(HWND wndHandle)
 
 GraphicResources::~GraphicResources()
 {
+	if(_device)
+		_device->Release();
+	if(_deviceContext)
+		_deviceContext->Release();
+	if(_swapChain)
+		_swapChain->Release();
+	if(_rasterizerState)
+		_rasterizerState->Release();
+	if(_depthStencilView)
+		_depthStencilView->Release();
+	if(_backbufferRTV)
+		_backbufferRTV->Release();
+	if (_samplerState)
+		_samplerState->Release();
 }
 
 ID3D11Device * GraphicResources::getDevice()

@@ -6,7 +6,7 @@ ConstantBuffer::ConstantBuffer()
 
 ConstantBuffer::~ConstantBuffer()
 {
-	if (_constantBuffer != nullptr)
+	if (_constantBuffer)
 		_constantBuffer->Release();
 }
 

@@ -57,17 +57,21 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 #define HEIGHT 1080.0f
 
 // GLOBALS //
-GraphicResources gGR;
-Camera gCamera;
+GraphicResources* gGR = nullptr;
+Camera* gCamera = nullptr;
+
+// CONTROLLER //
 InputController gController;
+
+// CLOCK //
 Clock gClock;
-ID3D11Buffer* constantBuffer; //TILLFÄLLIG
 
 // SHADERS //
-VertexShader gVS;
-PixelShader gPS;
+VertexShader* gVS = nullptr;
+PixelShader* gPS = nullptr;
 
 ID3D11Buffer* _vertexBuffer = nullptr;
+
 struct PosCol
 {
 	float x, y, z;
@@ -89,21 +93,19 @@ PosCol vertexData[3]
 void initializeResources(HWND wndHandle)
 {
 	//GRAPHIC RESOURCES
-	gGR = GraphicResources(wndHandle);
-
+	gGR = new GraphicResources(wndHandle);
 	//CAMERA
-	gCamera = Camera(gGR.getDevice(), WIDTH, HEIGHT);
-
+	gCamera = new Camera(gGR->getDevice(), WIDTH, HEIGHT);
 	//SHADERS
-	gVS = VertexShader(L"VertexShader.hlsl", gGR.getDevice());
-	gPS = PixelShader(L"PixelShader.hlsl", gGR.getDevice());
+	gVS = new VertexShader(L"VertexShader.hlsl", gGR->getDevice());
+	gPS = new PixelShader(L"PixelShader.hlsl", gGR->getDevice());
 
 	//IMGUI
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
 	ImGui_ImplWin32_Init(wndHandle);
-	ImGui_ImplDX11_Init(gGR.getDevice(), gGR.getDeviceContext());
+	ImGui_ImplDX11_Init(gGR->getDevice(), gGR->getDeviceContext());
 	ImGui::StyleColorsDark();
 
 	// VERTEX BUFFER (TILLFÄLLIGT)
@@ -116,14 +118,14 @@ void initializeResources(HWND wndHandle)
 	bufferDesc.ByteWidth = sizeof(vertexData);
 	data.pSysMem = vertexData;
 
-	HRESULT result = gGR.getDevice()->CreateBuffer(&bufferDesc, &data, &_vertexBuffer);
+	HRESULT result = gGR->getDevice()->CreateBuffer(&bufferDesc, &data, &_vertexBuffer);
 	if (FAILED(result))
 		MessageBox(NULL, L"ERROR _vertexBuffer in Mesh.cpp", L"Error", MB_OK | MB_ICONERROR);
 }
 
 void imGuiUpdate()
 {
-	gGR.getDeviceContext()->GSSetShader(nullptr, nullptr, 0);
+	gGR->getDeviceContext()->GSSetShader(nullptr, nullptr, 0);
 
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
@@ -139,35 +141,33 @@ void imGuiUpdate()
 
 void transform()
 {
-	gCamera.updatePositon();
+	gCamera->updatePositon();
 }
 
 void updateBuffers()
 {
 	D3D11_MAPPED_SUBRESOURCE mappedMemory;
-	gGR.getDeviceContext()->Map(*gCamera.getConstantBuffer(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedMemory);
-	memcpy(mappedMemory.pData, gCamera.getWVP(), sizeof(*gCamera.getWVP()));
-	gGR.getDeviceContext()->Unmap(*gCamera.getConstantBuffer(), 0);
+	gGR->getDeviceContext()->Map(*gCamera->getConstantBuffer(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedMemory);
+	memcpy(mappedMemory.pData, gCamera->getWVP(), sizeof(*gCamera->getWVP()));
+	gGR->getDeviceContext()->Unmap(*gCamera->getConstantBuffer(), 0);
 }
 
 void updateCamera()
 {
-
-
-	gCamera.setVelocity(XMFLOAT3(0.0f, 0.0f, 0.0f));
+	gCamera->setVelocity(XMFLOAT3(0.0f, 0.0f, 0.0f));
 	
 	if (gController.getKeyboardState().W)
-		gCamera.setVelocity(XMFLOAT3(0.0f, 0.0f, gCamera.getVelocity().z + 5.0f * gClock.getDeltaSeconds()));
+		gCamera->setVelocity(XMFLOAT3(0.0f, 0.0f, gCamera->getVelocity().z + 5.0f * gClock.getDeltaSeconds()));
 	if (gController.getKeyboardState().S)
-		gCamera.setVelocity(XMFLOAT3(0.0f, 0.0f, gCamera.getVelocity().z - 5.0f * gClock.getDeltaSeconds()));
+		gCamera->setVelocity(XMFLOAT3(0.0f, 0.0f, gCamera->getVelocity().z - 5.0f * gClock.getDeltaSeconds()));
 	if (gController.getKeyboardState().A)
-		gCamera.setVelocity(XMFLOAT3(gCamera.getVelocity().x - 5.0f * gClock.getDeltaSeconds(), 0.0f, 0.0f));
+		gCamera->setVelocity(XMFLOAT3(gCamera->getVelocity().x - 5.0f * gClock.getDeltaSeconds(), 0.0f, 0.0f));
 	if (gController.getKeyboardState().D)
-		gCamera.setVelocity(XMFLOAT3(gCamera.getVelocity().x + 5.0f * gClock.getDeltaSeconds(), 0.0f, 0.0f));
+		gCamera->setVelocity(XMFLOAT3(gCamera->getVelocity().x + 5.0f * gClock.getDeltaSeconds(), 0.0f, 0.0f));
 	if (gController.getKeyboardState().Space)
-		gCamera.setVelocity(XMFLOAT3(0.0f, gCamera.getVelocity().y + 5.0f * gClock.getDeltaSeconds(), 0.0f));
+		gCamera->setVelocity(XMFLOAT3(0.0f, gCamera->getVelocity().y + 5.0f * gClock.getDeltaSeconds(), 0.0f));
 	if (gController.getKeyboardState().LeftControl)
-		gCamera.setVelocity(XMFLOAT3(0.0f, gCamera.getVelocity().y - 5.0f * gClock.getDeltaSeconds(), 0.0f));
+		gCamera->setVelocity(XMFLOAT3(0.0f, gCamera->getVelocity().y - 5.0f * gClock.getDeltaSeconds(), 0.0f));
 	
 	// Refresh clock
 	gClock.refreshClock();
@@ -183,23 +183,23 @@ void update()
 
 void render()
 {
-	gGR.getDeviceContext()->VSSetShader(&gVS.getVertexShader(), nullptr, 0);
-	gGR.getDeviceContext()->HSSetShader(nullptr, nullptr, 0);
-	gGR.getDeviceContext()->DSSetShader(nullptr, nullptr, 0);
-	gGR.getDeviceContext()->GSSetShader(nullptr, nullptr, 0);
-	gGR.getDeviceContext()->PSSetShader(&gPS.getPixelShader(), nullptr, 0);
+	gGR->getDeviceContext()->VSSetShader(&gVS->getVertexShader(), nullptr, 0);
+	gGR->getDeviceContext()->HSSetShader(nullptr, nullptr, 0);
+	gGR->getDeviceContext()->DSSetShader(nullptr, nullptr, 0);
+	gGR->getDeviceContext()->GSSetShader(nullptr, nullptr, 0);
+	gGR->getDeviceContext()->PSSetShader(&gPS->getPixelShader(), nullptr, 0);
 
 	UINT32 vertexSize = sizeof(float)*6;
 	UINT32 offset = 0;
 
-	gGR.getDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	gGR.getDeviceContext()->IASetInputLayout(&gVS.getvertexLayout());
+	gGR->getDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	gGR->getDeviceContext()->IASetInputLayout(&gVS->getvertexLayout());
 	//gGR.getDeviceContext()->PSSetSamplers(0, 1, gGR.getSamplerState());
 	
-	gGR.getDeviceContext()->VSSetConstantBuffers(0, 1, gCamera.getConstantBuffer());
-	gGR.getDeviceContext()->IASetVertexBuffers(0, 1, &_vertexBuffer, &vertexSize, &offset);
+	gGR->getDeviceContext()->VSSetConstantBuffers(0, 1, gCamera->getConstantBuffer());
+	gGR->getDeviceContext()->IASetVertexBuffers(0, 1, &_vertexBuffer, &vertexSize, &offset);
 
-	gGR.getDeviceContext()->Draw(3, 0);
+	gGR->getDeviceContext()->Draw(3, 0);
 }
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
@@ -234,22 +234,28 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			else
 			{
 				// RENDER //
-				gGR.getDeviceContext()->RSSetState(gGR.getRasterizerState());
+				gGR->getDeviceContext()->RSSetState(gGR->getRasterizerState());
 				float clearColour[] = {0.0f,0.0f,0.0f};
 
-				gGR.getDeviceContext()->ClearRenderTargetView(*gGR.getBackBuffer(), clearColour);
-				gGR.getDeviceContext()->OMSetRenderTargets(1, gGR.getBackBuffer(), gGR.getDepthStencilView());//ENABLE DEPTH TEST WHEN WE HAVE A CAMERA
+				gGR->getDeviceContext()->ClearRenderTargetView(*gGR->getBackBuffer(), clearColour);
+				gGR->getDeviceContext()->OMSetRenderTargets(1, gGR->getBackBuffer(), gGR->getDepthStencilView());//ENABLE DEPTH TEST WHEN WE HAVE A CAMERA
 
 				render();
 				update();
 				imGuiUpdate();
 
-				gGR.getSwapChain()->Present(0, 0);
+				gGR->getSwapChain()->Present(0, 0);
 
 				ImGui::Render();
 				ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 			}
 		}
+		delete gGR;
+		delete gCamera;
+		delete gVS;
+		delete gPS;
+
+		_vertexBuffer->Release();
 	}
 }
 

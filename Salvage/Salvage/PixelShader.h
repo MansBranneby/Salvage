@@ -10,6 +10,7 @@ private:
 public:
 	PixelShader();
 	PixelShader(LPCWSTR fileName, ID3D11Device* device);
+	~PixelShader();
 
 	ID3D11PixelShader & getPixelShader() const;
 };

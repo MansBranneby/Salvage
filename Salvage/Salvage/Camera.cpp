@@ -58,6 +58,8 @@ Camera::Camera(ID3D11Device* device, float width, float height)
 
 Camera::~Camera()
 {
+	if(_constantBuffer)
+		_constantBuffer->Release();
 }
 
 void Camera::updateRotation(float deltaAngle)

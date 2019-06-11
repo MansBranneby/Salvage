@@ -24,7 +24,7 @@ private:
 	ID3D11RenderTargetView* _backbufferRTV;
 	
 	// SAMPLERS //
-	ID3D11SamplerState* _samplerState;
+	ID3D11SamplerState* _samplerState = nullptr;
 	
 	// BUFFERS //
 	//TEXTURES //

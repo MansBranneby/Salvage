@@ -10,11 +10,12 @@ private:
 
 	// Creates VertexBuffer, this is called upon in the Constructor
 	HRESULT createVertexShader(LPCWSTR fileName, ID3D11Device* device, ID3DBlob** pVS, ID3DBlob** errorBlob);
-	void createInputLayout(ID3D11Device* device, ID3DBlob** pVS, ID3DBlob** errorBlob);
+	void createInputLayout(ID3D11Device* device, ID3DBlob** pVS);
 
 public:
 	VertexShader();
 	VertexShader(LPCWSTR fileName, ID3D11Device* device);
+	~VertexShader();
 
 	ID3D11VertexShader & getVertexShader() const;
 	ID3D11InputLayout & getvertexLayout() const;

@@ -26,7 +26,7 @@ HRESULT VertexShader::createVertexShader(LPCWSTR fileName, ID3D11Device * device
 	return result;
 }
 
-void VertexShader::createInputLayout(ID3D11Device* device, ID3DBlob** pVS, ID3DBlob** errorBlob)
+void VertexShader::createInputLayout(ID3D11Device* device, ID3DBlob** pVS)
 {
 	D3D11_INPUT_ELEMENT_DESC inputDesc[] = {
 		{
@@ -50,8 +50,6 @@ void VertexShader::createInputLayout(ID3D11Device* device, ID3DBlob** pVS, ID3DB
 	};
 
 	device->CreateInputLayout(inputDesc, ARRAYSIZE(inputDesc), (*pVS)->GetBufferPointer(), (*pVS)->GetBufferSize(), &_vertexLayout);
-
-	(*pVS)->Release();
 }
 
 VertexShader::VertexShader()
@@ -65,11 +63,19 @@ VertexShader::VertexShader(LPCWSTR fileName, ID3D11Device* device)
 	ID3DBlob* errorBlob = nullptr;
 
 	createVertexShader(fileName, device, &pVS, &errorBlob);
-	createInputLayout(device, &pVS, &errorBlob);
+	createInputLayout(device, &pVS);
 
 	// Release "refence" to pVS and errorBlob interface object
 	if(pVS) pVS->Release();
 	if (errorBlob) errorBlob->Release();
+}
+
+VertexShader::~VertexShader()
+{
+	if(_vertexShader)
+		_vertexShader->Release();
+	if(_vertexLayout)
+		_vertexLayout->Release();
 }
 
 ID3D11VertexShader & VertexShader::getVertexShader() const
