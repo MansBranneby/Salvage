@@ -39,9 +39,9 @@ void VertexShader::createInputLayout(ID3D11Device* device, ID3DBlob** pVS, ID3DB
 			0							 // used for INSTANCING (ignore)
 		},
 		{
-			"COLOUR",
+			"TEXCOORD",
 			0,				// same slot as previous (same vertexBuffer)
-			DXGI_FORMAT_R32G32B32_FLOAT,
+			DXGI_FORMAT_R32G32_FLOAT,
 			0,
 			12,							// offset of FIRST element (after POSITION)
 			D3D11_INPUT_PER_VERTEX_DATA,

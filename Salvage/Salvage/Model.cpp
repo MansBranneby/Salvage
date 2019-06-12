@@ -22,12 +22,12 @@ Mesh Model::processMesh(ID3D11Device* device, aiMesh * mesh, const aiScene * sce
 	std::vector<int> indices;
 	std::vector<Texture> textures;
 
-	//if (mesh->mMaterialIndex >= 0)
-	//{
-	//	aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-	//	if (texType.empty())
-	//		texType = determineTextureType(scene, material);
-	//}
+	if (mesh->mMaterialIndex >= 0)
+	{
+		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+		if (texType.empty())
+			texType = determineTextureType(scene, material);
+	}
 
 	//Loop vertices
 	for (int i = 0; i < mesh->mNumVertices; i++)

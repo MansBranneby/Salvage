@@ -11,6 +11,7 @@ private:
 	void createDepthStencil();
 	void setViewPort();
 	void setRasterizerState();
+	void setSamplerState();
 	HRESULT createDirect3DContext(HWND wndHandle);
 
 	D3D11_VIEWPORT _viewPort; //Min gissning är att denna behövs utanför denna klass

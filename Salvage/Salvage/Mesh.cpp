@@ -42,7 +42,7 @@ Mesh::Mesh(ID3D11Device* device, std::vector<Vertex> vertices, std::vector<int> 
 	_indices = indices;
 	_textures = textures;
 
-	createBuffers(device, _vertices, _indices); //Måste nog lägga till _textures här
+	createBuffers(device, _vertices, _indices);
 }
 
 Mesh::~Mesh()
@@ -62,6 +62,8 @@ void Mesh::draw(ID3D11DeviceContext * deviceContext)
 
 	deviceContext->IASetVertexBuffers(0, 1, &_vertexBuffer, &vertexSize, &offset);
 	deviceContext->IASetIndexBuffer(_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+//	deviceContext->PSSetShaderResources(0, 1, &_textures[0]._texture);
 
 	deviceContext->Draw(_vertices.size(), 0);
 }

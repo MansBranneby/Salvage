@@ -104,7 +104,7 @@ void initializeResources(HWND wndHandle)
 	gPS = PixelShader(L"PixelShader.hlsl", gGR.getDevice());
 
 	//TESTMODEL
-	gModel.loadModel(gGR.getDevice(), gGR.getDeviceContext(), ".\\Resources\\Models\\moremodels.dae");
+	gModel.loadModel(gGR.getDevice(), gGR.getDeviceContext(), ".\\Resources\\Models\\material.dae");
 
 	//IMGUI
 	IMGUI_CHECKVERSION();
@@ -197,12 +197,12 @@ void render()
 	gGR.getDeviceContext()->GSSetShader(nullptr, nullptr, 0);
 	gGR.getDeviceContext()->PSSetShader(&gPS.getPixelShader(), nullptr, 0);
 
-	UINT32 vertexSize = sizeof(float)*6;
-	UINT32 offset = 0;
+	//UINT32 vertexSize = sizeof(float)*6;
+	//UINT32 offset = 0;
 
 	gGR.getDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	gGR.getDeviceContext()->IASetInputLayout(&gVS.getvertexLayout());
-	//gGR.getDeviceContext()->PSSetSamplers(0, 1, gGR.getSamplerState());
+	gGR.getDeviceContext()->PSSetSamplers(0, 1, gGR.getSamplerState());
 	
 	gGR.getDeviceContext()->VSSetConstantBuffers(0, 1, gCamera.getConstantBuffer());
 	//gGR.getDeviceContext()->IASetVertexBuffers(0, 1, &_vertexBuffer, &vertexSize, &offset);
