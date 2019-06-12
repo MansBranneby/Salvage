@@ -5,12 +5,14 @@
 class Texture
 {
 private:
-	std::string _path;
-	ID3D10ShaderResourceView* _texture;
 
 	void createSRV();
 
 public:
+	std::string _type;
+	std::string _path;
+	ID3D11ShaderResourceView* _texture;
+	
 	Texture();
 	~Texture();
 };

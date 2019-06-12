@@ -36,12 +36,13 @@ Mesh::Mesh()
 {
 }
 
-Mesh::Mesh(ID3D11Device* device, std::vector<Vertex> vertices, std::vector<int> indices)
+Mesh::Mesh(ID3D11Device* device, std::vector<Vertex> vertices, std::vector<int> indices, std::vector<Texture> textures)
 {
 	_vertices = vertices;
 	_indices = indices;
+	_textures = textures;
 
-	createBuffers(device, _vertices, _indices);
+	createBuffers(device, _vertices, _indices); //Måste nog lägga till _textures här
 }
 
 Mesh::~Mesh()

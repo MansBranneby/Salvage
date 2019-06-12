@@ -36,6 +36,7 @@
     <ClCompile Include="InputController.cpp" />
     <ClCompile Include="PixelShader.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="TextureLoader.cpp" />
     <ClCompile Include="Vertex.cpp" />
     <ClCompile Include="VertexShader.cpp" />
   </ItemGroup>
@@ -61,6 +62,7 @@
     <ClInclude Include="Model.h" />
     <ClInclude Include="PixelShader.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="TextureLoader.h" />
     <ClInclude Include="Vertex.h" />
     <ClInclude Include="VertexShader.h" />
   </ItemGroup>
