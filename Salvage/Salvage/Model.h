@@ -4,7 +4,8 @@
 #include <string>
 
 #include <d3d11.h>
-#include "TextureLoader.h"
+#include "TextureLoader.h" //Används inte i nuvarande version
+#include "WICTextureLoader.h" //Denna används
 
 #include "Mesh.h"
 #include "assimp/Importer.hpp"

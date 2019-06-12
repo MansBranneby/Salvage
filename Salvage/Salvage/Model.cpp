@@ -104,7 +104,8 @@ std::vector<Texture> Model::loadTextures(aiMaterial* material, aiTextureType tex
 				std::string filename = std::string(str.C_Str()); //Some string magic
 				filename = _directory + '\\' + filename; //Tror inte det ska vara '/'
 				std::wstring filenamews = std::wstring(filename.begin(), filename.end());
-				hr = CreateWICTextureFromFile(_device, _deviceContext, filenamews.c_str(), nullptr, &texture._texture);
+				hr = CoInitialize(NULL);
+				hr = DirectX::CreateWICTextureFromFile(_device, filenamews.c_str(), NULL, &texture._texture);
 				if (FAILED(hr))
 					MessageBox(NULL, L"Texture couldn't be loaded", L"Error!", MB_ICONERROR | MB_OK);
 			}
