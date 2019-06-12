@@ -28,7 +28,12 @@ private:
 	XMFLOAT3 _velocity;
 	XMMATRIX _rotation;
 	float _distancePerSec;
-	float _angle;
+
+	float _yaw;
+	float _pitch;
+	float _theta;
+	float _phi;
+	float _camDistance;
 
 	XMMATRIX _world;
 	XMMATRIX _view;
@@ -45,14 +50,9 @@ public:
 	Camera(ID3D11Device* device, float width, float height);
 	~Camera();
 
-	void updatePositon();
 	void updateRotation(float deltaAngle);
 
 	void setVelocity(XMFLOAT3 velocity);
-
-	//TEST
-	void setVelocityZ(float velZ);
-	void setZero();
 
 	XMFLOAT3 getVelocity() const;
 	

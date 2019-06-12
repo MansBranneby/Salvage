@@ -149,22 +149,7 @@ void updateBuffers()
 
 void updateCamera()
 {
-	gCamera->setZero();
-
-	if (gInputCtrl.getKeyboardState().W) //Forward
-		gCamera->setVelocityZ(5.0f * gClock.getDeltaSeconds());
-	if (gInputCtrl.getKeyboardState().S) //Backwards
-		gCamera->setVelocityZ(-5.0f * gClock.getDeltaSeconds());
-	
 	gCamera->update(gInputCtrl.getKeyboardState(), gClock.getDeltaSeconds());
-	//if (gInputCtrl.getKeyboardState().A)	//Left
-	//	_velocity.x -= 5.0f * gClock.getDeltaSeconds();
-	//if (gInputCtrl.getKeyboardState().D)	//Right
-	//	_velocity.x += 5.0f * gClock.getDeltaSeconds();
-	//if (gInputCtrl.getKeyboardState().Space) //Up
-	//	_velocity.y += 5.0f * gClock.getDeltaSeconds();
-	//if (gInputCtrl.getKeyboardState().LeftControl) //Down
-	//	_velocity.y -= 5.0f * gClock.getDeltaSeconds();
 }
 
 void update()
