@@ -5,14 +5,14 @@
       <author>Blender User</author>
       <authoring_tool>Blender 2.79.0 commit date:2017-09-11, commit time:10:43, hash:5bd8ac9</authoring_tool>
     </contributor>
-    <created>2019-06-12T16:55:06</created>
-    <modified>2019-06-12T16:55:06</modified>
+    <created>2019-06-12T16:59:39</created>
+    <modified>2019-06-12T16:59:39</modified>
     <unit name="meter" meter="1"/>
     <up_axis>Z_UP</up_axis>
   </asset>
   <library_images>
-    <image id="purple_png" name="purple_png">
-      <init_from>purple.png</init_from>
+    <image id="texture_png" name="texture_png">
+      <init_from>texture.png</init_from>
     </image>
   </library_images>
   <library_effects>
