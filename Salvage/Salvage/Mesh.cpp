@@ -63,7 +63,7 @@ void Mesh::draw(ID3D11DeviceContext * deviceContext)
 	deviceContext->IASetVertexBuffers(0, 1, &_vertexBuffer, &vertexSize, &offset);
 	deviceContext->IASetIndexBuffer(_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
-//	deviceContext->PSSetShaderResources(0, 1, &_textures[0]._texture);
+	deviceContext->PSSetShaderResources(0, 1, &_textures[0]._texture);
 
 	deviceContext->Draw(_vertices.size(), 0);
 }

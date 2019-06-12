@@ -104,7 +104,7 @@ void initializeResources(HWND wndHandle)
 	gPS = PixelShader(L"PixelShader.hlsl", gGR.getDevice());
 
 	//TESTMODEL
-	gModel.loadModel(gGR.getDevice(), gGR.getDeviceContext(), ".\\Resources\\Models\\material.dae");
+	gModel.loadModel(gGR.getDevice(), gGR.getDeviceContext(), ".\\Resources\\Models\\texturemodel.dae");
 
 	//IMGUI
 	IMGUI_CHECKVERSION();
