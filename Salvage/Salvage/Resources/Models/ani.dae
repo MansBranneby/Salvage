@@ -5,19 +5,29 @@
       <author>Blender User</author>
       <authoring_tool>Blender 2.79.0 commit date:2017-09-11, commit time:10:43, hash:5bd8ac9</authoring_tool>
     </contributor>
-    <created>2019-06-12T16:44:26</created>
-    <modified>2019-06-12T16:44:26</modified>
+    <created>2019-06-12T17:09:02</created>
+    <modified>2019-06-12T17:09:02</modified>
     <unit name="meter" meter="1"/>
     <up_axis>Z_UP</up_axis>
   </asset>
   <library_images>
-    <image id="purple_png" name="purple_png">
-      <init_from>purple.png</init_from>
+    <image id="texture_png" name="texture_png">
+      <init_from>texture.png</init_from>
     </image>
   </library_images>
   <library_effects>
     <effect id="Material-effect">
       <profile_COMMON>
+        <newparam sid="texture_png-surface">
+          <surface type="2D">
+            <init_from>texture_png</init_from>
+          </surface>
+        </newparam>
+        <newparam sid="texture_png-sampler">
+          <sampler2D>
+            <source>texture_png-surface</source>
+          </sampler2D>
+        </newparam>
         <technique sid="common">
           <phong>
             <emission>
@@ -27,7 +37,7 @@
               <color sid="ambient">0 0 0 1</color>
             </ambient>
             <diffuse>
-              <color sid="diffuse">0.64 0.64 0.64 1</color>
+              <texture texture="texture_png-sampler"/>
             </diffuse>
             <specular>
               <color sid="specular">0.5 0.5 0.5 1</color>
@@ -93,7 +103,7 @@
         </technique_common>
       </source>
       <source id="Cube_location_X-output">
-        <float_array id="Cube_location_X-output-array" count="2">0 2.751127</float_array>
+        <float_array id="Cube_location_X-output-array" count="2">0 2.857271</float_array>
         <technique_common>
           <accessor source="#Cube_location_X-output-array" count="2" stride="1">
             <param name="X" type="float"/>
@@ -109,7 +119,7 @@
         </technique_common>
       </source>
       <source id="Cube_location_X-intangent">
-        <float_array id="Cube_location_X-intangent-array" count="4">-0.2674091 0 0.5242576 2.751127</float_array>
+        <float_array id="Cube_location_X-intangent-array" count="4">-0.2674091 0 0.5242576 2.857271</float_array>
         <technique_common>
           <accessor source="#Cube_location_X-intangent-array" count="2" stride="2">
             <param name="X" type="float"/>
@@ -118,7 +128,7 @@
         </technique_common>
       </source>
       <source id="Cube_location_X-outtangent">
-        <float_array id="Cube_location_X-outtangent-array" count="4">0.3507424 0 1.142409 2.751127</float_array>
+        <float_array id="Cube_location_X-outtangent-array" count="4">0.3507424 0 1.142409 2.857271</float_array>
         <technique_common>
           <accessor source="#Cube_location_X-outtangent-array" count="2" stride="2">
             <param name="X" type="float"/>
@@ -145,7 +155,7 @@
         </technique_common>
       </source>
       <source id="Cube_location_Y-output">
-        <float_array id="Cube_location_Y-output-array" count="2">0 0</float_array>
+        <float_array id="Cube_location_Y-output-array" count="2">0 2.07154</float_array>
         <technique_common>
           <accessor source="#Cube_location_Y-output-array" count="2" stride="1">
             <param name="Y" type="float"/>
@@ -161,7 +171,7 @@
         </technique_common>
       </source>
       <source id="Cube_location_Y-intangent">
-        <float_array id="Cube_location_Y-intangent-array" count="4">-0.2674091 0 0.5242576 0</float_array>
+        <float_array id="Cube_location_Y-intangent-array" count="4">-0.2674091 0 0.5242576 2.07154</float_array>
         <technique_common>
           <accessor source="#Cube_location_Y-intangent-array" count="2" stride="2">
             <param name="X" type="float"/>
@@ -170,7 +180,7 @@
         </technique_common>
       </source>
       <source id="Cube_location_Y-outtangent">
-        <float_array id="Cube_location_Y-outtangent-array" count="4">0.3507424 0 1.142409 0</float_array>
+        <float_array id="Cube_location_Y-outtangent-array" count="4">0.3507424 0 1.142409 2.07154</float_array>
         <technique_common>
           <accessor source="#Cube_location_Y-outtangent-array" count="2" stride="2">
             <param name="X" type="float"/>
@@ -197,7 +207,7 @@
         </technique_common>
       </source>
       <source id="Cube_location_Z-output">
-        <float_array id="Cube_location_Z-output-array" count="2">0 0</float_array>
+        <float_array id="Cube_location_Z-output-array" count="2">0 1.558842</float_array>
         <technique_common>
           <accessor source="#Cube_location_Z-output-array" count="2" stride="1">
             <param name="Z" type="float"/>
@@ -213,7 +223,7 @@
         </technique_common>
       </source>
       <source id="Cube_location_Z-intangent">
-        <float_array id="Cube_location_Z-intangent-array" count="4">-0.2674091 0 0.5242576 0</float_array>
+        <float_array id="Cube_location_Z-intangent-array" count="4">-0.2674091 0 0.5242576 1.558842</float_array>
         <technique_common>
           <accessor source="#Cube_location_Z-intangent-array" count="2" stride="2">
             <param name="X" type="float"/>
@@ -222,7 +232,7 @@
         </technique_common>
       </source>
       <source id="Cube_location_Z-outtangent">
-        <float_array id="Cube_location_Z-outtangent-array" count="4">0.3507424 0 1.142409 0</float_array>
+        <float_array id="Cube_location_Z-outtangent-array" count="4">0.3507424 0 1.142409 1.558842</float_array>
         <technique_common>
           <accessor source="#Cube_location_Z-outtangent-array" count="2" stride="2">
             <param name="X" type="float"/>
