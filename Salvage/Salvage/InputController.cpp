@@ -29,17 +29,17 @@ void InputController::translateMessage(MSG message)
 	}
 }
 
-DirectX::Mouse::State InputController::getMouseState()
+DirectX::Mouse::State InputController::getMouseState() const
 {
 	return _mouse->GetState();
 }
 
-DirectX::Keyboard::State InputController::getKeyboardState()
+DirectX::Keyboard::State InputController::getKeyboardState() const
 {
 	return _keyboard->GetState();
 }
 
-DirectX::GamePad::State InputController::getGamePadState()
+DirectX::GamePad::State InputController::getGamePadState() const
 {
 	return _gamePad->GetState(1);
 }

@@ -3,6 +3,11 @@
 #include <DirectXMath.h>
 #include "ConstantBuffer.h"
 
+// DirectXTK
+#include "Keyboard.h"
+#include "Mouse.h"
+#include "GamePad.h"
+
 using namespace DirectX;
 
 enum cameraMode {DEBUG, GAME};
@@ -22,6 +27,7 @@ private:
 
 	XMFLOAT3 _velocity;
 	XMMATRIX _rotation;
+	float _distancePerSec;
 	float _angle;
 
 	XMMATRIX _world;
@@ -43,6 +49,11 @@ public:
 	void updateRotation(float deltaAngle);
 
 	void setVelocity(XMFLOAT3 velocity);
+
+	//TEST
+	void setVelocityZ(float velZ);
+	void setZero();
+
 	XMFLOAT3 getVelocity() const;
 	
 	// DEBUG and GAME mode
@@ -50,4 +61,5 @@ public:
 
 	XMMATRIX* getWVP();
 	ID3D11Buffer** getConstantBuffer();
+	void update(DirectX::Keyboard::State kbState, float deltaSeconds);
 };

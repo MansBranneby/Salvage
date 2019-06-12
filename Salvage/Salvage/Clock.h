@@ -16,6 +16,6 @@ public:
 	Clock();
 	~Clock();
 
+	void startClock();
 	float getDeltaSeconds();
-	void refreshClock(); // sets _currTime to to _startTime otherwise deltaSeconds grows too big.
 };

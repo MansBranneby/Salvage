@@ -16,15 +16,13 @@ private:
 	std::unique_ptr<DirectX::Keyboard> _keyboard;
 	std::unique_ptr<DirectX::Mouse> _mouse;
 
-	
-
 public:
 	InputController();
 	~InputController();
 
 	void translateMessage(MSG message);
 
-	DirectX::Mouse::State getMouseState();
-	DirectX::Keyboard::State getKeyboardState();
-	DirectX::GamePad::State getGamePadState();
+	DirectX::Mouse::State getMouseState() const;
+	DirectX::Keyboard::State getKeyboardState() const;
+	DirectX::GamePad::State getGamePadState() const;
 };

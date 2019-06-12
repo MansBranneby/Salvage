@@ -61,7 +61,7 @@ GraphicResources* gGR = nullptr;
 Camera* gCamera = nullptr;
 
 // CONTROLLER //
-InputController gController;
+InputController gInputCtrl;
 
 // CLOCK //
 Clock gClock;
@@ -139,11 +139,6 @@ void imGuiUpdate()
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 }
 
-void transform()
-{
-	gCamera->updatePositon();
-}
-
 void updateBuffers()
 {
 	D3D11_MAPPED_SUBRESOURCE mappedMemory;
@@ -154,30 +149,28 @@ void updateBuffers()
 
 void updateCamera()
 {
-	gCamera->setVelocity(XMFLOAT3(0.0f, 0.0f, 0.0f));
+	gCamera->setZero();
+
+	if (gInputCtrl.getKeyboardState().W) //Forward
+		gCamera->setVelocityZ(5.0f * gClock.getDeltaSeconds());
+	if (gInputCtrl.getKeyboardState().S) //Backwards
+		gCamera->setVelocityZ(-5.0f * gClock.getDeltaSeconds());
 	
-	if (gController.getKeyboardState().W)
-		gCamera->setVelocity(XMFLOAT3(0.0f, 0.0f, gCamera->getVelocity().z + 5.0f * gClock.getDeltaSeconds()));
-	if (gController.getKeyboardState().S)
-		gCamera->setVelocity(XMFLOAT3(0.0f, 0.0f, gCamera->getVelocity().z - 5.0f * gClock.getDeltaSeconds()));
-	if (gController.getKeyboardState().A)
-		gCamera->setVelocity(XMFLOAT3(gCamera->getVelocity().x - 5.0f * gClock.getDeltaSeconds(), 0.0f, 0.0f));
-	if (gController.getKeyboardState().D)
-		gCamera->setVelocity(XMFLOAT3(gCamera->getVelocity().x + 5.0f * gClock.getDeltaSeconds(), 0.0f, 0.0f));
-	if (gController.getKeyboardState().Space)
-		gCamera->setVelocity(XMFLOAT3(0.0f, gCamera->getVelocity().y + 5.0f * gClock.getDeltaSeconds(), 0.0f));
-	if (gController.getKeyboardState().LeftControl)
-		gCamera->setVelocity(XMFLOAT3(0.0f, gCamera->getVelocity().y - 5.0f * gClock.getDeltaSeconds(), 0.0f));
-	
-	// Refresh clock
-	gClock.refreshClock();
+	gCamera->update(gInputCtrl.getKeyboardState(), gClock.getDeltaSeconds());
+	//if (gInputCtrl.getKeyboardState().A)	//Left
+	//	_velocity.x -= 5.0f * gClock.getDeltaSeconds();
+	//if (gInputCtrl.getKeyboardState().D)	//Right
+	//	_velocity.x += 5.0f * gClock.getDeltaSeconds();
+	//if (gInputCtrl.getKeyboardState().Space) //Up
+	//	_velocity.y += 5.0f * gClock.getDeltaSeconds();
+	//if (gInputCtrl.getKeyboardState().LeftControl) //Down
+	//	_velocity.y -= 5.0f * gClock.getDeltaSeconds();
 }
 
 void update()
 {
 	updateBuffers();
 	updateCamera();
-	transform();
 }
 
 
@@ -211,6 +204,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	MSG msg = { 0 };
 	HWND wndHandle = InitWindow(hInstance); // Skapa fönster
 
+	// Start clock
+	gClock.startClock();
+
 	if (wndHandle)
 	{
 		initializeResources(wndHandle); //GR, SHADERS, IMGUI
@@ -222,10 +218,10 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		{
 			if (PeekMessage(&msg, wndHandle, 0, 0, PM_REMOVE))
 			{
-				gController.translateMessage(msg);
+				gInputCtrl.translateMessage(msg);
 
-				 // PRESS ESC TO QUIT PROGRAM
-				if (gController.getKeyboardState().Escape)
+				 //PRESS ESC TO QUIT PROGRAM
+				if (gInputCtrl.getKeyboardState().Escape)
 					msg.message = WM_QUIT;
 				
 				TranslateMessage(&msg);
