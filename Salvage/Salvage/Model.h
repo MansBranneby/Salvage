@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 
+#include <DirectXMath.h>
 #include <d3d11.h>
 #include "TextureLoader.h" //Används inte i nuvarande version
 #include "WICTextureLoader.h" //Denna används
@@ -21,6 +22,9 @@ private:
 	std::string _directory;
 	std::vector<Mesh> _meshes;
 	std::vector<Texture> _loadedTextures;
+
+	//Animation
+	DirectX::XMMATRIX _inverseTransform;
 
 	//Loading models
 	void processNode(ID3D11Device* device, aiNode* node, const aiScene* scene);

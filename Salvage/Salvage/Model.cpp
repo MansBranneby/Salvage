@@ -185,7 +185,7 @@ bool Model::loadModel(ID3D11Device * device, ID3D11DeviceContext * deviceContext
 	_directory = filename.substr(0, filename.find_last_of('\\')); //Tror inte det ska vara '/'
 	_device = device;
 	_deviceContext = deviceContext;
-
+	
 	//Start processing all the nodes in the model
 	processNode(device, scene->mRootNode, scene);
 }
