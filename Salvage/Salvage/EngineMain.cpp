@@ -1,5 +1,6 @@
 #pragma once
 
+#define NOMINMAX
 #include <windows.h>
 
 #include <iostream>
@@ -24,6 +25,8 @@
 #include "PixelShader.h"
 #include "InputController.h"
 #include "Clock.h"
+#include "Drawable.h"
+#include "Model.h"
 
 // DirectXTK
 #include "CommonStates.h"
@@ -65,6 +68,9 @@ InputController gInputCtrl;
 
 // CLOCK //
 Clock gClock;
+ID3D11Buffer* constantBuffer; //TILLFÄLLIG
+Model gModel;
+
 
 // SHADERS //
 VertexShader* gVS = nullptr;
@@ -99,6 +105,9 @@ void initializeResources(HWND wndHandle)
 	//SHADERS
 	gVS = new VertexShader(L"VertexShader.hlsl", gGR->getDevice());
 	gPS = new PixelShader(L"PixelShader.hlsl", gGR->getDevice());
+
+	//TESTMODEL
+	gModel.loadModel(gGR.getDevice(), gGR.getDeviceContext(), ".\\Resources\\Models\\ani.dae");
 
 	//IMGUI
 	IMGUI_CHECKVERSION();
@@ -167,8 +176,8 @@ void render()
 	gGR->getDeviceContext()->GSSetShader(nullptr, nullptr, 0);
 	gGR->getDeviceContext()->PSSetShader(&gPS->getPixelShader(), nullptr, 0);
 
-	UINT32 vertexSize = sizeof(float)*6;
-	UINT32 offset = 0;
+	//UINT32 vertexSize = sizeof(float)*6;
+	//UINT32 offset = 0;
 
 	gGR->getDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	gGR->getDeviceContext()->IASetInputLayout(&gVS->getvertexLayout());
@@ -177,7 +186,8 @@ void render()
 	gGR->getDeviceContext()->VSSetConstantBuffers(0, 1, gCamera->getConstantBuffer());
 	gGR->getDeviceContext()->IASetVertexBuffers(0, 1, &_vertexBuffer, &vertexSize, &offset);
 
-	gGR->getDeviceContext()->Draw(3, 0);
+	gModel.draw(gGR.getDeviceContext());
+	//gGR.getDeviceContext()->Draw(3, 0);
 }
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)

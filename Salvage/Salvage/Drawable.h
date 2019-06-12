@@ -1,15 +1,13 @@
 #pragma once
-
-#include "Model.h"
+#include <d3d11.h>
 
 class Drawable
 {
 private:
-	Model _model;
-
+	//Kanske en pekare till deviceContext här??
 public:
 	Drawable();
 	~Drawable();
 
-	virtual void draw() = 0;
+	virtual void draw(ID3D11DeviceContext* deviceContext) = 0;
 };

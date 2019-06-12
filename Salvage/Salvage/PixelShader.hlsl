@@ -1,10 +1,14 @@
+Texture2D diffTexture : register(t0);
+SamplerState SampleType;
+
 struct PS_IN
 {
 	float4 pos : SV_POSITION;
-	float3 col : COLOUR;
+	float2 texCoord : TEXCOORD;
 };
 
 float4 PS_main(PS_IN input) : SV_Target
 {
-	return float4(input.col, 1.0f);
+	float4 texColour = diffTexture.Sample(SampleType, input.texCoord);
+	return texColour;
 };
