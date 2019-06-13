@@ -135,9 +135,17 @@ void imGuiUpdate()
 
 	ImGui::Begin("Hello, world!");
 	ImGui::Text("This is some useful text.");
-	ImGui::Text("(ms.x: %.2f, ms.y: %.2f)", gInputCtrl->getMouseState().x, gInputCtrl->getMouseState().y);
-	ImGui::End();
 
+	// Camera modes
+	if (ImGui::Button("Debug mode"))
+		gCamera->setMode(DEBUG);
+
+	ImGui::SameLine();
+
+	if (ImGui::Button("Game mode"))
+		gCamera->setMode(GAME);
+
+	ImGui::End();
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 }
@@ -152,8 +160,9 @@ void updateBuffers()
 
 void updateCamera()
 {
+	DirectX::Mouse::State ms = gInputCtrl->getMouseState();
 	gInputCtrl->setMouseMode();
-	gCamera->update(gInputCtrl->getKeyboardState(), gInputCtrl->getMouseState(), gClock.getDeltaSeconds());
+	gCamera->update(gInputCtrl->getKeyboardState(), ms, gClock.getDeltaSeconds());
 }
 
 void update()

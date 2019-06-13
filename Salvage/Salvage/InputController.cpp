@@ -41,6 +41,8 @@ void InputController::translateMessage(MSG message)
 		DirectX::Mouse::ProcessMessage(message.message, message.wParam, message.lParam);
 	case WM_INPUT:
 		DirectX::Mouse::ProcessMessage(message.message, message.wParam, message.lParam);
+	case WM_MOUSEWHEEL:
+		DirectX::Mouse::ProcessMessage(message.message, message.wParam, message.lParam);
 	case WM_MOUSEHOVER:
 		DirectX::Mouse::ProcessMessage(message.message, message.wParam, message.lParam);
 		break;

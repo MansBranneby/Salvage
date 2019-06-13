@@ -6,6 +6,8 @@ void Camera::updateWVP()
 
 void Camera::updateDebugCam(DirectX::Keyboard::State kb, DirectX::Mouse::State ms, float deltaSeconds)
 {
+	XMVECTOR pos = XMLoadFloat4(&_position);
+
 	_velocity = { 0.0f, 0.0f, 0.0f };
 	_forward = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
 	_right = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
@@ -14,17 +16,16 @@ void Camera::updateDebugCam(DirectX::Keyboard::State kb, DirectX::Mouse::State m
 
 	if (ms.positionMode == Mouse::MODE_RELATIVE)
 	{
-		_yaw += XMConvertToRadians((float)ms.x);
-		_pitch += XMConvertToRadians((float)ms.y);
+		_yaw += XMConvertToRadians((float)ms.x * deltaSeconds * 2000);
+		_pitch += XMConvertToRadians((float)ms.y * deltaSeconds * 2000);
 		_pitch = min(XM_PI / 2.0f - 0.0001f, max(-XM_PI / 2.0f + 0.0001f, _pitch));
 	}
 
 	_rotation = XMMatrixRotationRollPitchYaw(_pitch, _yaw, 0.0f);
+
 	_right = XMVector3TransformCoord(_right, _rotation);
 	_up = XMVector3TransformCoord(_up, _rotation);
-	_forward = XMVector3TransformCoord(_forward, _rotation);
 	_lookAt = XMVector3TransformCoord(_forward, _rotation);
-	_lookAt = XMVector3Normalize(_lookAt);
 
 	//Get current state of keyboard, mouse and gamepad, update the cameras position based on this input.
 	if (kb.W) //Forward
@@ -39,15 +40,27 @@ void Camera::updateDebugCam(DirectX::Keyboard::State kb, DirectX::Mouse::State m
 		_velocity.y += _distancePerSec * deltaSeconds;
 	if (kb.LeftControl) //Down
 		_velocity.y -= _distancePerSec * deltaSeconds;
+
+	pos += _velocity.x * _right;
+	pos += _velocity.y * _up;
+	pos += _velocity.z * _forward;
+	_lookAt += pos;
+
+	_position = XMFLOAT4(XMVectorGetX(pos), XMVectorGetY(pos), XMVectorGetZ(pos), 1.0f);
 }
 
 void Camera::updateGameCam(DirectX::Keyboard::State kb, DirectX::Mouse::State ms, float deltaSeconds)
 {
+	_lookAt = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+
 	if (ms.positionMode == Mouse::MODE_RELATIVE)
 	{
-		_phi +=  (float)ms.x;
-		_theta += (float)ms.y;
+		_phi += XMConvertToRadians((float)ms.y * deltaSeconds * 500);
+		_theta += XMConvertToRadians((float)ms.x * deltaSeconds * 500);
 	}
+
+		_camDistance += ms.scrollWheelValue * deltaSeconds;
+
 
 	//Get current state of keyboard, mouse and gamepad, update the cameras position based on this input.
 	if (kb.W) //Forward
@@ -58,6 +71,11 @@ void Camera::updateGameCam(DirectX::Keyboard::State kb, DirectX::Mouse::State ms
 		_theta -= _rotationGain * deltaSeconds;
 	if (kb.D) //Right
 		_theta += _rotationGain * deltaSeconds;
+
+	// Calculate position based on spherical coordinates
+	_position.x = _camDistance * cos(_theta)* sin(_phi), _camDistance * cos(_phi);
+	_position.y = _camDistance * cos(_phi), (_camDistance * sin(_theta)* sin(_phi));
+	_position.z = _camDistance * sin(_theta)* sin(_phi);
 }
 
 Camera::Camera()
@@ -162,7 +180,6 @@ ID3D11Buffer** Camera::getConstantBuffer()
 
 void Camera::update(DirectX::Keyboard::State kb, DirectX::Mouse::State ms, float deltaSeconds)
 {
-	XMVECTOR pos = XMLoadFloat4(&_position);
 	//Update camera position
 	// DEBUG IS FIRST PERSON CAMERA
 	// GAME IS ORBIT THIRD PERSON CAMERA
@@ -170,20 +187,14 @@ void Camera::update(DirectX::Keyboard::State kb, DirectX::Mouse::State ms, float
 	{
 		// FIRST PERSON CAM
 		updateDebugCam(kb, ms, deltaSeconds);
-		pos += _velocity.x * _right;
-		pos += _velocity.y * _up;
-		pos += _velocity.z * _forward;
-		_lookAt = pos + XMVectorSet(0.0f, 0.0f, 0.000001f, 0.0f);
-		_position = XMFLOAT4(XMVectorGetX(pos), XMVectorGetY(pos), XMVectorGetZ(pos), 1.0f);
 	}
 	else if(_cameraMode == GAME)
 	{
 		// ORBIT CAM
 		updateGameCam(kb, ms, deltaSeconds);
 		// std::sin and cos are calculated with radians
-		pos = XMVectorSet(_camDistance * cos(_theta)* sin(_phi), _camDistance * cos(_phi), (_camDistance * sin(_theta)* sin(_phi)), 0.0f);
+		
 	}
-	_position = XMFLOAT4(XMVectorGetX(pos), XMVectorGetY(pos), XMVectorGetZ(pos), 1.0f);
 
 	//Update camera matrices	
 	_view = XMMatrixLookAtLH(XMLoadFloat4(&_position), _lookAt, _up);
