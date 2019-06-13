@@ -22,7 +22,7 @@ Camera::Camera(ID3D11Device* device, float width, float height)
 	_forward = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
 
 	// Where camera should look
-	_lookAt = XMVectorSet(0.0f, 0.0f, 0.01f, 0.0f);
+	_lookAt = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 	_lookAt = XMVector3Normalize(_lookAt);
 
 	// Camera velocity
@@ -35,8 +35,8 @@ Camera::Camera(ID3D11Device* device, float width, float height)
 	_yaw = 0;
 	_pitch = 0;
 
-	// Distance from camera
-	_camDistance = 2.0f;
+	// Camera distance from object
+	_camDistance = 10.0f;
 
 	// Setup space matricies
 	_world = XMMatrixTranslation(0.0f, 0.0f, 0.0f);

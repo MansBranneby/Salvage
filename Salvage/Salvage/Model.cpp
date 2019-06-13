@@ -3,14 +3,14 @@
 void Model::processNode(ID3D11Device* device, aiNode * node, const aiScene * scene)
 {
 	//Cycle all meshes for current node
-	for (int i = 0; i < node->mNumMeshes; i++)
+	for (size_t i = 0; i < node->mNumMeshes; i++)
 	{
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
 		_meshes.push_back(this->processMesh(device, mesh, scene));
 	}
 
 	//Go down tree and process all nodes
-	for (int i = 0; i < node->mNumChildren; i++)
+	for (size_t i = 0; i < node->mNumChildren; i++)
 		this->processNode(device, node->mChildren[i], scene);
 }
 
@@ -30,7 +30,7 @@ Mesh Model::processMesh(ID3D11Device* device, aiMesh * mesh, const aiScene * sce
 	}
 
 	//Loop vertices
-	for (int i = 0; i < mesh->mNumVertices; i++)
+	for (size_t i = 0; i < mesh->mNumVertices; i++)
 	{
 		Vertex vertex;
 
@@ -51,11 +51,11 @@ Mesh Model::processMesh(ID3D11Device* device, aiMesh * mesh, const aiScene * sce
 	}
 
 	//Loop faces
-	for (int i = 0; i < mesh->mNumFaces; i++)
+	for (size_t i = 0; i < mesh->mNumFaces; i++)
 	{
 		aiFace face = mesh->mFaces[i];
 
-		for (int j = 0; j < face.mNumIndices; j++)
+		for (size_t j = 0; j < face.mNumIndices; j++)
 			indices.push_back(face.mIndices[j]);
 	}
 
@@ -75,10 +75,10 @@ std::vector<Texture> Model::loadTextures(aiMaterial* material, aiTextureType tex
 	//Load texture
 	std::vector<Texture> textures;
 
-	for (int i = 0; i < material->GetTextureCount(textureType); i++)
+	for (size_t i = 0; i < material->GetTextureCount(textureType); i++)
 	{
 		aiString str;
-		material->GetTexture(textureType, i, &str);
+		material->GetTexture(textureType, (UINT)i, &str);
 		// Check if texture was loaded before and if so, continue to next iteration: skip loading a new texture
 		bool skip = false;
 		for (int j = 0; j < _loadedTextures.size(); j++)
@@ -139,6 +139,8 @@ std::string Model::determineTextureType(const aiScene * scene, aiMaterial * mate
 	{
 		return "textures are on disk";
 	}
+	
+	return NULL;
 }
 
 int Model::getTextureIndex(aiString * str)
@@ -170,6 +172,12 @@ Model::Model()
 
 Model::~Model()
 {
+	if (_device)
+		_device->Release();
+
+	//// CRASCH
+	//if (_deviceContext)
+	//	_deviceContext->Release();
 }
 
 bool Model::loadModel(ID3D11Device * device, ID3D11DeviceContext * deviceContext, std::string filename)
@@ -188,6 +196,8 @@ bool Model::loadModel(ID3D11Device * device, ID3D11DeviceContext * deviceContext
 	
 	//Start processing all the nodes in the model
 	processNode(device, scene->mRootNode, scene);
+
+	return true;
 }
 
 void Model::draw(ID3D11DeviceContext* deviceContext)
