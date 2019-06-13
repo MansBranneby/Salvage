@@ -70,40 +70,54 @@ Mesh Model::processMesh(ID3D11Device* device, aiMesh * mesh, const aiScene * sce
 		textures.insert(textures.end(), texture.begin(), texture.end());
 	}
 
-	//Load bones
-	std::vector<int> indices;
+	//Load bonesinfo into vertices
+	std::vector<int> index;
 	std::vector<float> weights;
 
-	for (size_t i = 0; i < vertices.size(); i++)
+	//Loop through each vertex
+	if (mesh->HasBones())
 	{
-		indices.clear();
-		weights.clear();
-		for (size_t j = 0; j < mesh->mNumBones; j++)
+		for (size_t i = 0; i < vertices.size(); i++)
 		{
-			for (size_t k = 0; k < mesh->mBones[j]->mNumWeights; k++)
+			index.clear();
+			weights.clear();
+			//Loop through each bone
+			for (size_t j = 0; j < mesh->mNumBones; j++)
 			{
-				if (mesh->mBones[j]->mWeights[k].mVertexId == i)
+				for (size_t k = 0; k < mesh->mBones[j]->mNumWeights; k++)
 				{
-					indices.push_back(j);
-					weights.push_back(mesh->mBones[j]->mWeights[k].mWeight);
+					//Check if vertex is affected by bone
+					if (mesh->mBones[j]->mWeights[k].mVertexId == i)
+					{
+						index.push_back(j);
+						weights.push_back(mesh->mBones[j]->mWeights[k].mWeight);
+					}
 				}
 			}
-		}
-		for (size_t j = 0; j < 4; j++)
-		{
-			//Plocka ut fyra max
-		}
-	}
+			//Pick top 4 weights for shader
+			for (size_t j = 0; j < 4; j++)
+			{
+				int maxIndex = -1;
+				float maxValue = -1;
+				for (size_t k = 0; k < weights.size(); k++)
+				{
+					if (weights[k] > maxValue)
+					{
+						maxValue = weights[k];
+						maxIndex = k;
+					}
+				}
+				//Insert vertex boneinfo
+				vertices[i].boneIndices[j] = maxIndex;
+				vertices[i].weights[j] = maxValue;
+			}
+			//Calculate weights for top 4. (must add up to 1)
+			float prevPer = vertices[i].weights[0] + vertices[i].weights[1] + vertices[i].weights[2] + vertices[i].weights[3];
+			float missPer = 1 - prevPer;
 
-
-	for (size_t i = 0; i < mesh->mNumBones; i++)
-	{
-		for (size_t j = 0; j < mesh->mBones[i]->mNumWeights; j++)
-		{
-			vecBoneIndices.push_back([mesh->mBones[i]->mWeights[j].mVertexId].boneIndices[0];
-			
+			for (size_t j = 0; j < 4; j++)
+				vertices[i].weights[j] = vertices[i].weights[j] + ((vertices[i].weights[0] / prevPer)*missPer);
 		}
-
 	}
 
 	return Mesh(device, vertices, indices, textures);
