@@ -107,7 +107,7 @@ void initializeResources(HWND wndHandle)
 	gPS = new PixelShader(L"PixelShader.hlsl", gGR->getDevice());
 
 	//TESTMODEL
-	gModel.loadModel(gGR->getDevice(), gGR->getDeviceContext(), ".\\Resources\\Models\\ani.dae");
+	gModel.loadModel(gGR->getDevice(), gGR->getDeviceContext(), ".\\Resources\\Models\\gubbe1.dae");
 
 	//IMGUI
 	IMGUI_CHECKVERSION();

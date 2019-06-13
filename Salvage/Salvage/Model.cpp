@@ -95,31 +95,39 @@ Mesh Model::processMesh(ID3D11Device* device, aiMesh * mesh, const aiScene * sce
 				}
 			}
 			//Pick top 4 weights for shader
-			for (size_t j = 0; j < 4; j++)
+			int nrOfweights = 0; //not always four
+			for (size_t j = 0; j < 4 && weights.size() != 0; j++) //Här kan det nog krascha om en vertex har färre än 4 weights
 			{
 				int maxIndex = -1;
 				float maxValue = -1;
+				int eraseIndex = -1;
 				for (size_t k = 0; k < weights.size(); k++)
 				{
 					if (weights[k] > maxValue)
 					{
 						maxValue = weights[k];
-						maxIndex = k;
+						maxIndex = index[k];
+						eraseIndex = k;
 					}
 				}
 				//Insert vertex boneinfo
 				vertices[i].boneIndices[j] = maxIndex;
 				vertices[i].weights[j] = maxValue;
+				nrOfweights++;
+				weights.erase(weights.begin() + eraseIndex);
+				index.erase(index.begin() + eraseIndex);
 			}
 			//Calculate weights for top 4. (must add up to 1)
-			float prevPer = vertices[i].weights[0] + vertices[i].weights[1] + vertices[i].weights[2] + vertices[i].weights[3];
-			float missPer = 1 - prevPer;
+			float prevPer = 0;
+			for (size_t j = 0; j < nrOfweights; j++) //Because nrOfWeights not always 4.
+				prevPer += vertices[i].weights[j];
 
-			for (size_t j = 0; j < 4; j++)
+			float missPer = 1 - prevPer;
+			for (size_t j = 0; j < nrOfweights; j++)
 				vertices[i].weights[j] = vertices[i].weights[j] + ((vertices[i].weights[0] / prevPer)*missPer);
 		}
 	}
-
+	
 	return Mesh(device, vertices, indices, textures);
 }
 
