@@ -2,6 +2,7 @@
 #define NOMINMAX
 #include <vector>
 #include <string>
+#include <map>
 
 #include <DirectXMath.h>
 #include <d3d11.h>
@@ -14,6 +15,12 @@
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
 
+struct BoneInfo
+{
+	aiMatrix4x4 boneOffset;
+	aiMatrix4x4 finalTransformation;
+};
+
 class Model: public Drawable
 {
 private:
@@ -25,6 +32,8 @@ private:
 
 	//Animation
 	DirectX::XMMATRIX _inverseTransform;
+	std::map<std::string, int> _boneMapping;
+	std::vector<BoneInfo> _boneInfo; //Tror att denna ska vara i Model och inte i Mesh
 
 	//Loading models
 	void processNode(ID3D11Device* device, aiNode* node, const aiScene* scene);

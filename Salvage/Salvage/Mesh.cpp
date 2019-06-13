@@ -49,10 +49,10 @@ Mesh::~Mesh()
 {
 	//RUNTIME ERROR
 
-	//if(_vertexBuffer != nullptr)
+	//if(_vertexBuffer)
 	//	_vertexBuffer->Release();
-	//if(_indexBuffer != nullptr)
-	//	_indexBuffer->Release();
+	//if(_indexBuffer)
+	//	_indexBuffer->Release(); //Behövs det en copyconstructor ty vi returnerar en Mesh i processMesh?
 }
 
 void Mesh::draw(ID3D11DeviceContext * deviceContext)

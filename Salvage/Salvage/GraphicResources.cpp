@@ -13,6 +13,7 @@ void GraphicResources::initializeResources(HWND wndHandle)
 	createDirect3DContext(wndHandle);
 	createDepthStencil();
 	setRasterizerState();
+	setSamplerState();
 	setViewPort();
 }
 

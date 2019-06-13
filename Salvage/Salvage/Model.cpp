@@ -21,6 +21,9 @@ Mesh Model::processMesh(ID3D11Device* device, aiMesh * mesh, const aiScene * sce
 	std::vector<Vertex> vertices;
 	std::vector<int> indices;
 	std::vector<Texture> textures;
+	//std::vector<VertexBoneData> bones;
+	//bones.resize(mesh->mNumVertices); // Kanske rätt? Hoppas det är numVer för mesh och inte för scene...
+	//int numBones = 0; //Kom ihåg att skicka denna till Mesh konstruktorn
 
 	if (mesh->mMaterialIndex >= 0)
 	{
@@ -67,6 +70,42 @@ Mesh Model::processMesh(ID3D11Device* device, aiMesh * mesh, const aiScene * sce
 		textures.insert(textures.end(), texture.begin(), texture.end());
 	}
 
+	//Load bones
+	std::vector<int> indices;
+	std::vector<float> weights;
+
+	for (size_t i = 0; i < vertices.size(); i++)
+	{
+		indices.clear();
+		weights.clear();
+		for (size_t j = 0; j < mesh->mNumBones; j++)
+		{
+			for (size_t k = 0; k < mesh->mBones[j]->mNumWeights; k++)
+			{
+				if (mesh->mBones[j]->mWeights[k].mVertexId == i)
+				{
+					indices.push_back(j);
+					weights.push_back(mesh->mBones[j]->mWeights[k].mWeight);
+				}
+			}
+		}
+		for (size_t j = 0; j < 4; j++)
+		{
+			//Plocka ut fyra max
+		}
+	}
+
+
+	for (size_t i = 0; i < mesh->mNumBones; i++)
+	{
+		for (size_t j = 0; j < mesh->mBones[i]->mNumWeights; j++)
+		{
+			vecBoneIndices.push_back([mesh->mBones[i]->mWeights[j].mVertexId].boneIndices[0];
+			
+		}
+
+	}
+
 	return Mesh(device, vertices, indices, textures);
 }
 
@@ -81,7 +120,7 @@ std::vector<Texture> Model::loadTextures(aiMaterial* material, aiTextureType tex
 		material->GetTexture(textureType, (UINT)i, &str);
 		// Check if texture was loaded before and if so, continue to next iteration: skip loading a new texture
 		bool skip = false;
-		for (int j = 0; j < _loadedTextures.size(); j++)
+		for (size_t j = 0; j < _loadedTextures.size(); j++)
 		{
 			if (std::strcmp(_loadedTextures[j]._path.c_str(), str.C_Str()) == 0)
 			{
@@ -184,7 +223,7 @@ bool Model::loadModel(ID3D11Device * device, ID3D11DeviceContext * deviceContext
 {
 	//Load model from file
 	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile(filename, aiProcess_Triangulate | aiProcess_ConvertToLeftHanded);
+	const aiScene* scene = importer.ReadFile(filename, aiProcess_Triangulate | aiProcess_ConvertToLeftHanded); // aiProcessPreset_TargetRealtime_Quality kanske denna för optimisering
 
 	if (scene == NULL)
 		return false;
@@ -196,7 +235,7 @@ bool Model::loadModel(ID3D11Device * device, ID3D11DeviceContext * deviceContext
 	
 	//Start processing all the nodes in the model
 	processNode(device, scene->mRootNode, scene);
-
+	
 	return true;
 }
 

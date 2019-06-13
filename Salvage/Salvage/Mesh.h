@@ -6,6 +6,12 @@
 #include "Vertex.h"
 #include <vector>
 
+struct VertexBoneData
+{
+	int* ids; // NUM_BONES_PER_VERTEX?
+	float weights[]; // NUM_BONES_PER_VERTEX?
+};
+
 class Mesh: public Drawable
 {
 private:
