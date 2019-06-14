@@ -34,6 +34,7 @@ private:
 	float _theta;
 	float _phi;
 	float _camDistance;
+	float _rotationGain; // radian/sec 
 
 	XMMATRIX _world;
 	XMMATRIX _view;
@@ -44,6 +45,9 @@ private:
 	ID3D11Buffer* _constantBuffer;
 
 	void updateWVP();
+	void updateDebugCam(DirectX::Keyboard::State kb, DirectX::Mouse::State ms, float deltaSeconds);
+	void updateGameCam(DirectX::Keyboard::State kb, DirectX::Mouse::State ms, float deltaSeconds);
+
 
 public:
 	Camera();
@@ -61,5 +65,5 @@ public:
 
 	XMMATRIX* getWVP();
 	ID3D11Buffer** getConstantBuffer();
-	void update(DirectX::Keyboard::State kbState, float deltaSeconds);
+	void update(DirectX::Keyboard::State kb, DirectX::Mouse::State ms, float deltaSeconds);
 };

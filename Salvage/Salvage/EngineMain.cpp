@@ -64,7 +64,7 @@ GraphicResources* gGR = nullptr;
 Camera* gCamera = nullptr;
 
 // CONTROLLER //
-InputController gInputCtrl;
+InputController* gInputCtrl;
 
 // CLOCK //
 Clock gClock;
@@ -105,6 +105,8 @@ void initializeResources(HWND wndHandle)
 	//SHADERS
 	gVS = new VertexShader(L"VertexShader.hlsl", gGR->getDevice());
 	gPS = new PixelShader(L"PixelShader.hlsl", gGR->getDevice());
+	//INPUT CONTROLLER
+	gInputCtrl = new InputController(wndHandle);
 
 	//TESTMODEL
 	gModel.loadModel(gGR->getDevice(), gGR->getDeviceContext(), ".\\Resources\\Models\\gubbe1.dae");
@@ -142,8 +144,17 @@ void imGuiUpdate()
 
 	ImGui::Begin("Hello, world!");
 	ImGui::Text("This is some useful text.");
-	ImGui::End();
 
+	// Camera modes
+	if (ImGui::Button("Debug mode"))
+		gCamera->setMode(DEBUG);
+
+	ImGui::SameLine();
+
+	if (ImGui::Button("Game mode"))
+		gCamera->setMode(GAME);
+
+	ImGui::End();
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 }
@@ -158,7 +169,9 @@ void updateBuffers()
 
 void updateCamera()
 {
-	gCamera->update(gInputCtrl.getKeyboardState(), gClock.getDeltaSeconds());
+	DirectX::Mouse::State ms = gInputCtrl->getMouseState();
+	gInputCtrl->setMouseMode();
+	gCamera->update(gInputCtrl->getKeyboardState(), ms, gClock.getDeltaSeconds());
 }
 
 void update()
@@ -207,16 +220,19 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		initializeResources(wndHandle); //GR, SHADERS, IMGUI
 
 		ShowWindow(wndHandle, nCmdShow);
+		
+		//TEST
+		gInputCtrl->setWindow(wndHandle);
 
 		///////////////
 		while (WM_QUIT != msg.message)
 		{
 			if (PeekMessage(&msg, wndHandle, 0, 0, PM_REMOVE))
 			{
-				gInputCtrl.translateMessage(msg);
+				gInputCtrl->translateMessage(msg);
 
 				 //PRESS ESC TO QUIT PROGRAM
-				if (gInputCtrl.getKeyboardState().Escape)
+				if (gInputCtrl->getKeyboardState().Escape)
 					msg.message = WM_QUIT;
 				
 				TranslateMessage(&msg);
@@ -252,6 +268,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		delete gCamera;
 		delete gVS;
 		delete gPS;
+		delete gInputCtrl;
 	}
 }
 

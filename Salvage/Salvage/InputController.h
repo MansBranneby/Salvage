@@ -18,11 +18,15 @@ private:
 
 public:
 	InputController();
+	InputController(HWND window);
 	~InputController();
 
 	void translateMessage(MSG message);
+	void setMouseMode();
 
 	DirectX::Mouse::State getMouseState() const;
 	DirectX::Keyboard::State getKeyboardState() const;
 	DirectX::GamePad::State getGamePadState() const;
+
+	void setWindow(HWND);
 };
