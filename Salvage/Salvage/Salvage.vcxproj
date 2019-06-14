@@ -19,24 +19,51 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Ability.cpp" />
+    <ClCompile Include="Body.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Clock.cpp" />
     <ClCompile Include="ConstantBuffer.cpp" />
+    <ClCompile Include="DeadState.cpp" />
     <ClCompile Include="Drawable.cpp" />
+    <ClCompile Include="DynamicObject.cpp" />
+    <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="EnemyAI.cpp" />
     <ClCompile Include="EngineMain.cpp" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="GameObjectHandler.cpp" />
+    <ClCompile Include="GameState.cpp" />
     <ClCompile Include="GraphicResources.cpp" />
+    <ClCompile Include="Head.cpp" />
+    <ClCompile Include="HightScoreState.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
     <ClCompile Include="imgui\imgui_impl_dx11.cpp" />
     <ClCompile Include="imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
+    <ClCompile Include="InputHandler.cpp" />
+    <ClCompile Include="LeftArm.cpp" />
+    <ClCompile Include="Level.cpp" />
+    <ClCompile Include="LevelAI.cpp" />
+    <ClCompile Include="LevelHandler.cpp" />
+    <ClCompile Include="LowerBody.cpp" />
+    <ClCompile Include="MenuState.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="InputController.cpp" />
     <ClCompile Include="PixelShader.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="RightArm.cpp" />
+    <ClCompile Include="Robot.cpp" />
+    <ClCompile Include="StartOfGameState.cpp" />
+    <ClCompile Include="State.cpp" />
+    <ClCompile Include="StaticObject.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureLoader.cpp" />
+    <ClCompile Include="UIHandler.cpp" />
+    <ClCompile Include="UpgradePart.cpp" />
     <ClCompile Include="Vertex.cpp" />
     <ClCompile Include="VertexShader.cpp" />
   </ItemGroup>
@@ -44,11 +71,23 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Ability.h" />
+    <ClInclude Include="Body.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Clock.h" />
     <ClInclude Include="ConstantBuffer.h" />
+    <ClInclude Include="DeadState.h" />
     <ClInclude Include="Drawable.h" />
+    <ClInclude Include="DynamicObject.h" />
+    <ClInclude Include="Enemy.h" />
+    <ClInclude Include="EnemyAI.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="GameObject.h" />
+    <ClInclude Include="GameObjectHandler.h" />
+    <ClInclude Include="GameState.h" />
     <ClInclude Include="GraphicResources.h" />
+    <ClInclude Include="Head.h" />
+    <ClInclude Include="HighScoreState.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
     <ClInclude Include="imgui\imgui_impl_dx11.h" />
@@ -58,11 +97,26 @@
     <ClInclude Include="imgui\imstb_textedit.h" />
     <ClInclude Include="imgui\imstb_truetype.h" />
     <ClInclude Include="InputController.h" />
+    <ClInclude Include="InputHandler.h" />
+    <ClInclude Include="LeftArm.h" />
+    <ClInclude Include="Level.h" />
+    <ClInclude Include="LevelAI.h" />
+    <ClInclude Include="LevelHandler.h" />
+    <ClInclude Include="LowerBody.h" />
+    <ClInclude Include="MenuState.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="PixelShader.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="RightArm.h" />
+    <ClInclude Include="Robot.h" />
+    <ClInclude Include="StartOfGameState.h" />
+    <ClInclude Include="State.h" />
+    <ClInclude Include="StaticObject.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureLoader.h" />
+    <ClInclude Include="UIHandler.h" />
+    <ClInclude Include="UpgradePart.h" />
     <ClInclude Include="Vertex.h" />
     <ClInclude Include="VertexShader.h" />
   </ItemGroup>
