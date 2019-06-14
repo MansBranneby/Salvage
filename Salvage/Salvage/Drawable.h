@@ -9,5 +9,5 @@ public:
 	Drawable();
 	~Drawable();
 
-	virtual void draw(ID3D11DeviceContext* deviceContext) = 0;
+	virtual void draw(ID3D11DeviceContext* deviceContext, ID3D11Buffer* transformationBuffer) = 0;
 };
