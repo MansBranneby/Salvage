@@ -29,26 +29,30 @@ private:
 	std::string _directory;
 	std::vector<Mesh> _meshes;
 	std::vector<Texture> _loadedTextures;
+	Assimp::Importer _importer;
+	const aiScene* _scene;
 
 	//Animation
 	DirectX::XMMATRIX _inverseTransform;
 	std::map<std::string, int> _boneMapping;
 	std::vector<BoneInfo> _boneInfo; //Tror att denna ska vara i Model och inte i Mesh
+	aiNode* findNodeRecursivelyByName(const aiNode* node, aiString channelName);
 
 	//Loading models
-	void processNode(ID3D11Device* device, aiNode* node, const aiScene* scene);
-	Mesh processMesh(ID3D11Device* device, aiMesh* mesh, const aiScene* scene);
+	void processNode(ID3D11Device* device, aiNode* node);
+	Mesh processMesh(ID3D11Device* device, aiMesh* mesh);
 
 	//Process textures
-	std::vector<Texture> loadTextures(aiMaterial* material, aiTextureType textureType, std::string typeName, const aiScene* scene);
-	std::string determineTextureType(const aiScene* scene, aiMaterial* material);
+	std::vector<Texture> loadTextures(aiMaterial* material, aiTextureType textureType, std::string typeName);
+	std::string determineTextureType(aiMaterial* material);
 	int getTextureIndex(aiString* str);
-	ID3D11ShaderResourceView* getTextureFromModel(const aiScene* scene, int textureIndex);
+	ID3D11ShaderResourceView* getTextureFromModel(int textureIndex);
 
 public:
 	Model();
 	~Model();
 
 	bool loadModel(ID3D11Device* device, ID3D11DeviceContext* deviceContext, std::string filename);
+	void animate(float timeInSec);
 	void draw(ID3D11DeviceContext* deviceContext);
 };

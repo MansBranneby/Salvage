@@ -23,3 +23,17 @@ float Clock::getDeltaSeconds()
 	
 	return deltaSeconds;
 }
+
+void Clock::startAnimation()
+{
+	QueryPerformanceCounter(&_animationStart);
+}
+
+float Clock::getAnimationTime()
+{
+	QueryPerformanceCounter(&_currTime);
+	_delta.QuadPart = _currTime.QuadPart - _animationStart.QuadPart;
+	float deltaSeconds = (float)_delta.QuadPart / _clockFreq.QuadPart;
+
+	return deltaSeconds;
+}

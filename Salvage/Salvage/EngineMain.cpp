@@ -109,7 +109,7 @@ void initializeResources(HWND wndHandle)
 	gInputCtrl = new InputController(wndHandle);
 
 	//TESTMODEL
-	gModel.loadModel(gGR->getDevice(), gGR->getDeviceContext(), ".\\Resources\\Models\\gubbe1.dae");
+	gModel.loadModel(gGR->getDevice(), gGR->getDeviceContext(), ".\\Resources\\Models\\gubbe1Ani.dae");
 
 	//IMGUI
 	IMGUI_CHECKVERSION();
@@ -132,6 +132,9 @@ void initializeResources(HWND wndHandle)
 	HRESULT result = gGR->getDevice()->CreateBuffer(&bufferDesc, &data, &_vertexBuffer);
 	if (FAILED(result))
 		MessageBox(NULL, L"ERROR _vertexBuffer in Mesh.cpp", L"Error", MB_OK | MB_ICONERROR);
+
+	//Tillfällig för test av animation
+	gClock.startAnimation();
 }
 
 void imGuiUpdate()
@@ -178,6 +181,7 @@ void update()
 {
 	updateBuffers();
 	updateCamera();
+	gModel.animate(gClock.getAnimationTime());
 }
 
 
