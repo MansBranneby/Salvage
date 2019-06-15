@@ -77,6 +77,7 @@
     <ClInclude Include="Clock.h" />
     <ClInclude Include="ConstantBuffer.h" />
     <ClInclude Include="DeadState.h" />
+    <ClInclude Include="DeviceHolder.h" />
     <ClInclude Include="Drawable.h" />
     <ClInclude Include="DynamicObject.h" />
     <ClInclude Include="Enemy.h" />

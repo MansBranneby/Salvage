@@ -295,6 +295,16 @@ Model::~Model()
 	//	_deviceContext->Release();
 }
 
+void Model::updateTransformation(DirectX::XMFLOAT3 position)
+{
+	_scene->mRootNode->mTransformation = aiMatrix4x4(aiVector3D(1, 1, 1), aiQuaternion(0, 0, 0), aiVector3D(position.x, position.y, position.z));
+
+	D3D11_MAPPED_SUBRESOURCE mappedMemory;
+	_deviceContext->Map(_transformationBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedMemory);
+	memcpy(mappedMemory.pData, &_scene->mRootNode->mTransformation, sizeof(_scene->mRootNode->mTransformation));
+	_deviceContext->Unmap(_transformationBuffer, 0);
+}
+
 bool Model::loadModel(ID3D11Device * device, ID3D11DeviceContext * deviceContext, std::string filename)
 {
 	//Load model from file

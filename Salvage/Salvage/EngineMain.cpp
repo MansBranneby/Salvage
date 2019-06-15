@@ -19,6 +19,7 @@
 // Extra
 
 // Own classes
+#include "Game.h"
 #include "GraphicResources.h"
 #include "Camera.h"
 #include "VertexShader.h"
@@ -60,6 +61,7 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 #define HEIGHT 1080.0f
 
 // GLOBALS //
+Game* gGame = nullptr;
 GraphicResources* gGR = nullptr;
 Camera* gCamera = nullptr;
 
@@ -68,8 +70,8 @@ InputController* gInputCtrl;
 
 // CLOCK //
 Clock gClock;
-ID3D11Buffer* constantBuffer; //TILLFÄLLIG
-Model gModel, gOriginObject;
+//ID3D11Buffer* constantBuffer; //TILLFÄLLIG
+//Model gModel, gOriginObject;
 
 
 // SHADERS //
@@ -108,9 +110,12 @@ void initializeResources(HWND wndHandle)
 	//INPUT CONTROLLER
 	gInputCtrl = new InputController(wndHandle);
 
+	//GAME
+	gGame = new Game(gGR->getDevice(), gGR->getDeviceContext());
+
 	//TESTMODEL
-	gModel.loadModel(gGR->getDevice(), gGR->getDeviceContext(), ".\\Resources\\Models\\gubbe1Ani.dae");
-	gOriginObject.loadModel(gGR->getDevice(), gGR->getDeviceContext(), ".\\Resources\\Models\\noani.dae");
+	//gModel.loadModel(gGR->getDevice(), gGR->getDeviceContext(), ".\\Resources\\Models\\gubbe1Ani.dae");
+	//gOriginObject.loadModel(gGR->getDevice(), gGR->getDeviceContext(), ".\\Resources\\Models\\noani.dae");
 
 	//IMGUI
 	IMGUI_CHECKVERSION();
@@ -181,8 +186,9 @@ void updateCamera()
 void update()
 {
 	updateBuffers();
-	updateCamera();
-	gModel.animate(10);
+	//updateCamera();
+	gGame->update(gInputCtrl->getKeyboardState(), gClock.getDeltaSeconds());
+	//gModel.animate(10);
 	//gOriginObject.animate(0);
 }
 
@@ -205,8 +211,9 @@ void render()
 	gGR->getDeviceContext()->VSSetConstantBuffers(0, 1, gCamera->getConstantBuffer());
 	//gGR->getDeviceContext()->IASetVertexBuffers(0, 1, &_vertexBuffer, &vertexSize, &offset);
 
-	gModel.draw(gGR->getDeviceContext());
-	gOriginObject.draw(gGR->getDeviceContext());
+	gGame->draw();
+	//gModel.draw(gGR->getDeviceContext());
+	//gOriginObject.draw(gGR->getDeviceContext());
 	//gGR.getDeviceContext()->Draw(3, 0);
 }
 
@@ -270,6 +277,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		ImGui_ImplWin32_Shutdown();
 		ImGui::DestroyContext();
 
+
+		//CLEAR - kanske i en separat funktion
 		_vertexBuffer->Release();
 		
 		delete gGR;
@@ -277,6 +286,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		delete gVS;
 		delete gPS;
 		delete gInputCtrl;
+		delete gGame;
 	}
 }
 

@@ -42,9 +42,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="EngineMain.cpp">
-      <Filter>RenderSystem\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GraphicResources.cpp">
       <Filter>RenderSystem\Source Files</Filter>
     </ClCompile>
@@ -182,6 +179,9 @@
     </ClCompile>
     <ClCompile Include="UpgradePart.cpp">
       <Filter>GameSystem\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EngineMain.cpp">
+      <Filter>RenderSystem\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -331,6 +331,9 @@
     </ClInclude>
     <ClInclude Include="RightArm.h">
       <Filter>GameSystem\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DeviceHolder.h">
+      <Filter>RenderSystem\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
