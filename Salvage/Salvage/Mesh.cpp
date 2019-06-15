@@ -55,13 +55,14 @@ Mesh::~Mesh()
 	//	_indexBuffer->Release(); //Behövs det en copyconstructor ty vi returnerar en Mesh i processMesh?
 }
 
-void Mesh::draw(ID3D11DeviceContext * deviceContext)
+void Mesh::draw(ID3D11DeviceContext * deviceContext, ID3D11Buffer* transformationBuffer)
 {
 	UINT32 vertexSize = sizeof(Vertex);
 	UINT32 offset = 0;
 
 	deviceContext->IASetVertexBuffers(0, 1, &_vertexBuffer, &vertexSize, &offset);
 	deviceContext->IASetIndexBuffer(_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	deviceContext->VSSetConstantBuffers(1, 1, &transformationBuffer);
 
 	deviceContext->PSSetShaderResources(0, 1, &_textures[0]._texture);
 

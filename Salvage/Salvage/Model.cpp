@@ -1,22 +1,71 @@
 #include "Model.h"
 
-void Model::processNode(ID3D11Device* device, aiNode * node, const aiScene * scene)
+aiNode * Model::findNodeRecursivelyByName(const aiNode* node, aiString channelName)
+{
+	aiNode thisNode = *node;
+	aiNode* returnNode;
+	//Check name for current node
+	if (node->mName == channelName)
+		returnNode = &thisNode;
+	else
+		returnNode = NULL;
+	//Go down tree and process all nodes
+	if (node->mNumChildren && returnNode == NULL)
+	{
+		for (size_t i = 0; i < node->mNumChildren && returnNode == NULL; i++)
+		{
+			returnNode = findNodeRecursivelyByName(node->mChildren[i], channelName);
+
+		}
+	}
+	if (node->mName == channelName)
+	{
+
+	}
+	return returnNode;
+
+	//aiNode* returnNode;
+	////Check name for current node
+	//if (node->mName == channelName)
+	//{
+	//	returnNode = node;
+	//	return node;
+	//}
+	//else
+	//	returnNode = NULL;
+	////Go down tree and process all nodes
+	//if (node->mNumChildren && returnNode == NULL)
+	//{
+	//	for (size_t i = 0; i < node->mNumChildren && returnNode == NULL; i++)
+	//	{
+	//		return findNodeRecursivelyByName(node->mChildren[i], channelName);
+
+	//	}
+	//}
+	//if (node->mName == channelName)
+	//{
+
+	//}
+	//return returnNode;
+}
+
+void Model::processNode(ID3D11Device* device, aiNode * node)
 {
 	//Cycle all meshes for current node
 	for (size_t i = 0; i < node->mNumMeshes; i++)
 	{
-		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-		_meshes.push_back(this->processMesh(device, mesh, scene));
+		aiMesh* mesh = _scene->mMeshes[node->mMeshes[i]];
+		_meshes.push_back(this->processMesh(device, mesh));
 	}
 
 	//Go down tree and process all nodes
 	for (size_t i = 0; i < node->mNumChildren; i++)
-		this->processNode(device, node->mChildren[i], scene);
+		this->processNode(device, node->mChildren[i]);
 }
 
 std::string texType;
 
-Mesh Model::processMesh(ID3D11Device* device, aiMesh * mesh, const aiScene * scene)
+Mesh* Model::processMesh(ID3D11Device* device, aiMesh * mesh)
 {
 	std::vector<Vertex> vertices;
 	std::vector<int> indices;
@@ -27,9 +76,9 @@ Mesh Model::processMesh(ID3D11Device* device, aiMesh * mesh, const aiScene * sce
 
 	if (mesh->mMaterialIndex >= 0)
 	{
-		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+		aiMaterial* material = _scene->mMaterials[mesh->mMaterialIndex];
 		if (texType.empty())
-			texType = determineTextureType(scene, material);
+			texType = determineTextureType(material);
 	}
 
 	//Loop vertices
@@ -65,8 +114,8 @@ Mesh Model::processMesh(ID3D11Device* device, aiMesh * mesh, const aiScene * sce
 	//Textures
 	if (mesh->mMaterialIndex >= 0)
 	{
-		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-		std::vector<Texture> texture = loadTextures(material, aiTextureType_DIFFUSE, "texture_diffuse",scene);
+		aiMaterial* material = _scene->mMaterials[mesh->mMaterialIndex];
+		std::vector<Texture> texture = loadTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
 		textures.insert(textures.end(), texture.begin(), texture.end());
 	}
 
@@ -127,11 +176,11 @@ Mesh Model::processMesh(ID3D11Device* device, aiMesh * mesh, const aiScene * sce
 				vertices[i].weights[j] = vertices[i].weights[j] + ((vertices[i].weights[0] / prevPer)*missPer);
 		}
 	}
-	
-	return Mesh(device, vertices, indices, textures);
+	Mesh* returnMesh = new Mesh(device, vertices, indices, textures);
+	return returnMesh;
 }
 
-std::vector<Texture> Model::loadTextures(aiMaterial* material, aiTextureType textureType, std::string typeName, const aiScene * scene)
+std::vector<Texture> Model::loadTextures(aiMaterial* material, aiTextureType textureType, std::string typeName)
 {
 	//Load texture
 	std::vector<Texture> textures;
@@ -158,7 +207,7 @@ std::vector<Texture> Model::loadTextures(aiMaterial* material, aiTextureType tex
 			if (texType == "embedded compressed texture")
 			{
 				int textureIndex = getTextureIndex(&str);
-				texture._texture = getTextureFromModel(scene, textureIndex);
+				texture._texture = getTextureFromModel(textureIndex);
 			}
 			else
 			{
@@ -180,14 +229,14 @@ std::vector<Texture> Model::loadTextures(aiMaterial* material, aiTextureType tex
 	return textures;
 }
 
-std::string Model::determineTextureType(const aiScene * scene, aiMaterial * material)
+std::string Model::determineTextureType(aiMaterial * material)
 {
 	aiString textureTypeStr;
 	material->GetTexture(aiTextureType_DIFFUSE, 0, &textureTypeStr);
 	std::string textypeteststr = textureTypeStr.C_Str();
 	if (textypeteststr == "*0" || textypeteststr == "*1" || textypeteststr == "*2" || textypeteststr == "*3" || textypeteststr == "*4" || textypeteststr == "*5")
 	{
-		if (scene->mTextures[0]->mHeight == 0)
+		if (_scene->mTextures[0]->mHeight == 0)
 		{
 			return "embedded compressed texture";
 		}
@@ -213,14 +262,14 @@ int Model::getTextureIndex(aiString * str)
 	return stoi(tistr);
 }
 
-ID3D11ShaderResourceView * Model::getTextureFromModel(const aiScene * scene, int textureIndex)
+ID3D11ShaderResourceView * Model::getTextureFromModel(int textureIndex)
 {
 	HRESULT hr;
 	ID3D11ShaderResourceView* texture;
 
-	int* size = reinterpret_cast<int*>(&scene->mTextures[textureIndex]->mWidth);
+	int* size = reinterpret_cast<int*>(&_scene->mTextures[textureIndex]->mWidth);
 
-	hr = CreateWICTextureFromMemory(_device, _deviceContext, reinterpret_cast<unsigned char*>(scene->mTextures[textureIndex]->pcData), *size, nullptr, &texture);
+	hr = CreateWICTextureFromMemory(_device, _deviceContext, reinterpret_cast<unsigned char*>(_scene->mTextures[textureIndex]->pcData), *size, nullptr, &texture);
 	if (FAILED(hr))
 		MessageBox(NULL, L"Texture couldn't be created from memory!", L"Error!", MB_ICONERROR | MB_OK);
 
@@ -235,6 +284,11 @@ Model::~Model()
 {
 	if (_device)
 		_device->Release();
+	if (_transformationBuffer)
+		_transformationBuffer->Release();
+
+	for (size_t i = 0; i < _meshes.size(); i++)
+		delete _meshes[i];
 
 	//// CRASCH
 	//if (_deviceContext)
@@ -244,10 +298,9 @@ Model::~Model()
 bool Model::loadModel(ID3D11Device * device, ID3D11DeviceContext * deviceContext, std::string filename)
 {
 	//Load model from file
-	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile(filename, aiProcess_Triangulate | aiProcess_ConvertToLeftHanded); // aiProcessPreset_TargetRealtime_Quality kanske denna för optimisering
+	_scene = _importer.ReadFile(filename, aiProcess_Triangulate | aiProcess_ConvertToLeftHanded); // aiProcessPreset_TargetRealtime_Quality kanske denna för optimisering
 
-	if (scene == NULL)
+	if (_scene == NULL)
 		return false;
 
 	//Save member variables
@@ -256,15 +309,98 @@ bool Model::loadModel(ID3D11Device * device, ID3D11DeviceContext * deviceContext
 	_deviceContext = deviceContext;
 	
 	//Start processing all the nodes in the model
-	processNode(device, scene->mRootNode, scene);
+	processNode(device, _scene->mRootNode);
+
+	//CONSTANT BUFFER
+	D3D11_BUFFER_DESC cbDesc;
+	cbDesc.ByteWidth = sizeof(_scene->mRootNode->mTransformation);
+	cbDesc.Usage = D3D11_USAGE_DYNAMIC;
+	cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	cbDesc.MiscFlags = 0;
+	cbDesc.StructureByteStride = 0;
+
+	// Fill in the subresource data.
+	D3D11_SUBRESOURCE_DATA InitData;
+	InitData.pSysMem = &_scene->mRootNode->mTransformation;
+	InitData.SysMemPitch = 0;
+	InitData.SysMemSlicePitch = 0;
+
+	// create a Constant Buffer
+	HRESULT result = device->CreateBuffer(&cbDesc, &InitData, &_transformationBuffer);
+	if (FAILED(result))
+		MessageBox(NULL, L"Error _transformationBuffer", L"Error", MB_OK | MB_ICONERROR);
 	
 	return true;
 }
 
+void Model::animate(float timeInSec)
+{
+	_scene->mRootNode->mTransformation = aiMatrix4x4(aiVector3D(1, 1, 1), aiQuaternion(0, 0, 0), aiVector3D(0, timeInSec, 0));
+
+	D3D11_MAPPED_SUBRESOURCE mappedMemory;
+	_deviceContext->Map(_transformationBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedMemory);
+	memcpy(mappedMemory.pData, &_scene->mRootNode->mTransformation, sizeof(_scene->mRootNode->mTransformation));
+	_deviceContext->Unmap(_transformationBuffer, 0);
+
+	//if (_scene->HasAnimations())
+	//{
+
+	//}
+	//const aiAnimation* anim = _scene->mAnimations[0];
+	//double currentTime = fmod(timeInSec * 1000, anim->mDuration);
+	//for (size_t i = 0; i < anim->mNumChannels; ++i)
+	//{
+	//	const aiNodeAnim* channel = anim->mChannels[i];
+	//	aiVector3D curPosition;
+	//	aiQuaternion curRotation;
+	//	// scaling purposefully left out 
+	//	// find the node which the channel affects
+	//	aiNode* targetNode = findNodeRecursivelyByName(_scene->mRootNode, channel->mNodeName);
+	//	// find current position
+	//	size_t posIndex = 0;
+	//	while (1)
+	//	{
+	//		// break if this is the last key - there are no more keys after this one, we need to use it
+	//		if (posIndex + 1 >= channel->mNumPositionKeys)
+	//			break;
+	//		// break if the next key lies in the future - the current one is the correct one then
+	//		if (channel->mPositionKeys[posIndex + 1].mTime > currentTime)
+	//			break;
+	//		posIndex++;
+	//	}
+	//	// maybe add a check here if the anim has any position keys at all
+	//	curPosition = channel->mPositionKeys[posIndex].mValue;
+	//	// same goes for rotation, but I shorten it now
+	//	size_t rotIndex = 0;
+	//	while (1)
+	//	{
+	//		if (rotIndex + 1 >= channel->mNumRotationKeys)
+	//			break;
+	//		if (channel->mRotationKeys[rotIndex + 1].mTime > currentTime)
+	//			break;
+	//		rotIndex++;
+	//	}
+	//	curRotation = channel->mRotationKeys[posIndex].mValue;
+	//	// now build a transformation matrix from it. First rotation, thenn push position in it as well. 
+	//	aiMatrix4x4 trafo = aiMatrix4x4(curRotation.GetMatrix());
+	//	trafo.a4 = curPosition.x; trafo.b4 = curPosition.y; trafo.c4 = curPosition.z;
+	//	// assign this transformation to the node
+	//	targetNode->mTransformation = trafo;
+	//}
+}
+
+void Model::draw(ID3D11DeviceContext* deviceContext, ID3D11Buffer* transformationBuffer)
+{
+	for (int i = 0; i < _meshes.size(); i++)
+	{
+		_meshes[i]->draw(deviceContext, _transformationBuffer);
+	}
+}
 void Model::draw(ID3D11DeviceContext* deviceContext)
 {
 	for (int i = 0; i < _meshes.size(); i++)
 	{
-		_meshes[i].draw(deviceContext);
+		_meshes[i]->draw(deviceContext, _transformationBuffer);
 	}
 }

@@ -11,6 +11,7 @@ private:
 	LARGE_INTEGER _startTime;
 	LARGE_INTEGER _delta;
 	LARGE_INTEGER _currTime;
+	LARGE_INTEGER _animationStart;
 
 public:
 	Clock();
@@ -18,4 +19,6 @@ public:
 
 	void startClock();
 	float getDeltaSeconds();
+	void startAnimation();
+	float getAnimationTime();
 };

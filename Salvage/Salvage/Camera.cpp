@@ -122,10 +122,14 @@ Camera::Camera(ID3D11Device* device, float width, float height)
 	_projection = XMMatrixTranspose(_projection);
 
 	_WVP = XMMatrixMultiply(_projection, XMMatrixMultiply(_view, _world));
+	_transMatrices.world = _world;
+	_transMatrices.view = _view;
+	_transMatrices.projection = _projection;
+	_transMatrices.WVP = _WVP;
 
 	//CONSTANT BUFFER
 	D3D11_BUFFER_DESC cbDesc;
-	cbDesc.ByteWidth = sizeof(_WVP);
+	cbDesc.ByteWidth = sizeof(XMMATRIX)*4;
 	cbDesc.Usage = D3D11_USAGE_DYNAMIC;
 	cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
@@ -134,7 +138,7 @@ Camera::Camera(ID3D11Device* device, float width, float height)
 
 	// Fill in the subresource data.
 	D3D11_SUBRESOURCE_DATA InitData;
-	InitData.pSysMem = &_WVP;
+	InitData.pSysMem = &_transMatrices;
 	InitData.SysMemPitch = 0;
 	InitData.SysMemSlicePitch = 0;
 
@@ -174,6 +178,11 @@ XMMATRIX* Camera::getWVP()
 	return &_WVP;
 }
 
+TransformationMatrices * Camera::getTransformMatrices()
+{
+	return &_transMatrices;
+}
+
 ID3D11Buffer** Camera::getConstantBuffer()
 {
 	return &_constantBuffer;
@@ -201,4 +210,8 @@ void Camera::update(DirectX::Keyboard::State kb, DirectX::Mouse::State ms, float
 	_view = XMMatrixLookAtLH(XMLoadFloat4(&_position), _lookAt, _up);
 	_view = XMMatrixTranspose(_view);
 	_WVP = XMMatrixMultiply(_projection, XMMatrixMultiply(_view, _world));
+	_transMatrices.world = _world;
+	_transMatrices.view = _view;
+	_transMatrices.projection = _projection;
+	_transMatrices.WVP = _WVP;
 }

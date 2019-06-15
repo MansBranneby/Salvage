@@ -69,7 +69,7 @@ InputController* gInputCtrl;
 // CLOCK //
 Clock gClock;
 ID3D11Buffer* constantBuffer; //TILLFÄLLIG
-Model gModel;
+Model gModel, gOriginObject;
 
 
 // SHADERS //
@@ -109,7 +109,8 @@ void initializeResources(HWND wndHandle)
 	gInputCtrl = new InputController(wndHandle);
 
 	//TESTMODEL
-	gModel.loadModel(gGR->getDevice(), gGR->getDeviceContext(), ".\\Resources\\Models\\gubbe1.dae");
+	gModel.loadModel(gGR->getDevice(), gGR->getDeviceContext(), ".\\Resources\\Models\\gubbe1Ani.dae");
+	gOriginObject.loadModel(gGR->getDevice(), gGR->getDeviceContext(), ".\\Resources\\Models\\noani.dae");
 
 	//IMGUI
 	IMGUI_CHECKVERSION();
@@ -132,6 +133,9 @@ void initializeResources(HWND wndHandle)
 	HRESULT result = gGR->getDevice()->CreateBuffer(&bufferDesc, &data, &_vertexBuffer);
 	if (FAILED(result))
 		MessageBox(NULL, L"ERROR _vertexBuffer in Mesh.cpp", L"Error", MB_OK | MB_ICONERROR);
+
+	//Tillfällig för test av animation
+	gClock.startAnimation();
 }
 
 void imGuiUpdate()
@@ -163,7 +167,7 @@ void updateBuffers()
 {
 	D3D11_MAPPED_SUBRESOURCE mappedMemory;
 	gGR->getDeviceContext()->Map(*gCamera->getConstantBuffer(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedMemory);
-	memcpy(mappedMemory.pData, gCamera->getWVP(), sizeof(*gCamera->getWVP()));
+	memcpy(mappedMemory.pData, gCamera->getTransformMatrices(), sizeof(*gCamera->getTransformMatrices()));
 	gGR->getDeviceContext()->Unmap(*gCamera->getConstantBuffer(), 0);
 }
 
@@ -178,6 +182,8 @@ void update()
 {
 	updateBuffers();
 	updateCamera();
+	gModel.animate(10);
+	//gOriginObject.animate(0);
 }
 
 
@@ -195,11 +201,12 @@ void render()
 	gGR->getDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	gGR->getDeviceContext()->IASetInputLayout(&gVS->getvertexLayout());
 	gGR->getDeviceContext()->PSSetSamplers(0, 1, gGR->getSamplerState());
-	
+
 	gGR->getDeviceContext()->VSSetConstantBuffers(0, 1, gCamera->getConstantBuffer());
 	//gGR->getDeviceContext()->IASetVertexBuffers(0, 1, &_vertexBuffer, &vertexSize, &offset);
 
 	gModel.draw(gGR->getDeviceContext());
+	gOriginObject.draw(gGR->getDeviceContext());
 	//gGR.getDeviceContext()->Draw(3, 0);
 }
 
@@ -246,6 +253,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 				gGR->getDeviceContext()->ClearRenderTargetView(*gGR->getBackBuffer(), clearColour);
 				gGR->getDeviceContext()->OMSetRenderTargets(1, gGR->getBackBuffer(), gGR->getDepthStencilView());//ENABLE DEPTH TEST WHEN WE HAVE A CAMERA
+				gGR->getDeviceContext()->ClearDepthStencilView(gGR->getDepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 				render();
 				update();

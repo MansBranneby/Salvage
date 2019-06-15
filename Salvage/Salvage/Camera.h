@@ -12,6 +12,14 @@ using namespace DirectX;
 
 enum cameraMode {DEBUG, GAME};
 
+struct TransformationMatrices
+{
+	XMMATRIX world;
+	XMMATRIX view;
+	XMMATRIX projection;
+	XMMATRIX WVP;
+};
+
 class Camera
 {
 private:
@@ -41,6 +49,7 @@ private:
 	XMMATRIX _projection;
 
 	XMMATRIX _WVP;
+	TransformationMatrices _transMatrices;
 
 	ID3D11Buffer* _constantBuffer;
 
@@ -64,6 +73,7 @@ public:
 	void setMode(cameraMode cameraMode);
 
 	XMMATRIX* getWVP();
+	TransformationMatrices* getTransformMatrices();
 	ID3D11Buffer** getConstantBuffer();
 	void update(DirectX::Keyboard::State kb, DirectX::Mouse::State ms, float deltaSeconds);
 };
