@@ -28,7 +28,7 @@ private:
 	ID3D11DeviceContext* _deviceContext;
 	ID3D11Buffer* _transformationBuffer;
 	std::string _directory;
-	std::vector<Mesh> _meshes;
+	std::vector<Mesh*> _meshes;
 	std::vector<Texture> _loadedTextures;
 	Assimp::Importer _importer;
 	const aiScene* _scene;
@@ -42,7 +42,7 @@ private:
 
 	//Loading models
 	void processNode(ID3D11Device* device, aiNode* node);
-	Mesh processMesh(ID3D11Device* device, aiMesh* mesh);
+	Mesh* processMesh(ID3D11Device* device, aiMesh* mesh);
 
 	//Process textures
 	std::vector<Texture> loadTextures(aiMaterial* material, aiTextureType textureType, std::string typeName);

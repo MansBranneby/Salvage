@@ -65,7 +65,7 @@ void Model::processNode(ID3D11Device* device, aiNode * node)
 
 std::string texType;
 
-Mesh Model::processMesh(ID3D11Device* device, aiMesh * mesh)
+Mesh* Model::processMesh(ID3D11Device* device, aiMesh * mesh)
 {
 	std::vector<Vertex> vertices;
 	std::vector<int> indices;
@@ -176,8 +176,8 @@ Mesh Model::processMesh(ID3D11Device* device, aiMesh * mesh)
 				vertices[i].weights[j] = vertices[i].weights[j] + ((vertices[i].weights[0] / prevPer)*missPer);
 		}
 	}
-	
-	return Mesh(device, vertices, indices, textures);
+	Mesh* returnMesh = new Mesh(device, vertices, indices, textures);
+	return returnMesh;
 }
 
 std::vector<Texture> Model::loadTextures(aiMaterial* material, aiTextureType textureType, std::string typeName)
@@ -284,6 +284,11 @@ Model::~Model()
 {
 	if (_device)
 		_device->Release();
+	if (_transformationBuffer)
+		_transformationBuffer->Release();
+
+	for (size_t i = 0; i < _meshes.size(); i++)
+		delete _meshes[i];
 
 	//// CRASCH
 	//if (_deviceContext)
@@ -389,13 +394,13 @@ void Model::draw(ID3D11DeviceContext* deviceContext, ID3D11Buffer* transformatio
 {
 	for (int i = 0; i < _meshes.size(); i++)
 	{
-		_meshes[i].draw(deviceContext, _transformationBuffer);
+		_meshes[i]->draw(deviceContext, _transformationBuffer);
 	}
 }
 void Model::draw(ID3D11DeviceContext* deviceContext)
 {
 	for (int i = 0; i < _meshes.size(); i++)
 	{
-		_meshes[i].draw(deviceContext, _transformationBuffer);
+		_meshes[i]->draw(deviceContext, _transformationBuffer);
 	}
 }

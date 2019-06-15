@@ -183,7 +183,7 @@ void update()
 	updateBuffers();
 	updateCamera();
 	gModel.animate(10);
-	gOriginObject.animate(0);
+	//gOriginObject.animate(0);
 }
 
 
