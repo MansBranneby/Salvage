@@ -26,7 +26,7 @@ private:
 	// Cameramode decides which mode the camera should be in
 	cameraMode _cameraMode;
 
-	XMFLOAT4 _position;
+	XMVECTOR _position;
 	
 	XMVECTOR _lookAt;
 	XMVECTOR _up;
