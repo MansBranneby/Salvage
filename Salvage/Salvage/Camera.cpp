@@ -10,7 +10,7 @@ void Camera::updateDebugCam(DirectX::Keyboard::State kb, DirectX::Mouse::State m
 	_forward = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
 	_right = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
 	_up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-	_lookAt = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+	_lookAt = XMVectorSet(0.0f, 0.0f, 0.0001f, 0.0f);
 
 	if (ms.positionMode == Mouse::MODE_RELATIVE)
 	{
@@ -22,7 +22,8 @@ void Camera::updateDebugCam(DirectX::Keyboard::State kb, DirectX::Mouse::State m
 	_rotation = XMMatrixRotationRollPitchYaw(_pitch, _yaw, 0.0f);
 	_right = XMVector3TransformCoord(_right, _rotation);
 	_up = XMVector3TransformCoord(_up, _rotation);
-	_lookAt = XMVector3TransformCoord(_forward, _rotation);
+	_forward = XMVector3TransformCoord(_forward, _rotation);
+	_lookAt = XMVector3TransformCoord(_lookAt, _rotation);
 
 	//Get current state of keyboard, mouse and gamepad, update the cameras position based on this input.
 	if (kb.W) //Forward
