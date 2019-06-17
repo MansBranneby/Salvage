@@ -40,6 +40,12 @@
     <Filter Include="GameSystem\Source Files">
       <UniqueIdentifier>{810fdb87-a55d-4a37-9aec-ff334400636f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameSystem\Source Files\States">
+      <UniqueIdentifier>{dba00ff1-38ec-4e08-bc5b-48f26ecdbd3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameSystem\Header Files\States">
+      <UniqueIdentifier>{49dc7353-adaf-48eb-8605-1163d9f7ef94}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GraphicResources.cpp">
@@ -108,9 +114,6 @@
     <ClCompile Include="Body.cpp">
       <Filter>GameSystem\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DeadState.cpp">
-      <Filter>GameSystem\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="DynamicObject.cpp">
       <Filter>GameSystem\Source Files</Filter>
     </ClCompile>
@@ -126,13 +129,7 @@
     <ClCompile Include="GameObjectHandler.cpp">
       <Filter>GameSystem\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GameState.cpp">
-      <Filter>GameSystem\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Head.cpp">
-      <Filter>GameSystem\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="HightScoreState.cpp">
       <Filter>GameSystem\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="InputHandler.cpp">
@@ -153,9 +150,6 @@
     <ClCompile Include="LowerBody.cpp">
       <Filter>GameSystem\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MenuState.cpp">
-      <Filter>GameSystem\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Player.cpp">
       <Filter>GameSystem\Source Files</Filter>
     </ClCompile>
@@ -166,9 +160,6 @@
       <Filter>GameSystem\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="StartOfGameState.cpp">
-      <Filter>GameSystem\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="State.cpp">
       <Filter>GameSystem\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="StaticObject.cpp">
@@ -182,6 +173,21 @@
     </ClCompile>
     <ClCompile Include="EngineMain.cpp">
       <Filter>RenderSystem\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DeadState.cpp">
+      <Filter>GameSystem\Source Files\States</Filter>
+    </ClCompile>
+    <ClCompile Include="GameState.cpp">
+      <Filter>GameSystem\Source Files\States</Filter>
+    </ClCompile>
+    <ClCompile Include="HightScoreState.cpp">
+      <Filter>GameSystem\Source Files\States</Filter>
+    </ClCompile>
+    <ClCompile Include="MenuState.cpp">
+      <Filter>GameSystem\Source Files\States</Filter>
+    </ClCompile>
+    <ClCompile Include="State.cpp">
+      <Filter>GameSystem\Source Files\States</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -254,9 +260,6 @@
     <ClInclude Include="Game.h">
       <Filter>GameSystem\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="State.h">
-      <Filter>GameSystem\Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="UIHandler.h">
       <Filter>GameSystem\Header Files</Filter>
     </ClInclude>
@@ -264,21 +267,6 @@
       <Filter>GameSystem\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LevelHandler.h">
-      <Filter>GameSystem\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="HighScoreState.h">
-      <Filter>GameSystem\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DeadState.h">
-      <Filter>GameSystem\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="StartOfGameState.h">
-      <Filter>GameSystem\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MenuState.h">
-      <Filter>GameSystem\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GameState.h">
       <Filter>GameSystem\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LevelAI.h">
@@ -334,6 +322,24 @@
     </ClInclude>
     <ClInclude Include="DeviceHolder.h">
       <Filter>RenderSystem\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="State.h">
+      <Filter>GameSystem\Header Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="StartOfGameState.h">
+      <Filter>GameSystem\Header Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuState.h">
+      <Filter>GameSystem\Header Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="DeadState.h">
+      <Filter>GameSystem\Header Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="GameState.h">
+      <Filter>GameSystem\Header Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="HighScoreState.h">
+      <Filter>GameSystem\Header Files\States</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
