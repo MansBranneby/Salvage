@@ -114,8 +114,8 @@ void initializeResources(HWND wndHandle)
 	gInputCtrl = new InputController(wndHandle);
 
 	//GAME
-	gGame = new Game(gGR->getDevice(), gGR->getDeviceContext(), gInputCtrl);
-	gGame->changeState(&gGameState);
+	gGame = new Game(gGR->getDevice(), gGR->getDeviceContext(), gInputCtrl, gClock);
+	gGame->changeState(&gGameState); // Change which state the game is in, not done yet.
 	//TESTMODEL
 	//gModel.loadModel(gGR->getDevice(), gGR->getDeviceContext(), ".\\Resources\\Models\\gubbe1Ani.dae");
 	//gOriginObject.loadModel(gGR->getDevice(), gGR->getDeviceContext(), ".\\Resources\\Models\\noani.dae");
@@ -230,8 +230,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	MSG msg = { 0 };
 	HWND wndHandle = InitWindow(hInstance); // Skapa fönster
 
-	// Start clock
-	gClock.startClock();
+	//// Start clock
+	//gClock.startClock();
 
 	if (wndHandle)
 	{
