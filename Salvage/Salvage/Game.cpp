@@ -35,6 +35,7 @@ Game::~Game()
 {
 	delete _camera;
 	delete _player;
+	delete _staticObject;
 }
 
 void Game::update(DirectX::Keyboard::State kb, float deltaSeconds)
