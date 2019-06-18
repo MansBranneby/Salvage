@@ -63,7 +63,7 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 // GLOBALS //
 Game* gGame = nullptr;
 GraphicResources* gGR = nullptr;
-Camera* gCamera = nullptr;
+//Camera* gCamera = nullptr;
 
 // CONTROLLER //
 InputController* gInputCtrl;
@@ -103,7 +103,7 @@ void initializeResources(HWND wndHandle)
 	//GRAPHIC RESOURCES
 	gGR = new GraphicResources(wndHandle);
 	//CAMERA
-	gCamera = new Camera(gGR->getDevice(), WIDTH, HEIGHT);
+	//gCamera = new Camera(gGR->getDevice(), WIDTH, HEIGHT);
 	//SHADERS
 	gVS = new VertexShader(L"VertexShader.hlsl", gGR->getDevice());
 	gPS = new PixelShader(L"PixelShader.hlsl", gGR->getDevice());
@@ -111,11 +111,7 @@ void initializeResources(HWND wndHandle)
 	gInputCtrl = new InputController(wndHandle);
 
 	//GAME
-	gGame = new Game(gGR->getDevice(), gGR->getDeviceContext());
-
-	//TESTMODEL
-	//gModel.loadModel(gGR->getDevice(), gGR->getDeviceContext(), ".\\Resources\\Models\\gubbe1Ani.dae");
-	//gOriginObject.loadModel(gGR->getDevice(), gGR->getDeviceContext(), ".\\Resources\\Models\\noani.dae");
+	gGame = new Game(gGR->getDevice(), gGR->getDeviceContext(), WIDTH, HEIGHT);
 
 	//IMGUI
 	IMGUI_CHECKVERSION();
@@ -154,14 +150,14 @@ void imGuiUpdate()
 	ImGui::Begin("Hello, world!");
 	ImGui::Text("This is some useful text.");
 
-	// Camera modes
-	if (ImGui::Button("Debug mode"))
-		gCamera->setMode(DEBUG);
+	//// Camera modes
+	//if (ImGui::Button("Debug mode"))
+	//	//gCamera->setMode(DEBUG);
 
-	ImGui::SameLine();
+	////ImGui::SameLine();
 
-	if (ImGui::Button("Game mode"))
-		gCamera->setMode(GAME);
+	//if (ImGui::Button("Game mode"))
+	//	//gCamera->setMode(GAME);
 
 	ImGui::End();
 	ImGui::Render();
@@ -170,17 +166,17 @@ void imGuiUpdate()
 
 void updateBuffers()
 {
-	D3D11_MAPPED_SUBRESOURCE mappedMemory;
-	gGR->getDeviceContext()->Map(*gCamera->getConstantBuffer(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedMemory);
-	memcpy(mappedMemory.pData, gCamera->getTransformMatrices(), sizeof(*gCamera->getTransformMatrices()));
-	gGR->getDeviceContext()->Unmap(*gCamera->getConstantBuffer(), 0);
+	//D3D11_MAPPED_SUBRESOURCE mappedMemory;
+	//gGR->getDeviceContext()->Map(*gCamera->getConstantBuffer(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedMemory);
+	//memcpy(mappedMemory.pData, gCamera->getTransformMatrices(), sizeof(*gCamera->getTransformMatrices()));
+	//gGR->getDeviceContext()->Unmap(*gCamera->getConstantBuffer(), 0);
 }
 
 void updateCamera()
 {
-	DirectX::Mouse::State ms = gInputCtrl->getMouseState();
-	gInputCtrl->setMouseMode();
-	gCamera->update(gInputCtrl->getKeyboardState(), ms, gClock.getDeltaSeconds());
+	//DirectX::Mouse::State ms = gInputCtrl->getMouseState();
+	//gInputCtrl->setMouseMode();
+	//gCamera->update(gInputCtrl->getKeyboardState(), ms, gClock.getDeltaSeconds());
 }
 
 void update()
@@ -208,7 +204,7 @@ void render()
 	gGR->getDeviceContext()->IASetInputLayout(&gVS->getvertexLayout());
 	gGR->getDeviceContext()->PSSetSamplers(0, 1, gGR->getSamplerState());
 
-	gGR->getDeviceContext()->VSSetConstantBuffers(0, 1, gCamera->getConstantBuffer());
+	//gGR->getDeviceContext()->VSSetConstantBuffers(0, 1, gCamera->getConstantBuffer());
 	//gGR->getDeviceContext()->IASetVertexBuffers(0, 1, &_vertexBuffer, &vertexSize, &offset);
 
 	gGame->draw();
@@ -282,7 +278,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		_vertexBuffer->Release();
 		
 		delete gGR;
-		delete gCamera;
+		//delete gCamera;
 		delete gVS;
 		delete gPS;
 		delete gInputCtrl;

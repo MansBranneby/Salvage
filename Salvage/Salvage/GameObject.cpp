@@ -37,3 +37,8 @@ void GameObject::draw(ID3D11DeviceContext * deviceContext)
 {
 	_model.draw(deviceContext);
 }
+
+XMVECTOR GameObject::getPosition()
+{
+	return _position;
+}
