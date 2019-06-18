@@ -12,7 +12,7 @@ GameObject::GameObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 
 	//Initial orientation of object
 	_lookAt = DirectX::XMVectorSet(0.0f, 0.f, 1.0f, 0.0f);
-}
+} 
 
 GameObject::~GameObject()
 {

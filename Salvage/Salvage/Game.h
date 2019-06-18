@@ -1,6 +1,7 @@
 #pragma once
 #include "Player.h"
 #include "State.h"
+#include "InputController.h"
 #include <Keyboard.h>
 #include <vector>
 
@@ -10,17 +11,22 @@ class Game
 private:
 	ID3D11Device* _device; //Hopefully the only place in GameSystem with render stuff.
 	ID3D11DeviceContext* _deviceContext;
+	InputController* _inputController;
 	std::vector<State*> _states; //Holds states that should be updated
 	Player* _player;
-	
 public:
 	
 	Game();
-	Game(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
+	Game(ID3D11Device* device, ID3D11DeviceContext* deviceContext, InputController* inputController);
 	~Game();
 
+	void changeState(State* state);
+
 	void handleInput();												   //Calls handleInput of the current state
-	void update(DirectX::Keyboard::State kbState, float deltaSeconds); //Calls update on current state
+	void update();											//Calls update on current state
 	void draw();													   //Calls draw on current state
+
+	Player getPlayer();
+	InputController* getInputController();
 };
 

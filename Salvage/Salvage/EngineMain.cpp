@@ -28,6 +28,7 @@
 #include "Clock.h"
 #include "Drawable.h"
 #include "Model.h"
+#include "GameState.h"
 
 // DirectXTK
 #include "CommonStates.h"
@@ -73,6 +74,8 @@ Clock gClock;
 //ID3D11Buffer* constantBuffer; //TILLFÄLLIG
 //Model gModel, gOriginObject;
 
+// STATES
+GameState gGameState;
 
 // SHADERS //
 VertexShader* gVS = nullptr;
@@ -111,8 +114,8 @@ void initializeResources(HWND wndHandle)
 	gInputCtrl = new InputController(wndHandle);
 
 	//GAME
-	gGame = new Game(gGR->getDevice(), gGR->getDeviceContext());
-
+	gGame = new Game(gGR->getDevice(), gGR->getDeviceContext(), gInputCtrl);
+	gGame->changeState(&gGameState);
 	//TESTMODEL
 	//gModel.loadModel(gGR->getDevice(), gGR->getDeviceContext(), ".\\Resources\\Models\\gubbe1Ani.dae");
 	//gOriginObject.loadModel(gGR->getDevice(), gGR->getDeviceContext(), ".\\Resources\\Models\\noani.dae");
@@ -187,7 +190,8 @@ void update()
 {
 	updateBuffers();
 	//updateCamera();
-	gGame->update(gInputCtrl->getKeyboardState(), gClock.getDeltaSeconds());
+	gGame->handleInput();
+	gGame->update();
 	//gModel.animate(10);
 	//gOriginObject.animate(0);
 }
