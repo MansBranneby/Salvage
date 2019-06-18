@@ -1,5 +1,9 @@
 #include "Game.h"
 
+Game::Game()
+{
+}
+
 Game::Game(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
 	_device = device;
@@ -13,6 +17,10 @@ Game::Game(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 Game::~Game()
 {
 	delete _player;
+}
+
+void Game::handleInput()
+{
 }
 
 void Game::update(DirectX::Keyboard::State kb, float deltaSeconds)
