@@ -6,27 +6,31 @@ using namespace DirectX;
 enum ObjectType //Troligtvis ett tillfälligt sätt att hantera detta.
 {
 	PLAYER,
+	Enemy,
 	STATICOBJECT
 };
 
 class GameObject
 {
 private:
-	DirectX::XMMATRIX _rotMatrix;
+	XMMATRIX _rotMatrix;
 	float yaw;
 	Model _model;
+	ObjectType _objectType;
 
 protected:
-	DirectX::XMVECTOR _position;
-	DirectX::XMVECTOR _lookAt;
+	XMVECTOR _position;
+	XMVECTOR _lookAt;
 	void updateTransformations(XMFLOAT3 position);
 
 public:
 
-	GameObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext, DirectX::XMVECTOR position);
+	GameObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext, ObjectType objType, DirectX::XMVECTOR position);
 	~GameObject();
 
-	bool createModel(ID3D11Device* device, ID3D11DeviceContext* deviceContext, ObjectType objType); //Return true if everything works out
+	bool createModel(ID3D11Device* device, ID3D11DeviceContext* deviceContext); //Return true if everything works out
 	void draw(ID3D11DeviceContext* deviceContext);
 	virtual void updateLogic() = 0;
+
+	XMVECTOR getPosition();
 };

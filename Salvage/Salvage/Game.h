@@ -1,8 +1,10 @@
 #pragma once
+#include "LevelHandler.h"
 #include "Player.h"
 #include "State.h"
 #include "Clock.h"
 #include "InputController.h"
+#include "Camera.h"
 #include <Keyboard.h>
 #include <vector>
 
@@ -10,6 +12,17 @@ class State; //Forward declare https://stackoverflow.com/questions/6515143/user-
 class Game
 {
 private:
+	ID3D11Device* _device = nullptr;
+	ID3D11DeviceContext* _deviceContext = nullptr;
+	Camera* _camera = nullptr;
+	Player* _player = nullptr;
+	//GameObject* _staticObject; //test
+
+	LevelHandler* _levelHandler = nullptr;
+
+	void updateCamera();
+	void updateCameraBuffers();
+	
 	ID3D11Device* _device; //Hopefully the only place in GameSystem with render stuff.
 	ID3D11DeviceContext* _deviceContext;
 	InputController* _inputController; //Input from player
@@ -17,6 +30,7 @@ private:
 	std::vector<State*> _states; //Holds states that should be updated
 	Player* _player;
 public:
+	Game(ID3D11Device* device, ID3D11DeviceContext* deviceContext, float width, float height);
 	
 	Game();
 	Game(ID3D11Device* device, ID3D11DeviceContext* deviceContext, InputController* inputController, Clock clock);

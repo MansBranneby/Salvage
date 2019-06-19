@@ -1,22 +1,42 @@
 #include "Game.h"
 
-Game::Game()
+void Game::updateCamera()
 {
+	_camera->followObject(_player->getPosition());
 }
 
-Game::Game(ID3D11Device* device, ID3D11DeviceContext* deviceContext, InputController* inputController, Clock clock)
+void Game::updateCameraBuffers()
 {
+	D3D11_MAPPED_SUBRESOURCE mappedMemory;
+	_deviceContext->Map(*_camera->getConstantBuffer(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedMemory);
+	memcpy(mappedMemory.pData, _camera->getTransformMatrices(), sizeof(*_camera->getTransformMatrices()));
+	_deviceContext->Unmap(*_camera->getConstantBuffer(), 0);
+
+	_deviceContext->VSSetConstantBuffers(0, 1, _camera->getConstantBuffer());
+}
+
+Game::Game(ID3D11Device* device, ID3D11DeviceContext* deviceContext, float width, float height)
+{
+	//Graphics
 	_device = device;
 	_deviceContext = deviceContext;
+
+	//Camera
+	_camera = new Camera(_device, width, height);
+
 	_inputController = inputController;
 	_clock = clock;
 	//Spawn location of player
 	DirectX::XMVECTOR startingPosition = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f); //Player och denna ska nog skapas och sättas i LevelAi för att sedan skicka en referens till Game. 
 	_player = new Player(_device, _deviceContext, startingPosition);
+
+	_levelHandler = new LevelHandler(_device, _deviceContext);
 }
 
 Game::~Game()
 {
+	delete _levelHandler;
+	delete _camera;
 	delete _player;
 }
 
@@ -67,6 +87,10 @@ void Game::update()
 	for (int i = 0; i < _states.size(); i++)
 		if (!_states[i]->isPaused())
 			_states[i]->update(this);
+	_player->updateLogic();
+	
+	//Update Camera
+	updateCamera();
 }
 
 void Game::draw()
@@ -95,4 +119,12 @@ Clock Game::getClock()
 InputController* Game::getInputController()
 {
 	return _inputController;
+}
+	//Först uppdatera kamerans ConstantBuffers
+	updateCameraBuffers();
+
+	//Senare gå igenom alla GameObject
+	_player->draw(_deviceContext);
+	_levelHandler->drawLevel();
+
 }

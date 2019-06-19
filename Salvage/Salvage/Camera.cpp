@@ -71,6 +71,23 @@ void Camera::updateGameCam(DirectX::Keyboard::State kb, DirectX::Mouse::State ms
 	_position = { _camDistance * cos(_theta)* sin(_phi), _camDistance * cos(_phi), _camDistance * sin(_theta)* sin(_phi), 1.0f };
 }
 
+void Camera::followObject(DirectX::XMVECTOR objPosition)
+{
+	_lookAt = objPosition;
+	_theta = -XM_PI / 2;
+	_phi = XM_PI / 4;
+	_position = objPosition + XMVECTOR{ _camDistance * cos(_theta)* sin(_phi), _camDistance * cos(_phi), _camDistance * sin(_theta)* sin(_phi), 1.0f };
+
+	//Update camera matrices	
+	_view = XMMatrixLookAtLH(_position, _lookAt, _up);
+	_view = XMMatrixTranspose(_view);
+	_WVP = XMMatrixMultiply(_projection, XMMatrixMultiply(_view, _world));
+	_transMatrices.world = _world;
+	_transMatrices.view = _view;
+	_transMatrices.projection = _projection;
+	_transMatrices.WVP = _WVP;
+}
+
 Camera::Camera()
 {
 }
@@ -78,7 +95,7 @@ Camera::Camera()
 Camera::Camera(ID3D11Device* device, float width, float height)
 {
 	// Default mode for camera
-	_cameraMode = DEBUG;
+	_cameraMode = GAME;
 
 	// Setup starting camera properties
 	_position = { 0.0f, 0.0f, -2.0f, 1.0f };
