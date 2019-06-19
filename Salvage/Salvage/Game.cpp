@@ -22,25 +22,64 @@ Game::~Game()
 
 void Game::changeState(State * state)
 {
+	//Check if state stack has at least one state
+	//Pause the current state
+	//Add the new state
+	//Example: pause game state, add menu state
+	if (!_states.empty())
+	{
+		_states.back()->pause();
+		_states.push_back(state);
+	}
+}
+
+void Game::pushState(State * state)
+{
+	//Add a state ontop of current
+	//Example: maybe you want to update game while you're in a menu
 	_states.push_back(state);
+}
+
+void Game::popState()
+{
+	//Delete the current state
+	//resume the paused state
+	if (!_states.empty())
+	{
+		_states.pop_back();
+
+		if(!_states.empty())
+			_states.back()->resume();
+	}
 }
 
 void Game::handleInput()
 {
-	_states.back()->handleInput(this);
+	//Handle input if not paused
+	for(int i = 0; i < _states.size(); i++)
+		if(!_states[i]->isPaused())
+			_states[i]->handleInput(this);
 }
 
 void Game::update()
 {
-	_states.back()->update(this);
-	//_player->updateLogic();
+	//Update game logic if not paused
+	for (int i = 0; i < _states.size(); i++)
+		if (!_states[i]->isPaused())
+			_states[i]->update(this);
 }
 
 void Game::draw()
 {
-	//Senare gå igenom alla GameObject
-	//_player->_model.draw(_deviceContext);
-	_player->draw(_deviceContext);
+	//Draw models if not paused
+	for (int i = 0; i < _states.size(); i++)
+		if (!_states[i]->isPaused())
+			_states[i]->draw(this);
+}
+
+ID3D11DeviceContext * Game::getDeviceContext()
+{
+	return _deviceContext;
 }
 
 Player* Game::getPlayer()

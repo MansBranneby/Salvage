@@ -19,5 +19,7 @@ public:
 	virtual void handleInput(Game* game) = 0; //Handle input
 	virtual void update(Game* game) = 0;	  //Example: update player position
 	virtual void draw(Game* game) = 0;	      //Draw updated models
+
+	bool isPaused();
 };
 

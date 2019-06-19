@@ -17,3 +17,8 @@ void State::resume()
 {
 	_pause = false;
 }
+
+bool State::isPaused()
+{
+	return _pause;
+}

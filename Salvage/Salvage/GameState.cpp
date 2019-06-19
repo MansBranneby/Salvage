@@ -4,6 +4,7 @@ void GameState::handleInput(Game* game)
 {
 	DirectX::Keyboard::State kb = game->getInputController()->getKeyboardState();
 	float deltaSeconds = game->getClock().getDeltaSeconds();
+
 	//Get current state of keyboard, mouse and gamepad, update the cameras position based on this input.
 	if (kb.W) //Forward
 		game->getPlayer()->move(DirectX::XMFLOAT3(0.0f, 0.0f, deltaSeconds)); //Update with player speed
@@ -22,4 +23,5 @@ void GameState::update(Game* game)
 
 void GameState::draw(Game* game)
 {
+	game->getPlayer()->draw(game->getDeviceContext());
 }

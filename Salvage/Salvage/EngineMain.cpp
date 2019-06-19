@@ -115,7 +115,7 @@ void initializeResources(HWND wndHandle)
 
 	//GAME
 	gGame = new Game(gGR->getDevice(), gGR->getDeviceContext(), gInputCtrl, gClock);
-	gGame->changeState(&gGameState); // Change which state the game is in, not done yet.
+	gGame->pushState(&gGameState); // Change which state the game is in, not done yet.
 	//TESTMODEL
 	//gModel.loadModel(gGR->getDevice(), gGR->getDeviceContext(), ".\\Resources\\Models\\gubbe1Ani.dae");
 	//gOriginObject.loadModel(gGR->getDevice(), gGR->getDeviceContext(), ".\\Resources\\Models\\noani.dae");
