@@ -18,10 +18,12 @@ void GameState::handleInput(Game* game)
 
 void GameState::update(Game* game)
 {
-	game->getPlayer()->updateLogic();
+	game->getPlayer()->updateLogic();                                  //Update player
+	game->getCamera()->followObject(game->getPlayer()->getPosition()); //Update camera based on player position
 }
 
 void GameState::draw(Game* game)
 {
-	game->getPlayer()->draw(game->getDeviceContext());
+	game->getPlayer()->draw(game->getDeviceContext()); //Draw player
+	game->getLevelHandler()->drawLevel();              //Draw level
 }

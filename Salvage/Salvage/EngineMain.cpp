@@ -94,8 +94,7 @@ void initializeResources(HWND wndHandle)
 	gInputCtrl = new InputController(wndHandle);
 
 	//GAME
-	gGame = new Game(gGR->getDevice(), gGR->getDeviceContext(), WIDTH, HEIGHT);
-	gGame = new Game(gGR->getDevice(), gGR->getDeviceContext(), gInputCtrl, gClock);
+	gGame = new Game(gGR->getDevice(), gGR->getDeviceContext(), WIDTH, HEIGHT, gClock, gInputCtrl);
 	gGame->pushState(&gGameState); // Change which state the game is in, not done yet.
 	//TESTMODEL
 	//gModel.loadModel(gGR->getDevice(), gGR->getDeviceContext(), ".\\Resources\\Models\\gubbe1Ani.dae");
