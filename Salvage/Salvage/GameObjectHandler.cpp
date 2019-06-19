@@ -1,7 +1,10 @@
 #include "GameObjectHandler.h"
 
-GameObjectHandler::GameObjectHandler(int capacity)
+GameObjectHandler::GameObjectHandler(ID3D11Device* device, ID3D11DeviceContext* deviceContext, int capacity)
 {
+	_device = device;
+	_deviceContext = deviceContext;
+
 	_nrOfObjects = 0;
 	_capacity = capacity;
 	_gameObjects = new GameObject*[_capacity];
@@ -34,13 +37,35 @@ void GameObjectHandler::initiate(int from)
 		_gameObjects[i] = nullptr;
 }
 
-GameObjectHandler::GameObjectHandler(int capacity)
-{
-}
-
 GameObjectHandler::~GameObjectHandler()
 {
 	freeMemory();
+}
+
+void GameObjectHandler::addGameObject(XMVECTOR position, ObjectType objType)
+{
+	if (_nrOfObjects == _capacity)
+		expand();
+	switch (objType)
+	{
+	case PLAYER:
+		_gameObjects[_nrOfObjects++] = new Player(_device, _deviceContext, position);
+		break;
+	case Enemy:
+		//_gameObjects[_nrOfObjects++] = new Enemy(_device, _deviceContext, position);
+		break;
+	case STATICOBJECT:
+		_gameObjects[_nrOfObjects++] = new StaticObject(_device, _deviceContext, position);
+		break;
+	default:
+		break;
+	}
+}
+
+void GameObjectHandler::drawObjects()
+{
+	for (size_t i = 0; i < _nrOfObjects; i++)
+		_gameObjects[i]->draw(_deviceContext);
 }
 
 GameObject * GameObjectHandler::getGameObject(int index) const

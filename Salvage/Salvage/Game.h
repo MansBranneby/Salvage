@@ -1,4 +1,5 @@
 #pragma once
+#include "LevelHandler.h"
 #include "Player.h"
 #include "Camera.h"
 #include <Keyboard.h>
@@ -6,11 +7,13 @@
 class Game
 {
 private:
-	ID3D11Device* _device = nullptr; //Hopefully the only place in GameSystem with render stuff.
+	ID3D11Device* _device = nullptr;
 	ID3D11DeviceContext* _deviceContext = nullptr;
 	Camera* _camera = nullptr;
 	Player* _player = nullptr;
-	GameObject* _staticObject; //test
+	//GameObject* _staticObject; //test
+
+	LevelHandler* _levelHandler = nullptr;
 
 	void updateCamera();
 	void updateCameraBuffers();

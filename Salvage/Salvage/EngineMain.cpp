@@ -78,35 +78,15 @@ Clock gClock;
 VertexShader* gVS = nullptr;
 PixelShader* gPS = nullptr;
 
-ID3D11Buffer* _vertexBuffer = nullptr;
-
-struct PosCol
-{
-	float x, y, z;
-	float r, g, b;
-};
-
-PosCol vertexData[3]
-{
-	0.0f, 0.5f, 0.0f, 
-	1.0f, 0.0f, 0.0f,
-
-	-0.5f, -0.5f, 0.0f,
-	0.0f, 0.0f, 1.0f,
-
-	0.5f, -0.5f, 0.0f,
-	0.0f, 1.0f, 0.0f
-};
-
 void initializeResources(HWND wndHandle)
 {
 	//GRAPHIC RESOURCES
 	gGR = new GraphicResources(wndHandle);
-	//CAMERA
-	//gCamera = new Camera(gGR->getDevice(), WIDTH, HEIGHT);
+
 	//SHADERS
 	gVS = new VertexShader(L"VertexShader.hlsl", gGR->getDevice());
 	gPS = new PixelShader(L"PixelShader.hlsl", gGR->getDevice());
+	
 	//INPUT CONTROLLER
 	gInputCtrl = new InputController(wndHandle);
 
@@ -120,20 +100,6 @@ void initializeResources(HWND wndHandle)
 	ImGui_ImplWin32_Init(wndHandle);
 	ImGui_ImplDX11_Init(gGR->getDevice(), gGR->getDeviceContext());
 	ImGui::StyleColorsDark();
-
-	// VERTEX BUFFER (TILLFÄLLIGT)
-	D3D11_BUFFER_DESC bufferDesc;
-	memset(&bufferDesc, 0, sizeof(bufferDesc));
-	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	D3D11_SUBRESOURCE_DATA data;
-
-	bufferDesc.ByteWidth = sizeof(vertexData);
-	data.pSysMem = vertexData;
-
-	HRESULT result = gGR->getDevice()->CreateBuffer(&bufferDesc, &data, &_vertexBuffer);
-	if (FAILED(result))
-		MessageBox(NULL, L"ERROR _vertexBuffer in Mesh.cpp", L"Error", MB_OK | MB_ICONERROR);
 
 	//Tillfällig för test av animation
 	gClock.startAnimation();
@@ -197,20 +163,11 @@ void render()
 	gGR->getDeviceContext()->GSSetShader(nullptr, nullptr, 0);
 	gGR->getDeviceContext()->PSSetShader(&gPS->getPixelShader(), nullptr, 0);
 
-	//UINT32 vertexSize = sizeof(float)*6;
-	//UINT32 offset = 0;
-
 	gGR->getDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	gGR->getDeviceContext()->IASetInputLayout(&gVS->getvertexLayout());
 	gGR->getDeviceContext()->PSSetSamplers(0, 1, gGR->getSamplerState());
 
-	//gGR->getDeviceContext()->VSSetConstantBuffers(0, 1, gCamera->getConstantBuffer());
-	//gGR->getDeviceContext()->IASetVertexBuffers(0, 1, &_vertexBuffer, &vertexSize, &offset);
-
 	gGame->draw();
-	//gModel.draw(gGR->getDeviceContext());
-	//gOriginObject.draw(gGR->getDeviceContext());
-	//gGR.getDeviceContext()->Draw(3, 0);
 }
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
@@ -275,10 +232,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 
 		//CLEAR - kanske i en separat funktion
-		_vertexBuffer->Release();
-		
 		delete gGR;
-		//delete gCamera;
 		delete gVS;
 		delete gPS;
 		delete gInputCtrl;

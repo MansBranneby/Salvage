@@ -269,9 +269,6 @@
     <ClInclude Include="LevelHandler.h">
       <Filter>GameSystem\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LevelAI.h">
-      <Filter>GameSystem\Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Level.h">
       <Filter>GameSystem\Header Files</Filter>
     </ClInclude>
@@ -340,6 +337,9 @@
     </ClInclude>
     <ClInclude Include="HighScoreState.h">
       <Filter>GameSystem\Header Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="LevelAI.h">
+      <Filter>GameSystem\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
