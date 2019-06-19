@@ -94,7 +94,6 @@ void Game::update()
 	for (int i = 0; i < _states.size(); i++)
 		if (!_states[i]->isPaused())
 			_states[i]->update(this);
-	_player->updateLogic();
 }
 
 void Game::draw()
