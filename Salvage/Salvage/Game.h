@@ -12,8 +12,8 @@ class Game
 private:
 	ID3D11Device* _device; //Hopefully the only place in GameSystem with render stuff.
 	ID3D11DeviceContext* _deviceContext;
-	InputController* _inputController;
-	Clock _clock;
+	InputController* _inputController; //Input from player
+	Clock _clock; //Get delta seconds
 	std::vector<State*> _states; //Holds states that should be updated
 	Player* _player;
 public:
