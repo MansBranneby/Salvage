@@ -1,4 +1,8 @@
 #pragma once
+#include <fstream>
+#include <sstream>
+#include <string>
+
 #include "GameObjectHandler.h"
 
 class LevelAI

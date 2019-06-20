@@ -42,20 +42,20 @@ GameObjectHandler::~GameObjectHandler()
 	freeMemory();
 }
 
-void GameObjectHandler::addGameObject(XMVECTOR position, ObjectType objType)
+void GameObjectHandler::addGameObject(ObjectType objType, XMVECTOR position, std::string modelFile)
 {
 	if (_nrOfObjects == _capacity)
 		expand();
 	switch (objType)
 	{
 	case PLAYER:
-		_gameObjects[_nrOfObjects++] = new Player(_device, _deviceContext, position);
+		_gameObjects[_nrOfObjects++] = new Player(_device, _deviceContext, position, modelFile);
 		break;
 	case Enemy:
 		//_gameObjects[_nrOfObjects++] = new Enemy(_device, _deviceContext, position);
 		break;
 	case STATICOBJECT:
-		_gameObjects[_nrOfObjects++] = new StaticObject(_device, _deviceContext, position);
+		_gameObjects[_nrOfObjects++] = new StaticObject(_device, _deviceContext, position, modelFile);
 		break;
 	default:
 		break;
