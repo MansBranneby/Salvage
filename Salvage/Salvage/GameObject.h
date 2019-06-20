@@ -17,6 +17,7 @@ private:
 	float yaw;
 	Model _model;
 	ObjectType _objectType;
+	std::string _modelDirectory = ".\\Resources\\Models\\";
 
 protected:
 	XMVECTOR _position;
@@ -25,10 +26,10 @@ protected:
 
 public:
 
-	GameObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext, ObjectType objType, DirectX::XMVECTOR position);
+	GameObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext, ObjectType objType, DirectX::XMVECTOR position, std::string modelFile);
 	~GameObject();
 
-	bool createModel(ID3D11Device* device, ID3D11DeviceContext* deviceContext); //Return true if everything works out
+	bool createModel(ID3D11Device* device, ID3D11DeviceContext* deviceContext, std::string modelFile); //Return true if everything works out
 	void draw(ID3D11DeviceContext* deviceContext);
 	virtual void updateLogic() = 0;
 

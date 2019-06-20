@@ -1,7 +1,7 @@
 #include "DynamicObject.h"
 
-DynamicObject::DynamicObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext, ObjectType objType, DirectX::XMVECTOR startingPosition)
-	:GameObject(device, deviceContext, objType, startingPosition)
+DynamicObject::DynamicObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext, ObjectType objType, DirectX::XMVECTOR startingPosition, std::string modelFile)
+	:GameObject(device, deviceContext, objType, startingPosition, modelFile)
 {
 }
 

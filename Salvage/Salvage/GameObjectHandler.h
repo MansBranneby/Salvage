@@ -23,7 +23,7 @@ public:
 	GameObjectHandler(ID3D11Device* device, ID3D11DeviceContext* deviceContext, int capacity = 10);
 	virtual~GameObjectHandler();
 
-	void addGameObject(XMVECTOR position, ObjectType objType);
+	void addGameObject(ObjectType objType, XMVECTOR position, std::string modelFile);
 	void drawObjects();
 	GameObject* getGameObject(int index) const;
 };
