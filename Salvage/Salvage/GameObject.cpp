@@ -24,7 +24,7 @@ bool GameObject::createModel(ID3D11Device* device, ID3D11DeviceContext* deviceCo
 	switch (_objectType)
 	{
 	case PLAYER:
-		_model.loadModel(device, deviceContext, ".\\Resources\\Models\\gubbe1Ani.dae");
+		_model.loadModel(device, deviceContext, _modelDirectory + modelFile);
 		_model.updateTransformation(XMFLOAT3(XMVectorGetX(_position), XMVectorGetY(_position), XMVectorGetZ(_position)));
 		break;
 	case STATICOBJECT:
