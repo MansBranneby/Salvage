@@ -1,9 +1,9 @@
 #include "Game.h"
 
-void Game::updateCamera()
-{
-	_camera->followObject(_player->getPosition());
-}
+//void Game::updateCamera()
+//{
+//	_camera->followObject(_player->getPosition());
+//}
 
 void Game::updateCameraBuffers()
 {
@@ -15,7 +15,7 @@ void Game::updateCameraBuffers()
 	_deviceContext->VSSetConstantBuffers(0, 1, _camera->getConstantBuffer());
 }
 
-Game::Game(ID3D11Device* device, ID3D11DeviceContext* deviceContext, float width, float height, Clock clock, InputController* inputController)
+Game::Game(ID3D11Device* device, ID3D11DeviceContext* deviceContext, float width, float height, Clock* clock, InputController* inputController)
 {
 	//Graphics
 	_device = device;
@@ -114,7 +114,7 @@ Player* Game::getPlayer()
 	return _player;
 }
 
-Clock Game::getClock()
+Clock* Game::getClock()
 {
 	return _clock;
 }

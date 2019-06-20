@@ -71,12 +71,25 @@ void Camera::updateGameCam(DirectX::Keyboard::State kb, DirectX::Mouse::State ms
 	_position = { _camDistance * cos(_theta)* sin(_phi), _camDistance * cos(_phi), _camDistance * sin(_theta)* sin(_phi), 1.0f };
 }
 
-void Camera::followObject(DirectX::XMVECTOR objPosition)
+XMVECTOR Camera::lerp(XMVECTOR startPos, XMVECTOR endPos, float deltaSeconds)
+{
+	t += deltaSeconds;
+	if (t > 1.0f)
+		t = 0;
+
+	return XMVectorLerp(startPos, endPos, deltaSeconds);
+}
+
+void Camera::followObject(DirectX::XMVECTOR objPosition, float deltaSeconds)
 {
 	_lookAt = objPosition;
+
 	_theta = -XM_PI / 2;
 	_phi = XM_PI / 4;
-	_position = objPosition + XMVECTOR{ _camDistance * cos(_theta)* sin(_phi), _camDistance * cos(_phi), _camDistance * sin(_theta)* sin(_phi), 1.0f };
+
+	XMVECTOR endPos = objPosition + XMVECTOR{ _camDistance * cos(_theta)* sin(_phi), _camDistance * cos(_phi), _camDistance * sin(_theta)* sin(_phi), 1.0f };
+
+	_position = lerp(_position, endPos, deltaSeconds * _smoothSpeed );
 
 	//Update camera matrices	
 	_view = XMMatrixLookAtLH(_position, _lookAt, _up);
@@ -98,8 +111,7 @@ Camera::Camera(ID3D11Device* device, float width, float height)
 	_cameraMode = GAME;
 
 	// Setup starting camera properties
-	_position = { 0.0f, 0.0f, -2.0f, 1.0f };
-	
+	//_position = { 0.0f, 0.0f, -2.0f, 1.0f };
 	// Base vectors
 	_up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 	_right = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
@@ -119,8 +131,12 @@ Camera::Camera(ID3D11Device* device, float width, float height)
 	_pitch = 0;
 	_rotationGain = 5.0f;
 
+	//Smoothspeed of camera, dictates how fast the it will interpolate
+	_smoothSpeed = 2.0f;
+
 	// Distance from camera
-	_camDistance = 5.0f;
+	_camDistance = 15.0f;
+	_position = { _camDistance * cos(_theta)* sin(_phi), _camDistance * cos(_phi), _camDistance * sin(_theta)* sin(_phi), 1.0f };
 
 	// Setup space matricies
 	_world = XMMatrixTranslation(0.0f, 0.0f, 0.0f);

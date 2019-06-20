@@ -18,6 +18,7 @@ public:
 	~Clock();
 
 	void startClock();
+	void reset();
 	float getDeltaSeconds();
 	void startAnimation();
 	float getAnimationTime();

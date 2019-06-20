@@ -57,6 +57,11 @@ private:
 	void updateDebugCam(DirectX::Keyboard::State kb, DirectX::Mouse::State ms, float deltaSeconds);
 	void updateGameCam(DirectX::Keyboard::State kb, DirectX::Mouse::State ms, float deltaSeconds);
 
+	//Smooth cam
+	float t;
+	float _smoothSpeed;
+	XMVECTOR lerp(XMVECTOR startPos, XMVECTOR endPos, float deltaSeconds);
+
 public:
 	Camera();
 	Camera(ID3D11Device* device, float width, float height);
@@ -75,5 +80,5 @@ public:
 	TransformationMatrices* getTransformMatrices();
 	ID3D11Buffer** getConstantBuffer();
 	void update(DirectX::Keyboard::State kb, DirectX::Mouse::State ms, float deltaSeconds);
-	void followObject(DirectX::XMVECTOR objPosition);
+	void followObject(DirectX::XMVECTOR objPosition, float deltaSeconds);
 };

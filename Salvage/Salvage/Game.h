@@ -16,8 +16,8 @@ private:
 	ID3D11DeviceContext* _deviceContext = nullptr;
 	Camera* _camera = nullptr;
 	Player* _player = nullptr;
-	InputController* _inputController; //Input from player
-	Clock _clock; //Get delta seconds
+	InputController* _inputController = nullptr; //Input from player
+	Clock* _clock = nullptr; //Get delta seconds
 	std::vector<State*> _states; //Holds states that should be updated
 	//GameObject* _staticObject; //test
 
@@ -29,8 +29,7 @@ private:
 
 
 public:
-	Game(ID3D11Device* device, ID3D11DeviceContext* deviceContext, float width, float height, Clock clock, InputController* inputController);
-	Game();
+	Game(ID3D11Device* device, ID3D11DeviceContext* deviceContext, float width, float height, Clock* clock, InputController* inputController);
 	~Game();
 
 	void changeState(State* state);
@@ -43,7 +42,7 @@ public:
 
 	ID3D11DeviceContext* getDeviceContext();
 	Player* getPlayer();
-	Clock getClock();
+	Clock* getClock();
 	InputController* getInputController();
 	LevelHandler* getLevelHandler();
 	Camera* getCamera();

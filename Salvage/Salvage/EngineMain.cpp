@@ -70,7 +70,7 @@ GraphicResources* gGR = nullptr;
 InputController* gInputCtrl;
 
 // CLOCK //
-Clock gClock;
+Clock* gClock;
 //ID3D11Buffer* constantBuffer; //TILLFÄLLIG
 //Model gModel, gOriginObject;
 
@@ -93,6 +93,8 @@ void initializeResources(HWND wndHandle)
 	//INPUT CONTROLLER
 	gInputCtrl = new InputController(wndHandle);
 
+	//Clock
+	gClock = new Clock();
 	//GAME
 	gGame = new Game(gGR->getDevice(), gGR->getDeviceContext(), WIDTH, HEIGHT, gClock, gInputCtrl);
 	gGame->pushState(&gGameState); // Change which state the game is in, not done yet.
@@ -109,7 +111,7 @@ void initializeResources(HWND wndHandle)
 	ImGui::StyleColorsDark();
 
 	//Tillfällig för test av animation
-	gClock.startAnimation();
+	//gClock.startAnimation();
 }
 
 void imGuiUpdate()
@@ -187,9 +189,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	MSG msg = { 0 };
 	HWND wndHandle = InitWindow(hInstance); // Skapa fönster
 
-	//// Start clock
-	//gClock.startClock();
-
 	if (wndHandle)
 	{
 		initializeResources(wndHandle); //GR, SHADERS, IMGUI
@@ -223,14 +222,17 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 				gGR->getDeviceContext()->OMSetRenderTargets(1, gGR->getBackBuffer(), gGR->getDepthStencilView());//ENABLE DEPTH TEST WHEN WE HAVE A CAMERA
 				gGR->getDeviceContext()->ClearDepthStencilView(gGR->getDepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-				render();
 				update();
+				render();
 				imGuiUpdate();
 
 				gGR->getSwapChain()->Present(0, 0);
 
 				ImGui::Render();
 				ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
+				//Reset clock
+				gClock->reset();
 			}
 		}
 
@@ -238,13 +240,13 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		ImGui_ImplWin32_Shutdown();
 		ImGui::DestroyContext();
 
-
 		//CLEAR - kanske i en separat funktion
 		delete gGR;
 		delete gVS;
 		delete gPS;
 		delete gInputCtrl;
 		delete gGame;
+		delete gClock;
 	}
 }
 
