@@ -18,6 +18,7 @@ InputController::InputController(HWND window)
 {
 	_keyboard = std::make_unique<DirectX::Keyboard>();
 	_mouse = std::make_unique<DirectX::Mouse>();
+	_gamePad = std::make_unique<DirectX::GamePad>();
 	_mouse->SetWindow(window);
 }
 
@@ -61,7 +62,7 @@ DirectX::Keyboard::State InputController::getKeyboardState() const
 
 DirectX::GamePad::State InputController::getGamePadState() const
 {
-	return _gamePad->GetState(1);
+	return _gamePad->GetState(0);
 }
 
 void InputController::setWindow(HWND window)
