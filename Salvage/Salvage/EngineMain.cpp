@@ -64,7 +64,6 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 // GLOBALS //
 Game* gGame = nullptr;
 GraphicResources* gGR = nullptr;
-//Camera* gCamera = nullptr;
 
 // CONTROLLER //
 InputController* gInputCtrl;
@@ -80,6 +79,9 @@ GameState gGameState;
 // SHADERS //
 VertexShader* gVS = nullptr;
 PixelShader* gPS = nullptr;
+
+// IMGUI VARIABLES //
+float smoothSpeed = 1.0f;
 
 void initializeResources(HWND wndHandle)
 {
@@ -123,8 +125,9 @@ void imGuiUpdate()
 	ImGui::NewFrame();
 
 	ImGui::Begin("Hello, world!");
-	ImGui::Text("This is some useful text.");
-
+	ImGui::Text("Camera smoothspeed");
+	ImGui::SliderFloat("", &smoothSpeed, 1.0f, 20.0f);
+	gGame->getCamera()->setSmoothSpeed(smoothSpeed);
 	//// Camera modes
 	//if (ImGui::Button("Debug mode"))
 	//	//gCamera->setMode(DEBUG);

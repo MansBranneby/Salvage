@@ -198,6 +198,11 @@ void Camera::setMode(cameraMode cameraMode)
 	_cameraMode = cameraMode;
 }
 
+void Camera::setSmoothSpeed(float smoothSpeed)
+{
+	_smoothSpeed = smoothSpeed;
+}
+
 XMMATRIX* Camera::getWVP()
 {
 	return &_WVP;

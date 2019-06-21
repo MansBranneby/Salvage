@@ -75,10 +75,12 @@ public:
 	
 	// DEBUG and GAME mode
 	void setMode(cameraMode cameraMode);
+	void setSmoothSpeed(float smoothSpeed);
 
 	XMMATRIX* getWVP();
 	TransformationMatrices* getTransformMatrices();
 	ID3D11Buffer** getConstantBuffer();
 	void update(DirectX::Keyboard::State kb, DirectX::Mouse::State ms, float deltaSeconds);
 	void followObject(DirectX::XMVECTOR objPosition, float deltaSeconds);
+
 };
