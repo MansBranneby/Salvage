@@ -60,6 +60,8 @@ private:
 	//Smooth cam
 	float t;
 	float _smoothSpeed;
+	float _lookAtSpeed;
+	XMVECTOR _offSet;
 	XMVECTOR lerp(XMVECTOR startPos, XMVECTOR endPos, float deltaSeconds);
 
 public:
@@ -76,6 +78,7 @@ public:
 	// DEBUG and GAME mode
 	void setMode(cameraMode cameraMode);
 	void setSmoothSpeed(float smoothSpeed);
+	void setLookAtSpeed(float lookAtSpeed);
 
 	XMMATRIX* getWVP();
 	TransformationMatrices* getTransformMatrices();

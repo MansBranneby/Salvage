@@ -81,7 +81,8 @@ VertexShader* gVS = nullptr;
 PixelShader* gPS = nullptr;
 
 // IMGUI VARIABLES //
-float smoothSpeed = 1.0f;
+float gSmoothSpeed = 1.0f;
+float gLookAtSpeed = 1.0f;
 
 void initializeResources(HWND wndHandle)
 {
@@ -125,9 +126,11 @@ void imGuiUpdate()
 	ImGui::NewFrame();
 
 	ImGui::Begin("Hello, world!");
-	ImGui::Text("Camera smoothspeed");
-	ImGui::SliderFloat("", &smoothSpeed, 1.0f, 20.0f);
-	gGame->getCamera()->setSmoothSpeed(smoothSpeed);
+	ImGui::Text("Camera");
+	ImGui::SliderFloat("Smoothspeed", &gSmoothSpeed, 0.0f, 20.0f);
+	ImGui::SliderFloat("LookAtSpeed", &gLookAtSpeed, 0.0f, 20.0f);
+	gGame->getCamera()->setSmoothSpeed(gSmoothSpeed);
+	gGame->getCamera()->setLookAtSpeed(gLookAtSpeed);
 	//// Camera modes
 	//if (ImGui::Button("Debug mode"))
 	//	//gCamera->setMode(DEBUG);

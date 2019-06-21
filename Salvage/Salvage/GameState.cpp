@@ -27,9 +27,6 @@ void GameState::handleInput(Game* game)
 		game->getPlayer()->move(DirectX::XMFLOAT3(deltaSeconds * 25.0f, 0.0f, 0.0f));
 	if (gp.IsLeftThumbStickLeft())	//Left
 		game->getPlayer()->move(DirectX::XMFLOAT3(-deltaSeconds * 25.0f, 0.0f, 0.0f));
-
-
-
 }
 
 void GameState::update(Game* game)
