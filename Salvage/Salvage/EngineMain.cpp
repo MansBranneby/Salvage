@@ -80,6 +80,8 @@ GameState gGameState;
 VertexShader* gVS = nullptr;
 PixelShader* gPS = nullptr;
 
+//VertexShader* gVSBV = nullptr;
+
 // IMGUI VARIABLES //
 float gSmoothSpeed = 1.0f;
 float gLookAtSpeed = 1.0f;
@@ -93,6 +95,8 @@ void initializeResources(HWND wndHandle)
 	gVS = new VertexShader(L"VertexShader.hlsl", gGR->getDevice());
 	gPS = new PixelShader(L"PixelShader.hlsl", gGR->getDevice());
 	
+	//gVSBV = new VertexShader(L"VertexShaderBV.hlsl", gGR->getDevice());
+
 	//INPUT CONTROLLER
 	gInputCtrl = new InputController(wndHandle);
 

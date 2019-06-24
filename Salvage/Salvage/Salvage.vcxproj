@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="Ability.cpp" />
     <ClCompile Include="Body.cpp" />
+    <ClCompile Include="BoundingVolume.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Clock.cpp" />
     <ClCompile Include="ConstantBuffer.cpp" />
@@ -53,6 +54,7 @@
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="InputController.cpp" />
+    <ClCompile Include="OBB.cpp" />
     <ClCompile Include="PixelShader.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="RightArm.cpp" />
@@ -73,6 +75,7 @@
   <ItemGroup>
     <ClInclude Include="Ability.h" />
     <ClInclude Include="Body.h" />
+    <ClInclude Include="BoundingVolume.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Clock.h" />
     <ClInclude Include="ConstantBuffer.h" />
@@ -107,6 +110,7 @@
     <ClInclude Include="MenuState.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="OBB.h" />
     <ClInclude Include="PixelShader.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="RightArm.h" />

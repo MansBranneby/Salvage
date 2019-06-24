@@ -70,6 +70,9 @@ Mesh* Model::processMesh(ID3D11Device* device, aiMesh * mesh)
 	std::vector<Vertex> vertices;
 	std::vector<int> indices;
 	std::vector<Texture> textures;
+	//Bounding volume
+	DirectX::XMFLOAT3 maxCoordinates = { 0, 0, 0 };
+	DirectX::XMFLOAT3 minCoordinates = { 0, 0, 0 };
 	//std::vector<VertexBoneData> bones;
 	//bones.resize(mesh->mNumVertices); // Kanske rätt? Hoppas det är numVer för mesh och inte för scene...
 	//int numBones = 0; //Kom ihåg att skicka denna till Mesh konstruktorn
@@ -91,6 +94,16 @@ Mesh* Model::processMesh(ID3D11Device* device, aiMesh * mesh)
 		vertex.y = mesh->mVertices[i].y;
 		vertex.z = mesh->mVertices[i].z;
 		
+		// BOUNDING VOLUME //
+		//Look for maximum XYZ coordinates for OBB
+		maxCoordinates.x = std::min(maxCoordinates.x, vertex.x);
+		maxCoordinates.y = std::min(maxCoordinates.y, vertex.y);
+		maxCoordinates.z = std::min(maxCoordinates.z, vertex.z);
+		//Look for minimum XYZ coordinates for OBB
+		minCoordinates.x = std::min(minCoordinates.x, vertex.x);
+		minCoordinates.y = std::min(minCoordinates.y, vertex.y);
+		minCoordinates.z = std::min(minCoordinates.z, vertex.z);
+		
 		//Texturecoord
 		if (mesh->mTextureCoords[0])
 		{
@@ -101,6 +114,8 @@ Mesh* Model::processMesh(ID3D11Device* device, aiMesh * mesh)
 		//Save vertex
 		vertices.push_back(vertex);
 	}
+	// Create bounding volume
+	_boundingVolume = new OBB(minCoordinates, maxCoordinates);
 
 	//Loop faces
 	for (size_t i = 0; i < mesh->mNumFaces; i++)
@@ -289,6 +304,9 @@ Model::~Model()
 
 	for (size_t i = 0; i < _meshes.size(); i++)
 		delete _meshes[i];
+
+	if (_boundingVolume)
+		delete _boundingVolume;
 
 	//// CRASCH
 	//if (_deviceContext)

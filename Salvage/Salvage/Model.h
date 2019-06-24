@@ -14,6 +14,8 @@
 #include "assimp/cimport.h"
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
+#include "BoundingVolume.h"
+#include "OBB.h"
 
 struct BoneInfo
 {
@@ -33,7 +35,6 @@ private:
 	Assimp::Importer _importer;
 	const aiScene* _scene;
 
-
 	//Animation
 	DirectX::XMMATRIX _inverseTransform;
 	std::map<std::string, int> _boneMapping;
@@ -49,6 +50,9 @@ private:
 	std::string determineTextureType(aiMaterial* material);
 	int getTextureIndex(aiString* str);
 	ID3D11ShaderResourceView* getTextureFromModel(int textureIndex);
+
+	//Bounding volume
+	BoundingVolume* _boundingVolume = nullptr;
 
 public:
 	Model();
