@@ -128,6 +128,7 @@ Mesh* Model::processMesh(ID3D11Device* device, aiMesh * mesh)
 	}
 
 	//Textures
+	//CRASCH
 	if (mesh->mMaterialIndex >= 0)
 	{
 		aiMaterial* material = _scene->mMaterials[mesh->mMaterialIndex];
@@ -154,7 +155,7 @@ Mesh* Model::processMesh(ID3D11Device* device, aiMesh * mesh)
 					//Check if vertex is affected by bone
 					if (mesh->mBones[j]->mWeights[k].mVertexId == i)
 					{
-						index.push_back(j);
+						index.push_back((int)j);
 						weights.push_back(mesh->mBones[j]->mWeights[k].mWeight);
 					}
 				}
@@ -298,8 +299,6 @@ Model::Model()
 
 Model::~Model()
 {
-	if (_device)
-		_device->Release();
 	if (_transformationBuffer)
 		_transformationBuffer->Release();
 
@@ -308,10 +307,6 @@ Model::~Model()
 
 	if (_boundingVolume)
 		delete _boundingVolume;
-
-	//// CRASCH
-	//if (_deviceContext)
-	//	_deviceContext->Release();
 }
 
 void Model::updateTransformation(DirectX::XMFLOAT3 position)

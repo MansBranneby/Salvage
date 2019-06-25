@@ -48,11 +48,10 @@ Mesh::Mesh(ID3D11Device* device, std::vector<Vertex> vertices, std::vector<int> 
 Mesh::~Mesh()
 {
 	//RUNTIME ERROR
-
 	if(_vertexBuffer)
 		_vertexBuffer->Release();
-	//if(_indexBuffer)
-	//	_indexBuffer->Release(); //Behövs det en copyconstructor ty vi returnerar en Mesh i processMesh?
+	if(_indexBuffer)
+		_indexBuffer->Release();
 }
 
 void Mesh::draw(ID3D11DeviceContext * deviceContext, ID3D11Buffer* transformationBuffer)

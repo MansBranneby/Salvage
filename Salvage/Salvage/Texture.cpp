@@ -10,6 +10,6 @@ Texture::Texture()
 
 Texture::~Texture()
 {
-	//if(_texture)
-	//	_texture->Release();
+	/*if(_texture)
+		_texture->Release();*/
 }
