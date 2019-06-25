@@ -6,5 +6,5 @@ class OBB : public BoundingVolume
 private:
 
 public:
-	OBB(DirectX::XMFLOAT3 minCoordinates, DirectX::XMFLOAT3 maxCoordinates);
+	OBB(ID3D11Device* device, DirectX::XMFLOAT3 minCoordinates, DirectX::XMFLOAT3 maxCoordinates);
 };

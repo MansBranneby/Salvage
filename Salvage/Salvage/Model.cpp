@@ -1,4 +1,5 @@
 #include "Model.h"
+#include "Model.h"
 
 aiNode * Model::findNodeRecursivelyByName(const aiNode* node, aiString channelName)
 {
@@ -115,7 +116,7 @@ Mesh* Model::processMesh(ID3D11Device* device, aiMesh * mesh)
 		vertices.push_back(vertex);
 	}
 	// Create bounding volume
-	_boundingVolume = new OBB(minCoordinates, maxCoordinates);
+	_boundingVolume = new OBB(device, minCoordinates, maxCoordinates);
 
 	//Loop faces
 	for (size_t i = 0; i < mesh->mNumFaces; i++)
@@ -431,4 +432,9 @@ void Model::draw(ID3D11DeviceContext* deviceContext)
 	{
 		_meshes[i]->draw(deviceContext, _transformationBuffer);
 	}
+}
+
+void Model::drawBoundingVolume(ID3D11DeviceContext * deviceContext)
+{
+	_boundingVolume->draw(deviceContext, _transformationBuffer);
 }

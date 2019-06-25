@@ -22,12 +22,8 @@ private:
 	//GameObject* _staticObject; //test
 
 	LevelHandler* _levelHandler = nullptr;
-
-	void updateCamera();
 	void updateCameraBuffers();
 	
-
-
 public:
 	Game(ID3D11Device* device, ID3D11DeviceContext* deviceContext, float width, float height, Clock* clock, InputController* inputController);
 	~Game();

@@ -36,18 +36,28 @@ BoundingVolume::BoundingVolume()
 {
 }
 
+BoundingVolume::BoundingVolume(ID3D11Device * device)
+{
+	createBuffers(device,_vertices, _indices);
+}
+
 BoundingVolume::~BoundingVolume()
 {
+
+	if(_vertexBuffer)
+		_vertexBuffer->Release();
+	if(_indexBuffer)
+		_indexBuffer->Release();
 }
 
-std::vector<BoundingVolumeVertex> BoundingVolume::getVertices()
+std::vector<BoundingVolumeVertex>* BoundingVolume::getVertices()
 {
-	return _vertices;
+	return &_vertices;
 }
 
-std::vector<size_t> BoundingVolume::getIndices()
+std::vector<size_t>* BoundingVolume::getIndices()
 {
-	return _indices;
+	return &_indices;
 }
 
 void BoundingVolume::draw(ID3D11DeviceContext * deviceContext, ID3D11Buffer * transformationBuffer)
@@ -59,5 +69,5 @@ void BoundingVolume::draw(ID3D11DeviceContext * deviceContext, ID3D11Buffer * tr
 	deviceContext->IASetIndexBuffer(_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 	deviceContext->VSSetConstantBuffers(1, 1, &transformationBuffer);
 
-	deviceContext->Draw(_vertices.size(), 0);
+	deviceContext->DrawIndexed(_vertices.size(), 0, 0);
 }

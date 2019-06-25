@@ -367,5 +367,11 @@
     <FxCompile Include="PixelShader.hlsl">
       <Filter>RenderSystem\Source Files\Shaders\Pixel</Filter>
     </FxCompile>
+    <FxCompile Include="VertexShaderBV.hlsl">
+      <Filter>RenderSystem\Source Files\Shaders\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="PixelShaderBV.hlsl">
+      <Filter>RenderSystem\Source Files\Shaders\Pixel</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

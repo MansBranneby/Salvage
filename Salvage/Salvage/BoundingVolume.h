@@ -20,13 +20,15 @@ private:
 	ID3D11Buffer* _vertexBuffer;
 	ID3D11Buffer* _indexBuffer;
 
-	void createBuffers(ID3D11Device* device, std::vector<BoundingVolumeVertex> vertices, std::vector<size_t> indices);
 
 public:
 	BoundingVolume();
+	BoundingVolume(ID3D11Device* device);
 	virtual ~BoundingVolume();
-	std::vector<BoundingVolumeVertex> getVertices();
-	std::vector<size_t> getIndices();
+	std::vector<BoundingVolumeVertex>* getVertices();
+	std::vector<size_t>* getIndices();
+	
+	void createBuffers(ID3D11Device* device, std::vector<BoundingVolumeVertex> vertices, std::vector<size_t> indices);
 
 	void draw(ID3D11DeviceContext* deviceContext, ID3D11Buffer* transformationBuffer);
 };

@@ -49,8 +49,8 @@ Mesh::~Mesh()
 {
 	//RUNTIME ERROR
 
-	//if(_vertexBuffer)
-	//	_vertexBuffer->Release();
+	if(_vertexBuffer)
+		_vertexBuffer->Release();
 	//if(_indexBuffer)
 	//	_indexBuffer->Release(); //Behövs det en copyconstructor ty vi returnerar en Mesh i processMesh?
 }
@@ -66,5 +66,5 @@ void Mesh::draw(ID3D11DeviceContext * deviceContext, ID3D11Buffer* transformatio
 
 	deviceContext->PSSetShaderResources(0, 1, &_textures[0]._texture);
 
-	deviceContext->Draw(_vertices.size(), 0);
+	deviceContext->DrawIndexed(_indices.size(), 0, 0);
 }

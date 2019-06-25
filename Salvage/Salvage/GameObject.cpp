@@ -42,6 +42,11 @@ void GameObject::draw(ID3D11DeviceContext * deviceContext)
 	_model.draw(deviceContext);
 }
 
+void GameObject::drawBoundingVolume(ID3D11DeviceContext * deviceContext)
+{
+	_model.drawBoundingVolume(deviceContext);
+}
+
 XMVECTOR GameObject::getPosition()
 {
 	return _position;

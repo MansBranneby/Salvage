@@ -80,7 +80,8 @@ GameState gGameState;
 VertexShader* gVS = nullptr;
 PixelShader* gPS = nullptr;
 
-//VertexShader* gVSBV = nullptr;
+VertexShader* gVSBV = nullptr;
+PixelShader* gPSBV = nullptr;
 
 // IMGUI VARIABLES //
 float gSmoothSpeed = 1.0f;
@@ -95,7 +96,8 @@ void initializeResources(HWND wndHandle)
 	gVS = new VertexShader(L"VertexShader.hlsl", gGR->getDevice());
 	gPS = new PixelShader(L"PixelShader.hlsl", gGR->getDevice());
 	
-	//gVSBV = new VertexShader(L"VertexShaderBV.hlsl", gGR->getDevice());
+	gVSBV = new VertexShader(L"VertexShaderBV.hlsl", gGR->getDevice());
+	gPSBV = new PixelShader(L"PixelShaderBV.hlsl", gGR->getDevice());
 
 	//INPUT CONTROLLER
 	gInputCtrl = new InputController(wndHandle);
@@ -187,7 +189,19 @@ void render()
 	gGR->getDeviceContext()->IASetInputLayout(&gVS->getvertexLayout());
 	gGR->getDeviceContext()->PSSetSamplers(0, 1, gGR->getSamplerState());
 
-	gGame->draw();
+	//gGame->draw();
+
+	gGR->getDeviceContext()->VSSetShader(&gVSBV->getVertexShader(), nullptr, 0);
+	gGR->getDeviceContext()->HSSetShader(nullptr, nullptr, 0);
+	gGR->getDeviceContext()->DSSetShader(nullptr, nullptr, 0);
+	gGR->getDeviceContext()->GSSetShader(nullptr, nullptr, 0);
+	gGR->getDeviceContext()->PSSetShader(&gPSBV->getPixelShader(), nullptr, 0);
+
+	gGR->getDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+	gGR->getDeviceContext()->IASetInputLayout(&gVSBV->getvertexLayout());
+	gGR->getDeviceContext()->PSSetSamplers(0, 0, nullptr);
+
+	gGame->getPlayer()->drawBoundingVolume(gGR->getDeviceContext());
 }
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
@@ -257,6 +271,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		delete gInputCtrl;
 		delete gGame;
 		delete gClock;
+		delete gVSBV;
+		delete gPSBV;
 	}
 }
 

@@ -31,6 +31,7 @@ public:
 
 	bool createModel(ID3D11Device* device, ID3D11DeviceContext* deviceContext, std::string modelFile); //Return true if everything works out
 	void draw(ID3D11DeviceContext* deviceContext);
+	void drawBoundingVolume(ID3D11DeviceContext* deviceContext);
 	virtual void updateLogic() = 0;
 
 	XMVECTOR getPosition();
