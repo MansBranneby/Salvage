@@ -36,17 +36,17 @@ OBB::OBB(ID3D11Device* device, DirectX::XMFLOAT3 minCoordinates, DirectX::XMFLOA
 
 	//Indices
 	getIndices()->push_back(0); getIndices()->push_back(1); //RUN -> RDN
-	//getIndices()->push_back(1); getIndices()->push_back(2); //RDN -> LDN
-	//getIndices()->push_back(3); getIndices()->push_back(2); //LDN -> LUN
-	//getIndices()->push_back(2); getIndices()->push_back(0); //LUN -> RUN
-	//getIndices()->push_back(0); getIndices()->push_back(4); //RUN -> RUF
-	//getIndices()->push_back(4); getIndices()->push_back(5); //RUF -> RDF
-	//getIndices()->push_back(5); getIndices()->push_back(1); //RDF -> RDN
-	//getIndices()->push_back(2); getIndices()->push_back(6); //LUN -> LUF
-	//getIndices()->push_back(6); getIndices()->push_back(7); //LUF -> LDF
-	//getIndices()->push_back(7); getIndices()->push_back(3); //LDF -> LDN
-	//getIndices()->push_back(6); getIndices()->push_back(4); //LUF -> RUF 
-	//getIndices()->push_back(7); getIndices()->push_back(5); //LDF -> RDF
+	getIndices()->push_back(1); getIndices()->push_back(3); //RDN -> LDN
+	getIndices()->push_back(3); getIndices()->push_back(2); //LDN -> LUN
+	getIndices()->push_back(2); getIndices()->push_back(0); //LUN -> RUN
+	getIndices()->push_back(0); getIndices()->push_back(4); //RUN -> RUF
+	getIndices()->push_back(4); getIndices()->push_back(5); //RUF -> RDF
+	getIndices()->push_back(5); getIndices()->push_back(1); //RDF -> RDN
+	getIndices()->push_back(2); getIndices()->push_back(6); //LUN -> LUF
+	getIndices()->push_back(6); getIndices()->push_back(7); //LUF -> LDF
+	getIndices()->push_back(7); getIndices()->push_back(3); //LDF -> LDN
+	getIndices()->push_back(6); getIndices()->push_back(4); //LUF -> RUF 
+	getIndices()->push_back(7); getIndices()->push_back(5); //LDF -> RDF
 
 	createBuffers(device, *getVertices(), *getIndices());
 }

@@ -189,7 +189,7 @@ void render()
 	gGR->getDeviceContext()->IASetInputLayout(&gVS->getvertexLayout());
 	gGR->getDeviceContext()->PSSetSamplers(0, 1, gGR->getSamplerState());
 
-	//gGame->draw();
+	gGame->draw();
 
 	gGR->getDeviceContext()->VSSetShader(&gVSBV->getVertexShader(), nullptr, 0);
 	gGR->getDeviceContext()->HSSetShader(nullptr, nullptr, 0);
