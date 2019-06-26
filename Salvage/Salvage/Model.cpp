@@ -173,11 +173,11 @@ Mesh* Model::processMesh(ID3D11Device* device, aiMesh * mesh)
 					{
 						maxValue = weights[k];
 						maxIndex = index[k];
-						eraseIndex = k;
+						eraseIndex = (int)k;
 					}
 				}
 				//Insert vertex boneinfo
-				vertices[i].boneIndices[j] = maxIndex;
+				vertices[i].boneIndices[j] = (float)maxIndex;
 				vertices[i].weights[j] = maxValue;
 				nrOfweights++;
 				weights.erase(weights.begin() + eraseIndex);
@@ -307,6 +307,9 @@ Model::~Model()
 
 	if (_boundingVolume)
 		delete _boundingVolume;
+
+	for (int i = 0; i < _loadedTextures.size(); i++)
+		_loadedTextures[i]._texture->Release();
 }
 
 void Model::updateTransformation(DirectX::XMFLOAT3 position)
