@@ -15,9 +15,9 @@ OBB::OBB(ID3D11Device* device, DirectX::XMFLOAT3 minCoordinates, DirectX::XMFLOA
 	//Half width, height and length
 	_halfXYZ =
 	{
-		abs(maxCoordinates.x) / 2,
-		abs(maxCoordinates.y) / 2,
-		abs(maxCoordinates.z) / 2,
+		(maxCoordinates.x - minCoordinates.x) / 4,
+		(maxCoordinates.y - minCoordinates.y) / 4,
+		(maxCoordinates.z - minCoordinates.z) / 4,
 	};
 
 	//Calculate vertices
@@ -60,64 +60,64 @@ bool OBB::intersectsWithOBB(BoundingVolume * other)
 	{
 		XMVECTOR vectorToOBB = otherOBB->_center - _center;    //Vector from center to center
 
-		//Seperating axis (SA) = _xAxis
+		//1. Seperating axis (SA) = _xAxis
 		float totalProjLength = XMVectorGetX(XMVector3Length(XMVector3Dot(vectorToOBB, _xAxis)));
 		float projLength = _halfXYZ.x +
 			XMVectorGetX(XMVector3Length((otherOBB->_halfXYZ.x*XMVector3Dot(_xAxis, otherOBB->_xAxis)))) +
 			XMVectorGetX(XMVector3Length((otherOBB->_halfXYZ.y*XMVector3Dot(_xAxis, otherOBB->_yAxis)))) +
 			XMVectorGetX(XMVector3Length((otherOBB->_halfXYZ.z*XMVector3Dot(_xAxis, otherOBB->_zAxis))));
-		if (totalProjLength < projLength)
-			return true;
-		//SA = _yAxis
+		if (totalProjLength > projLength)
+			return false;
+		//2. SA = _yAxis
 		totalProjLength = XMVectorGetX(XMVector3Length(XMVector3Dot(vectorToOBB, _yAxis)));
 		projLength = _halfXYZ.y +
 			XMVectorGetX(XMVector3Length((otherOBB->_halfXYZ.x*XMVector3Dot(_yAxis, otherOBB->_xAxis)))) +
 			XMVectorGetX(XMVector3Length((otherOBB->_halfXYZ.y*XMVector3Dot(_yAxis, otherOBB->_yAxis)))) +
 			XMVectorGetX(XMVector3Length((otherOBB->_halfXYZ.z*XMVector3Dot(_yAxis, otherOBB->_zAxis))));
-		if (totalProjLength < projLength)
-			return true;
-		//SA = _zAxis
+		if (totalProjLength > projLength)
+			return false;
+		//3. SA = _zAxis
 		totalProjLength = XMVectorGetX(XMVector3Length(XMVector3Dot(vectorToOBB, _zAxis)));
 		projLength = _halfXYZ.z +
 			XMVectorGetX(XMVector3Length((otherOBB->_halfXYZ.x*XMVector3Dot(_zAxis, otherOBB->_xAxis)))) +
 			XMVectorGetX(XMVector3Length((otherOBB->_halfXYZ.y*XMVector3Dot(_zAxis, otherOBB->_yAxis)))) +
 			XMVectorGetX(XMVector3Length((otherOBB->_halfXYZ.z*XMVector3Dot(_zAxis, otherOBB->_zAxis))));
-		if (totalProjLength < projLength)
-			return true;
-		//SA = xAxis
+		if (totalProjLength > projLength)
+			return false;
+		//4. SA = xAxis
 		totalProjLength = XMVectorGetX(XMVector3Length(XMVector3Dot(vectorToOBB, otherOBB->_xAxis)));
 		projLength = otherOBB->_halfXYZ.x +
 			XMVectorGetX(XMVector3Length((_halfXYZ.x*XMVector3Dot(_xAxis, otherOBB->_xAxis)))) +
 			XMVectorGetX(XMVector3Length((_halfXYZ.y*XMVector3Dot(_yAxis, otherOBB->_xAxis)))) +
 			XMVectorGetX(XMVector3Length((_halfXYZ.z*XMVector3Dot(_zAxis, otherOBB->_xAxis))));
-		if (totalProjLength < projLength)
-			return true;
-		//SA = yAxis
+		if (totalProjLength > projLength)
+			return false;
+		//5. SA = yAxis
 		totalProjLength = XMVectorGetX(XMVector3Length(XMVector3Dot(vectorToOBB, otherOBB->_yAxis)));
 		projLength = otherOBB->_halfXYZ.y +
 			XMVectorGetX(XMVector3Length((_halfXYZ.x*XMVector3Dot(_xAxis, otherOBB->_yAxis)))) +
 			XMVectorGetX(XMVector3Length((_halfXYZ.y*XMVector3Dot(_yAxis, otherOBB->_yAxis)))) +
 			XMVectorGetX(XMVector3Length((_halfXYZ.z*XMVector3Dot(_zAxis, otherOBB->_yAxis))));
-		if (totalProjLength < projLength)
-			return true;
-		//SA = zAxis
+		if (totalProjLength > projLength)
+			return false;
+		//6. SA = zAxis
 		totalProjLength = XMVectorGetX(XMVector3Length(XMVector3Dot(vectorToOBB, otherOBB->_zAxis)));
 		projLength = otherOBB->_halfXYZ.z +
 			XMVectorGetX(XMVector3Length((_halfXYZ.x*XMVector3Dot(_xAxis, otherOBB->_zAxis)))) +
 			XMVectorGetX(XMVector3Length((_halfXYZ.y*XMVector3Dot(_yAxis, otherOBB->_zAxis)))) +
 			XMVectorGetX(XMVector3Length((_halfXYZ.z*XMVector3Dot(_zAxis, otherOBB->_zAxis))));
-		if (totalProjLength < projLength)
-			return true;
+		if (totalProjLength > projLength)
+			return false;
 
-		//SA = _xAxis x xAxis
+		//.7 SA = _xAxis x xAxis
 		totalProjLength = XMVectorGetX(XMVector3Length(XMVector3Dot(vectorToOBB, XMVector3Cross(_xAxis, otherOBB->_xAxis))));
 		projLength =
 			XMVectorGetX(XMVector3Length((_halfXYZ.y*XMVector3Dot(_zAxis, otherOBB->_xAxis)))) +
 			XMVectorGetX(XMVector3Length((_halfXYZ.z*XMVector3Dot(_yAxis, otherOBB->_xAxis)))) +
 			XMVectorGetX(XMVector3Length((otherOBB->_halfXYZ.y*XMVector3Dot(_xAxis, otherOBB->_zAxis)))) +
 			XMVectorGetX(XMVector3Length((otherOBB->_halfXYZ.z*XMVector3Dot(_xAxis, otherOBB->_yAxis))));
-		if (totalProjLength < projLength)
-			return true;
+		if (totalProjLength > projLength)
+			return false;
 		//8. SA = _xAxis x yAxis
 		totalProjLength = XMVectorGetX(XMVector3Length(XMVector3Dot(vectorToOBB, XMVector3Cross(_xAxis, otherOBB->_yAxis))));
 		projLength =
@@ -125,8 +125,8 @@ bool OBB::intersectsWithOBB(BoundingVolume * other)
 			XMVectorGetX(XMVector3Length((_halfXYZ.z*XMVector3Dot(_yAxis, otherOBB->_yAxis)))) +
 			XMVectorGetX(XMVector3Length((otherOBB->_halfXYZ.x*XMVector3Dot(_xAxis, otherOBB->_zAxis)))) +
 			XMVectorGetX(XMVector3Length((otherOBB->_halfXYZ.z*XMVector3Dot(_xAxis, otherOBB->_xAxis))));
-		if (totalProjLength < projLength)
-			return true;
+		if (totalProjLength > projLength)
+			return false;
 		//9. SA = _xAxis x zAxis
 		totalProjLength = XMVectorGetX(XMVector3Length(XMVector3Dot(vectorToOBB, XMVector3Cross(_xAxis, otherOBB->_zAxis))));
 		projLength =
@@ -134,8 +134,8 @@ bool OBB::intersectsWithOBB(BoundingVolume * other)
 			XMVectorGetX(XMVector3Length((_halfXYZ.z*XMVector3Dot(_yAxis, otherOBB->_zAxis)))) +
 			XMVectorGetX(XMVector3Length((otherOBB->_halfXYZ.x*XMVector3Dot(_xAxis, otherOBB->_yAxis)))) +
 			XMVectorGetX(XMVector3Length((otherOBB->_halfXYZ.y*XMVector3Dot(_xAxis, otherOBB->_xAxis))));
-		if (totalProjLength < projLength)
-			return true;
+		if (totalProjLength > projLength)
+			return false;
 		//10. SA = _yAxis x xAxis
 		totalProjLength = XMVectorGetX(XMVector3Length(XMVector3Dot(vectorToOBB, XMVector3Cross(_yAxis, otherOBB->_xAxis))));
 		projLength =
@@ -143,8 +143,8 @@ bool OBB::intersectsWithOBB(BoundingVolume * other)
 			XMVectorGetX(XMVector3Length((_halfXYZ.z*XMVector3Dot(_xAxis, otherOBB->_xAxis)))) +
 			XMVectorGetX(XMVector3Length((otherOBB->_halfXYZ.y*XMVector3Dot(_yAxis, otherOBB->_zAxis)))) +
 			XMVectorGetX(XMVector3Length((otherOBB->_halfXYZ.z*XMVector3Dot(_yAxis, otherOBB->_yAxis))));
-		if (totalProjLength < projLength)
-			return true;
+		if (totalProjLength > projLength)
+			return false;
 		//11. SA = _yAxis x yAxis
 		totalProjLength = XMVectorGetX(XMVector3Length(XMVector3Dot(vectorToOBB, XMVector3Cross(_yAxis, otherOBB->_yAxis))));
 		projLength =
@@ -152,8 +152,8 @@ bool OBB::intersectsWithOBB(BoundingVolume * other)
 			XMVectorGetX(XMVector3Length((_halfXYZ.z*XMVector3Dot(_xAxis, otherOBB->_yAxis)))) +
 			XMVectorGetX(XMVector3Length((otherOBB->_halfXYZ.x*XMVector3Dot(_yAxis, otherOBB->_zAxis)))) +
 			XMVectorGetX(XMVector3Length((otherOBB->_halfXYZ.z*XMVector3Dot(_yAxis, otherOBB->_xAxis))));
-		if (totalProjLength < projLength)
-			return true;
+		if (totalProjLength > projLength)
+			return false;
 		//12. SA = _yAxis x zAxis
 		totalProjLength = XMVectorGetX(XMVector3Length(XMVector3Dot(vectorToOBB, XMVector3Cross(_yAxis, otherOBB->_zAxis))));
 		projLength =
@@ -161,8 +161,8 @@ bool OBB::intersectsWithOBB(BoundingVolume * other)
 			XMVectorGetX(XMVector3Length((_halfXYZ.z*XMVector3Dot(_xAxis, otherOBB->_zAxis)))) +
 			XMVectorGetX(XMVector3Length((otherOBB->_halfXYZ.x*XMVector3Dot(_yAxis, otherOBB->_yAxis)))) +
 			XMVectorGetX(XMVector3Length((otherOBB->_halfXYZ.y*XMVector3Dot(_yAxis, otherOBB->_xAxis))));
-		if (totalProjLength < projLength)
-			return true;
+		if (totalProjLength > projLength)
+			return false;
 		//13. SA = _zAxis x xAxis
 		totalProjLength = XMVectorGetX(XMVector3Length(XMVector3Dot(vectorToOBB, XMVector3Cross(_zAxis, otherOBB->_xAxis))));
 		projLength =
@@ -170,8 +170,8 @@ bool OBB::intersectsWithOBB(BoundingVolume * other)
 			XMVectorGetX(XMVector3Length((_halfXYZ.y*XMVector3Dot(_xAxis, otherOBB->_xAxis)))) +
 			XMVectorGetX(XMVector3Length((otherOBB->_halfXYZ.y*XMVector3Dot(_zAxis, otherOBB->_zAxis)))) +
 			XMVectorGetX(XMVector3Length((otherOBB->_halfXYZ.z*XMVector3Dot(_zAxis, otherOBB->_yAxis))));
-		if (totalProjLength < projLength)
-			return true;
+		if (totalProjLength > projLength)
+			return false;
 		//14. SA = _zAxis x yAxis
 		totalProjLength = XMVectorGetX(XMVector3Length(XMVector3Dot(vectorToOBB, XMVector3Cross(_zAxis, otherOBB->_yAxis))));
 		projLength =
@@ -179,8 +179,8 @@ bool OBB::intersectsWithOBB(BoundingVolume * other)
 			XMVectorGetX(XMVector3Length((_halfXYZ.y*XMVector3Dot(_xAxis, otherOBB->_yAxis)))) +
 			XMVectorGetX(XMVector3Length((otherOBB->_halfXYZ.x*XMVector3Dot(_zAxis, otherOBB->_zAxis)))) +
 			XMVectorGetX(XMVector3Length((otherOBB->_halfXYZ.z*XMVector3Dot(_zAxis, otherOBB->_xAxis))));
-		if (totalProjLength < projLength)
-			return true;
+		if (totalProjLength > projLength)
+			return false;
 		//15. SA = _zAxis x yAxis
 		totalProjLength = XMVectorGetX(XMVector3Length(XMVector3Dot(vectorToOBB, XMVector3Cross(_zAxis, otherOBB->_zAxis))));
 		projLength =
@@ -188,9 +188,9 @@ bool OBB::intersectsWithOBB(BoundingVolume * other)
 			XMVectorGetX(XMVector3Length((_halfXYZ.y*XMVector3Dot(_yAxis, otherOBB->_zAxis)))) +
 			XMVectorGetX(XMVector3Length((otherOBB->_halfXYZ.x*XMVector3Dot(_zAxis, otherOBB->_yAxis)))) +
 			XMVectorGetX(XMVector3Length((otherOBB->_halfXYZ.y*XMVector3Dot(_zAxis, otherOBB->_xAxis))));
-		if (totalProjLength < projLength)
-			return true;
+		if (totalProjLength > projLength)
+			return false;
 	}
 
-	return false;
+	return true;
 }
