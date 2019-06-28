@@ -33,7 +33,7 @@ void GameState::update(Game* game)
 {
 	
 	if (game->getPlayer()->getBoundingVolume()->intersectsWithOBB(game->getLevelHandler()->getGameObject(0)->getBoundingVolume())) //Not safe, will crasch if you try to access gameobject outside of array.
-		game->getPlayer()->move(DirectX::XMFLOAT3(-game->getClock()->getDeltaSeconds(), 0.0f, 0.0f ));
+		game->getPlayer()->move(DirectX::XMFLOAT3(-game->getClock()->getDeltaSeconds() * 25.0f, 0.0f, 0.0f ));
 
 	game->getPlayer()->updateLogic();                                  //Update player
 	game->getCamera()->followObject(game->getPlayer()->getPosition(), game->getClock()->getDeltaSeconds()); //Update camera based on player position
