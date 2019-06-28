@@ -12,7 +12,7 @@ GameObject::GameObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 	createModel(device, deviceContext, modelFile);
 
 	//Initial orientation of object
-	_lookAt = DirectX::XMVectorSet(0.0f, 0.f, 1.0f, 0.0f);
+	_lookAt = DirectX::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
 } 
 
 GameObject::~GameObject()
@@ -50,4 +50,9 @@ void GameObject::drawBoundingVolume(ID3D11DeviceContext * deviceContext)
 XMVECTOR GameObject::getPosition()
 {
 	return _position;
+}
+
+BoundingVolume * GameObject::getBoundingVolume()
+{
+	return _model.getBoundingVolume();
 }

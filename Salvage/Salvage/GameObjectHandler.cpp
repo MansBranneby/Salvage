@@ -70,5 +70,5 @@ void GameObjectHandler::drawObjects()
 
 GameObject * GameObjectHandler::getGameObject(int index) const
 {
-	return nullptr;
+	return _gameObjects[index];
 }

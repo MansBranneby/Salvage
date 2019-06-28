@@ -97,9 +97,9 @@ Mesh* Model::processMesh(ID3D11Device* device, aiMesh * mesh)
 		
 		// BOUNDING VOLUME //
 		//Look for maximum XYZ coordinates for OBB
-		maxCoordinates.x = std::min(maxCoordinates.x, vertex.x);
-		maxCoordinates.y = std::min(maxCoordinates.y, vertex.y);
-		maxCoordinates.z = std::min(maxCoordinates.z, vertex.z);
+		maxCoordinates.x = std::max(maxCoordinates.x, vertex.x);
+		maxCoordinates.y = std::max(maxCoordinates.y, vertex.y);
+		maxCoordinates.z = std::max(maxCoordinates.z, vertex.z);
 		//Look for minimum XYZ coordinates for OBB
 		minCoordinates.x = std::min(minCoordinates.x, vertex.x);
 		minCoordinates.y = std::min(minCoordinates.y, vertex.y);
@@ -128,7 +128,6 @@ Mesh* Model::processMesh(ID3D11Device* device, aiMesh * mesh)
 	}
 
 	//Textures
-	//CRASCH
 	if (mesh->mMaterialIndex >= 0)
 	{
 		aiMaterial* material = _scene->mMaterials[mesh->mMaterialIndex];
@@ -312,9 +311,15 @@ Model::~Model()
 		_loadedTextures[i]._texture->Release();
 }
 
+BoundingVolume * Model::getBoundingVolume()
+{
+	return _boundingVolume;
+}
+
 void Model::updateTransformation(DirectX::XMFLOAT3 position)
 {
 	_scene->mRootNode->mTransformation = aiMatrix4x4(aiVector3D(1, 1, 1), aiQuaternion(0, 0, 0), aiVector3D(position.x, position.y, position.z));
+	_boundingVolume->setCenter(DirectX::XMVectorSet(position.x, position.y, position.z, 1.0f)); // GLENN
 
 	D3D11_MAPPED_SUBRESOURCE mappedMemory;
 	_deviceContext->Map(_transformationBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedMemory);

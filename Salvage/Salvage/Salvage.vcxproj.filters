@@ -46,10 +46,10 @@
     <Filter Include="GameSystem\Header Files\States">
       <UniqueIdentifier>{49dc7353-adaf-48eb-8605-1163d9f7ef94}</UniqueIdentifier>
     </Filter>
-    <Filter Include="RenderSystem\Header Files\Collision">
+    <Filter Include="GameSystem\Header Files\Collision">
       <UniqueIdentifier>{b70f717a-112b-4845-9c16-91881cca177e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="RenderSystem\Source Files\Collision">
+    <Filter Include="GameSystem\Source Files\Collision">
       <UniqueIdentifier>{8d6d3a39-a327-4c54-b627-9351964d64d9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -196,10 +196,10 @@
       <Filter>GameSystem\Source Files\States</Filter>
     </ClCompile>
     <ClCompile Include="BoundingVolume.cpp">
-      <Filter>RenderSystem\Source Files\Collision</Filter>
+      <Filter>GameSystem\Source Files\Collision</Filter>
     </ClCompile>
     <ClCompile Include="OBB.cpp">
-      <Filter>RenderSystem\Source Files\Collision</Filter>
+      <Filter>GameSystem\Source Files\Collision</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -354,10 +354,10 @@
       <Filter>GameSystem\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="BoundingVolume.h">
-      <Filter>RenderSystem\Header Files\Collision</Filter>
+      <Filter>GameSystem\Header Files\Collision</Filter>
     </ClInclude>
     <ClInclude Include="OBB.h">
-      <Filter>RenderSystem\Header Files\Collision</Filter>
+      <Filter>GameSystem\Header Files\Collision</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

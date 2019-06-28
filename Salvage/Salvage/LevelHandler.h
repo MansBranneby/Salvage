@@ -11,4 +11,5 @@ public:
 	~LevelHandler();
 
 	void drawLevel();
+	GameObject* getGameObject(int index);
 };

@@ -20,15 +20,24 @@ private:
 	ID3D11Buffer* _vertexBuffer;
 	ID3D11Buffer* _indexBuffer;
 
+protected:
+	DirectX::XMVECTOR _center;
+	//Local axes
+	DirectX::XMVECTOR _xAxis;
+	DirectX::XMVECTOR _yAxis;
+	DirectX::XMVECTOR _zAxis;
+
+	virtual void createBuffers(ID3D11Device* device, std::vector<BoundingVolumeVertex> vertices, std::vector<int> indices);
 
 public:
 	BoundingVolume();
-	BoundingVolume(ID3D11Device* device);
 	virtual ~BoundingVolume();
 	std::vector<BoundingVolumeVertex>* getVertices();
 	std::vector<int>* getIndices();
 	
-	void createBuffers(ID3D11Device* device, std::vector<BoundingVolumeVertex> vertices, std::vector<int> indices);
+	void setCenter(DirectX::XMVECTOR center);
 
 	void draw(ID3D11DeviceContext* deviceContext, ID3D11Buffer* transformationBuffer);
+	
+	virtual bool intersectsWithOBB(BoundingVolume* other) = 0;
 };

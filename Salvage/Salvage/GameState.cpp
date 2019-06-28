@@ -31,6 +31,10 @@ void GameState::handleInput(Game* game)
 
 void GameState::update(Game* game)
 {
+	
+	if (game->getPlayer()->getBoundingVolume()->intersectsWithOBB(game->getLevelHandler()->getGameObject(0)->getBoundingVolume())) //Not safe, will crasch if you try to access gameobject outside of array.
+		game->getPlayer()->move(DirectX::XMFLOAT3(-game->getClock()->getDeltaSeconds(), 0.0f, 0.0f ));
+
 	game->getPlayer()->updateLogic();                                  //Update player
 	game->getCamera()->followObject(game->getPlayer()->getPosition(), game->getClock()->getDeltaSeconds()); //Update camera based on player position
 }
@@ -39,4 +43,6 @@ void GameState::draw(Game* game)
 {
 	game->getPlayer()->draw(game->getDeviceContext()); //Draw player
 	game->getLevelHandler()->drawLevel();              //Draw level
+
+	//game->getPlayer()->drawBoundingVolume(game->getDeviceContext());
 }

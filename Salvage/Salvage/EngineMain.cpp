@@ -202,6 +202,7 @@ void render()
 	gGR->getDeviceContext()->PSSetSamplers(0, 0, nullptr);
 
 	gGame->getPlayer()->drawBoundingVolume(gGR->getDeviceContext());
+	gGame->getLevelHandler()->getGameObject(0)->drawBoundingVolume(gGR->getDeviceContext());
 }
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)

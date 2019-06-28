@@ -58,6 +58,7 @@ public:
 	Model();
 	~Model();
 
+	BoundingVolume* getBoundingVolume();
 	void updateTransformation(DirectX::XMFLOAT3 position);
 	bool loadModel(ID3D11Device* device, ID3D11DeviceContext* deviceContext, std::string filename);
 	void animate(float timeInSec);

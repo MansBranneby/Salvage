@@ -35,4 +35,5 @@ public:
 	virtual void updateLogic() = 0;
 
 	XMVECTOR getPosition();
+	BoundingVolume* getBoundingVolume();
 };
