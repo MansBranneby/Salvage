@@ -67,134 +67,134 @@ bool OBB::intersectsWithOBB(BoundingVolume * other)
 		XMVECTOR vectorToOBB = otherOBB->_center - _center;    //Vector from center to center
 
 		//Seperating axis (SA) = _xAxis
-		float totalProjLength = abs(XMVectorGetX((XMVector3Dot(vectorToOBB, _xAxis))));
-		float projLength = _halfXYZ.x +
+		float projection = abs(XMVectorGetX((XMVector3Dot(vectorToOBB, _xAxis))));
+		float boxProjection = _halfXYZ.x +
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.x*XMVector3Dot(_xAxis, otherOBB->_xAxis))))) +
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.y*XMVector3Dot(_xAxis, otherOBB->_yAxis))))) +
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.z*XMVector3Dot(_xAxis, otherOBB->_zAxis)))));
-		if ((totalProjLength/2) > projLength)
+		if ((projection/2) > boxProjection)
 			return false;
 		//2. SA = _yAxis
-		totalProjLength = abs(XMVectorGetX((XMVector3Dot(vectorToOBB, _yAxis))));
-		projLength = _halfXYZ.y +
+		projection = abs(XMVectorGetX((XMVector3Dot(vectorToOBB, _yAxis))));
+		boxProjection = _halfXYZ.y +
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.x*XMVector3Dot(_yAxis, otherOBB->_xAxis))))) +
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.y*XMVector3Dot(_yAxis, otherOBB->_yAxis))))) +
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.z*XMVector3Dot(_yAxis, otherOBB->_zAxis)))));
-		if ((totalProjLength / 2) > projLength)
+		if ((projection / 2) > boxProjection)
 			return false;
 		//3. SA = _zAxis
-		totalProjLength = abs(XMVectorGetX((XMVector3Dot(vectorToOBB, _zAxis))));
-		projLength = _halfXYZ.z +
+		projection = abs(XMVectorGetX((XMVector3Dot(vectorToOBB, _zAxis))));
+		boxProjection = _halfXYZ.z +
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.x*XMVector3Dot(_zAxis, otherOBB->_xAxis))))) +
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.y*XMVector3Dot(_zAxis, otherOBB->_yAxis))))) +
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.z*XMVector3Dot(_zAxis, otherOBB->_zAxis)))));
-		if ((totalProjLength / 2) > projLength)
+		if ((projection / 2) > boxProjection)
 			return false;
 		//4. SA = xAxis
-		totalProjLength = abs(XMVectorGetX((XMVector3Dot(vectorToOBB, otherOBB->_xAxis))));
-		projLength = otherOBB->_halfXYZ.x +
+		projection = abs(XMVectorGetX((XMVector3Dot(vectorToOBB, otherOBB->_xAxis))));
+		boxProjection = otherOBB->_halfXYZ.x +
 			abs(XMVectorGetX(((_halfXYZ.x*XMVector3Dot(_xAxis, otherOBB->_xAxis))))) +
 			abs(XMVectorGetX(((_halfXYZ.y*XMVector3Dot(_yAxis, otherOBB->_xAxis))))) +
 			abs(XMVectorGetX(((_halfXYZ.z*XMVector3Dot(_zAxis, otherOBB->_xAxis)))));
-		if ((totalProjLength / 2) > projLength)
+		if ((projection / 2) > boxProjection)
 			return false;
 		//5. SA = yAxis
-		totalProjLength = abs(XMVectorGetX((XMVector3Dot(vectorToOBB, otherOBB->_yAxis))));
-		projLength = otherOBB->_halfXYZ.y +
+		projection = abs(XMVectorGetX((XMVector3Dot(vectorToOBB, otherOBB->_yAxis))));
+		boxProjection = otherOBB->_halfXYZ.y +
 			abs(XMVectorGetX(((_halfXYZ.x*XMVector3Dot(_xAxis, otherOBB->_yAxis))))) +
 			abs(XMVectorGetX(((_halfXYZ.y*XMVector3Dot(_yAxis, otherOBB->_yAxis))))) +
 			abs(XMVectorGetX(((_halfXYZ.z*XMVector3Dot(_zAxis, otherOBB->_yAxis)))));
-		if ((totalProjLength / 2) > projLength)
+		if ((projection / 2) > boxProjection)
 			return false;
 		//6. SA = zAxis
-		totalProjLength = abs(XMVectorGetX((XMVector3Dot(vectorToOBB, otherOBB->_zAxis))));
-		projLength = otherOBB->_halfXYZ.z +
+		projection = abs(XMVectorGetX((XMVector3Dot(vectorToOBB, otherOBB->_zAxis))));
+		boxProjection = otherOBB->_halfXYZ.z +
 			abs(XMVectorGetX(((_halfXYZ.x*XMVector3Dot(_xAxis, otherOBB->_zAxis))))) +
 			abs(XMVectorGetX(((_halfXYZ.y*XMVector3Dot(_yAxis, otherOBB->_zAxis))))) +
 			abs(XMVectorGetX(((_halfXYZ.z*XMVector3Dot(_zAxis, otherOBB->_zAxis)))));
-		if ((totalProjLength / 2) > projLength)
+		if ((projection / 2) > boxProjection)
 			return false;
 
 		//.7 SA = _xAxis x xAxis
-		totalProjLength = abs(XMVectorGetX((XMVector3Dot(vectorToOBB, XMVector3Cross(_xAxis, otherOBB->_xAxis)))));
-		projLength =
+		projection = abs(XMVectorGetX((XMVector3Dot(vectorToOBB, XMVector3Cross(_xAxis, otherOBB->_xAxis)))));
+		boxProjection =
 			abs(XMVectorGetX(((_halfXYZ.y*XMVector3Dot(_zAxis, otherOBB->_xAxis))))) +
 			abs(XMVectorGetX(((_halfXYZ.z*XMVector3Dot(_yAxis, otherOBB->_xAxis))))) +
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.y*XMVector3Dot(_xAxis, otherOBB->_zAxis))))) +
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.z*XMVector3Dot(_xAxis, otherOBB->_yAxis)))));
-		if ((totalProjLength / 2) > projLength)
+		if ((projection / 2) > boxProjection)
 			return false;
 		//8. SA = _xAxis x yAxis
-		totalProjLength = abs(XMVectorGetX((XMVector3Dot(vectorToOBB, XMVector3Cross(_xAxis, otherOBB->_yAxis)))));
-		projLength =
+		projection = abs(XMVectorGetX((XMVector3Dot(vectorToOBB, XMVector3Cross(_xAxis, otherOBB->_yAxis)))));
+		boxProjection =
 			abs(XMVectorGetX(((_halfXYZ.y*XMVector3Dot(_zAxis, otherOBB->_yAxis))))) +
 			abs(XMVectorGetX(((_halfXYZ.z*XMVector3Dot(_yAxis, otherOBB->_yAxis))))) +
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.x*XMVector3Dot(_xAxis, otherOBB->_zAxis))))) +
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.z*XMVector3Dot(_xAxis, otherOBB->_xAxis)))));
-		if ((totalProjLength / 2) > projLength)
+		if ((projection / 2) > boxProjection)
 			return false;
 		//9. SA = _xAxis x zAxis
-		totalProjLength = abs(XMVectorGetX((XMVector3Dot(vectorToOBB, XMVector3Cross(_xAxis, otherOBB->_zAxis)))));
-		projLength =
+		projection = abs(XMVectorGetX((XMVector3Dot(vectorToOBB, XMVector3Cross(_xAxis, otherOBB->_zAxis)))));
+		boxProjection =
 			abs(XMVectorGetX(((_halfXYZ.y*XMVector3Dot(_zAxis, otherOBB->_zAxis))))) +
 			abs(XMVectorGetX(((_halfXYZ.z*XMVector3Dot(_yAxis, otherOBB->_zAxis))))) +
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.x*XMVector3Dot(_xAxis, otherOBB->_yAxis))))) +
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.y*XMVector3Dot(_xAxis, otherOBB->_xAxis)))));
-		if ((totalProjLength / 2) > projLength)
+		if ((projection / 2) > boxProjection)
 			return false;
 		//10. SA = _yAxis x xAxis
-		totalProjLength = abs(XMVectorGetX((XMVector3Dot(vectorToOBB, XMVector3Cross(_yAxis, otherOBB->_xAxis)))));
-		projLength =
+		projection = abs(XMVectorGetX((XMVector3Dot(vectorToOBB, XMVector3Cross(_yAxis, otherOBB->_xAxis)))));
+		boxProjection =
 			abs(XMVectorGetX(((_halfXYZ.x*XMVector3Dot(_zAxis, otherOBB->_xAxis))))) +
 			abs(XMVectorGetX(((_halfXYZ.z*XMVector3Dot(_xAxis, otherOBB->_xAxis))))) +
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.y*XMVector3Dot(_yAxis, otherOBB->_zAxis))))) +
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.z*XMVector3Dot(_yAxis, otherOBB->_yAxis)))));
-		if ((totalProjLength / 2) > projLength)
+		if ((projection / 2) > boxProjection)
 			return false;
 		//11. SA = _yAxis x yAxis
-		totalProjLength = abs(XMVectorGetX((XMVector3Dot(vectorToOBB, XMVector3Cross(_yAxis, otherOBB->_yAxis)))));
-		projLength =
+		projection = abs(XMVectorGetX((XMVector3Dot(vectorToOBB, XMVector3Cross(_yAxis, otherOBB->_yAxis)))));
+		boxProjection =
 			abs(XMVectorGetX(((_halfXYZ.x*XMVector3Dot(_zAxis, otherOBB->_yAxis))))) +
 			abs(XMVectorGetX(((_halfXYZ.z*XMVector3Dot(_xAxis, otherOBB->_yAxis))))) +
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.x*XMVector3Dot(_yAxis, otherOBB->_zAxis))))) +
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.z*XMVector3Dot(_yAxis, otherOBB->_xAxis)))));
-		if ((totalProjLength / 2) > projLength)
+		if ((projection / 2) > boxProjection)
 			return false;
 		//12. SA = _yAxis x zAxis
-		totalProjLength = abs(XMVectorGetX((XMVector3Dot(vectorToOBB, XMVector3Cross(_yAxis, otherOBB->_zAxis)))));
-		projLength =
+		projection = abs(XMVectorGetX((XMVector3Dot(vectorToOBB, XMVector3Cross(_yAxis, otherOBB->_zAxis)))));
+		boxProjection =
 			abs(XMVectorGetX(((_halfXYZ.x*XMVector3Dot(_zAxis, otherOBB->_zAxis))))) +
 			abs(XMVectorGetX(((_halfXYZ.z*XMVector3Dot(_xAxis, otherOBB->_zAxis))))) +
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.x*XMVector3Dot(_yAxis, otherOBB->_yAxis))))) +
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.y*XMVector3Dot(_yAxis, otherOBB->_xAxis)))));
-		if ((totalProjLength / 2) > projLength)
+		if ((projection / 2) > boxProjection)
 			return false;
 		//13. SA = _zAxis x xAxis
-		totalProjLength = abs(XMVectorGetX((XMVector3Dot(vectorToOBB, XMVector3Cross(_zAxis, otherOBB->_xAxis)))));
-		projLength =
+		projection = abs(XMVectorGetX((XMVector3Dot(vectorToOBB, XMVector3Cross(_zAxis, otherOBB->_xAxis)))));
+		boxProjection =
 			abs(XMVectorGetX(((_halfXYZ.x*XMVector3Dot(_yAxis, otherOBB->_xAxis))))) +
 			abs(XMVectorGetX(((_halfXYZ.y*XMVector3Dot(_xAxis, otherOBB->_xAxis))))) +
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.y*XMVector3Dot(_zAxis, otherOBB->_zAxis))))) +
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.z*XMVector3Dot(_zAxis, otherOBB->_yAxis)))));
-		if((totalProjLength / 2) > projLength)
+		if((projection / 2) > boxProjection)
 			return false;
 		//14. SA = _zAxis x yAxis
-		totalProjLength = abs(XMVectorGetX((XMVector3Dot(vectorToOBB, XMVector3Cross(_zAxis, otherOBB->_yAxis)))));
-		projLength =
+		projection = abs(XMVectorGetX((XMVector3Dot(vectorToOBB, XMVector3Cross(_zAxis, otherOBB->_yAxis)))));
+		boxProjection =
 			abs(XMVectorGetX(((_halfXYZ.x*XMVector3Dot(_yAxis, otherOBB->_yAxis))))) +
 			abs(XMVectorGetX(((_halfXYZ.y*XMVector3Dot(_xAxis, otherOBB->_yAxis))))) +
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.x*XMVector3Dot(_zAxis, otherOBB->_zAxis))))) +
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.z*XMVector3Dot(_zAxis, otherOBB->_xAxis)))));
-		if ((totalProjLength / 2) > projLength)
+		if ((projection / 2) > boxProjection)
 			return false;
 		//15. SA = _zAxis x zAxis
-		totalProjLength = abs(XMVectorGetX((XMVector3Dot(vectorToOBB, XMVector3Cross(_zAxis, otherOBB->_zAxis)))));
-		projLength =
+		projection = abs(XMVectorGetX((XMVector3Dot(vectorToOBB, XMVector3Cross(_zAxis, otherOBB->_zAxis)))));
+		boxProjection =
 			abs(XMVectorGetX(((_halfXYZ.x*XMVector3Dot(_yAxis, otherOBB->_zAxis))))) +
 			abs(XMVectorGetX(((_halfXYZ.y*XMVector3Dot(_xAxis, otherOBB->_zAxis))))) +
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.x*XMVector3Dot(_zAxis, otherOBB->_yAxis))))) +
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.y*XMVector3Dot(_zAxis, otherOBB->_xAxis)))));
-		if ((totalProjLength / 2) > projLength)
+		if ((projection / 2) > boxProjection)
 			return false;
 	}
 
