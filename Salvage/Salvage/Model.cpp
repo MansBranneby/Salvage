@@ -319,8 +319,9 @@ BoundingVolume * Model::getBoundingVolume()
 void Model::updateTransformation(DirectX::XMFLOAT3 position)
 {
 	_scene->mRootNode->mTransformation = aiMatrix4x4(aiVector3D(1, 1, 1), aiQuaternion(0, 0, 0), aiVector3D(position.x, position.y, position.z));
-	_boundingVolume->setCenter(DirectX::XMVectorSet(position.x, position.y, position.z, 1.0f)); // GLENN
-
+	DirectX::XMVECTOR center = DirectX::XMVector3Transform(_boundingVolume->getCenter(), DirectX::XMMatrixTranslation(position.x, position.y, position.z)); // GLENN
+	//_boundingVolume->setCenter(center); // GLENN
+	_boundingVolume->setCenter(DirectX::XMVectorSet(position.x, position.y, position.z, 0.0f));
 	D3D11_MAPPED_SUBRESOURCE mappedMemory;
 	_deviceContext->Map(_transformationBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedMemory);
 	memcpy(mappedMemory.pData, &_scene->mRootNode->mTransformation, sizeof(_scene->mRootNode->mTransformation));

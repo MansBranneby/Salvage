@@ -45,6 +45,11 @@ BoundingVolume::~BoundingVolume()
 		_indexBuffer->Release();
 }
 
+DirectX::XMVECTOR BoundingVolume::getCenter()
+{
+	return _center;
+}
+
 std::vector<BoundingVolumeVertex>* BoundingVolume::getVertices()
 {
 	return &_vertices;

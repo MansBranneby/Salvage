@@ -32,10 +32,11 @@ protected:
 public:
 	BoundingVolume();
 	virtual ~BoundingVolume();
+	virtual DirectX::XMVECTOR getCenter();
 	std::vector<BoundingVolumeVertex>* getVertices();
 	std::vector<int>* getIndices();
-	
-	void setCenter(DirectX::XMVECTOR center);
+
+	virtual void setCenter(DirectX::XMVECTOR center);
 
 	void draw(ID3D11DeviceContext* deviceContext, ID3D11Buffer* transformationBuffer);
 	

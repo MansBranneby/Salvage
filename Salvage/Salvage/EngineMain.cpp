@@ -137,6 +137,10 @@ void imGuiUpdate()
 	ImGui::SliderFloat("LookAtSpeed", &gLookAtSpeed, 0.0f, 20.0f);
 	gGame->getCamera()->setSmoothSpeed(gSmoothSpeed);
 	gGame->getCamera()->setLookAtSpeed(gLookAtSpeed);
+
+	ImGui::Text("X: %.2f, Y: %.2f, Z: %.2f", XMVectorGetX(gGame->getPlayer()->getPosition()), XMVectorGetY(gGame->getPlayer()->getPosition()), XMVectorGetZ(gGame->getPlayer()->getPosition()));
+	ImGui::Text("X: %.2f, Y: %.2f, Z: %.2f", XMVectorGetX(gGame->getPlayer()->getBoundingVolume()->getCenter()), XMVectorGetY(gGame->getPlayer()->getBoundingVolume()->getCenter()), XMVectorGetZ(gGame->getPlayer()->getBoundingVolume()->getCenter()));
+
 	//// Camera modes
 	//if (ImGui::Button("Debug mode"))
 	//	//gCamera->setMode(DEBUG);
