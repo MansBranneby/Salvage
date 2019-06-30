@@ -60,9 +60,11 @@ std::vector<int>* BoundingVolume::getIndices()
 	return &_indices;
 }
 
-void BoundingVolume::setCenter(DirectX::XMVECTOR center)
+void BoundingVolume::move(DirectX::XMVECTOR speed)
 {
-	_center = center;
+	using namespace DirectX;
+
+	_center += speed;
 }
 
 void BoundingVolume::draw(ID3D11DeviceContext * deviceContext, ID3D11Buffer * transformationBuffer)

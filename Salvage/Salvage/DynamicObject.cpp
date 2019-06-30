@@ -14,6 +14,8 @@ void DynamicObject::move(DirectX::XMFLOAT3 speed)
 	_lookAt = XMLoadFloat3(&speed);
 	//_velocity = velocity;
 	_position += XMVectorSet(speed.x, speed.y, speed.z, 0.0f);// * _lookAt;
+	getBoundingVolume()->move(XMVectorSet(speed.x, speed.y, speed.z, 0.0f));
+
 	speed = XMFLOAT3(0.0f, 0.0f, 0.0f);
 
 

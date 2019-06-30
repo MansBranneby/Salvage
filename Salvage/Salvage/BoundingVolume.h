@@ -36,7 +36,7 @@ public:
 	std::vector<BoundingVolumeVertex>* getVertices();
 	std::vector<int>* getIndices();
 
-	virtual void setCenter(DirectX::XMVECTOR center);
+	virtual void move(DirectX::XMVECTOR speed);
 
 	void draw(ID3D11DeviceContext* deviceContext, ID3D11Buffer* transformationBuffer);
 	

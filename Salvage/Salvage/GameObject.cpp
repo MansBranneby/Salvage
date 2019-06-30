@@ -26,10 +26,12 @@ bool GameObject::createModel(ID3D11Device* device, ID3D11DeviceContext* deviceCo
 	case PLAYER:
 		_model.loadModel(device, deviceContext, _modelDirectory + modelFile);
 		_model.updateTransformation(XMFLOAT3(XMVectorGetX(_position), XMVectorGetY(_position), XMVectorGetZ(_position)));
+		_model.getBoundingVolume()->move(getBoundingVolume()->getCenter() + _position);
 		break;
 	case STATICOBJECT:
 		_model.loadModel(device, deviceContext, _modelDirectory + modelFile);
 		_model.updateTransformation(XMFLOAT3(XMVectorGetX(_position), XMVectorGetY(_position), XMVectorGetZ(_position)));
+		_model.getBoundingVolume()->move(_position);
 		break;
 	default:
 		break;
