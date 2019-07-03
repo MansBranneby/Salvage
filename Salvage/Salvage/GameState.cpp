@@ -11,32 +11,17 @@ void GameState::handleInput(Game* game)
 	float diagonalDeltaSpeed = deltaSpeed * cos(DirectX::XM_PI / 4); // Delta speed * cos(pi/4) = diogonal delta speed (if you don't multiply with cos(pi/4) the player will move double as fast diagonally)
 	XMVECTOR playerVelocity{ 0.0f, 0.0f, 0.0f, 0.0f };
 
-	// if collision between player and other gameobject do something
-	if (game->getPlayer()->getBoundingVolume()->intersectsWithOBB(game->getLevelHandler()->getGameObject(0)->getBoundingVolume())) //Not safe, will crasch if you try to access gameobject outside of array.
-		game->getPlayer()->move(-game->getPlayer()->getVelocity());
-	else
+	if (!game->getPlayer()->getBoundingVolume()->intersectsWithOBB(game->getLevelHandler()->getGameObject(0)->getBoundingVolume()))
 	{
 		//Keyboard
 		if (kb.W) //Forward
-		{
 			playerVelocity = { 0.0f, 0.0f, deltaSpeed, 0.0f };
-			game->getPlayer()->setVelocity(playerVelocity);
-		}
 		if (kb.S) //Backwards
-		{
 			playerVelocity = { 0.0f, 0.0f, -deltaSpeed, 0.0f };
-			game->getPlayer()->setVelocity(playerVelocity);
-		}
 		if (kb.D)	//Right
-		{
 			playerVelocity = { deltaSpeed, 0.0f, 0.0f, 0.0f };
-			game->getPlayer()->setVelocity(playerVelocity);
-		}
 		if (kb.A)	//Left
-		{
 			playerVelocity = { -deltaSpeed, 0.0f, 0.0f, 0.0f };
-			game->getPlayer()->setVelocity(playerVelocity);
-		}
 		if (kb.W && kb.D) // Diagonal forward right
 			playerVelocity = { diagonalDeltaSpeed, 0.0f, diagonalDeltaSpeed, 0.0f };
 		if (kb.S && kb.D) // Diagonal backward right
@@ -63,14 +48,21 @@ void GameState::handleInput(Game* game)
 			playerVelocity = { -diagonalDeltaSpeed, 0.0f, diagonalDeltaSpeed, 0.0f };
 		if (gp.IsLeftThumbStickDown() && gp.IsLeftThumbStickLeft()) // Diagonal backward left
 			playerVelocity = { -diagonalDeltaSpeed, 0.0f, -diagonalDeltaSpeed, 0.0f };
-		
-		game->getPlayer()->move(playerVelocity);
+	
+		game->getPlayer()->setVelocity(playerVelocity);
 	}
-
+	
 }
 
 void GameState::update(Game* game)
 {
+	// if collision between player and other gameobject do something
+	// currently just moves player in the opposite direction until no collision. This also prevents player from "gliding along the surface".
+	if (game->getPlayer()->getBoundingVolume()->intersectsWithOBB(game->getLevelHandler()->getGameObject(0)->getBoundingVolume())) //Not safe, will crasch if you try to access gameobject outside of array.
+		game->getPlayer()->move(-game->getPlayer()->getVelocity());
+	else
+		game->getPlayer()->move(game->getPlayer()->getVelocity());
+
 	game->getPlayer()->updateLogic();																	    //Update player
 	game->getCamera()->followObject(game->getPlayer()->getPosition(), game->getClock()->getDeltaSeconds()); //Update camera based on player position
 }
