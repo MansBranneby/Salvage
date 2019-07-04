@@ -201,6 +201,9 @@
     <ClCompile Include="OBB.cpp">
       <Filter>GameSystem\Source Files\Collision</Filter>
     </ClCompile>
+    <ClCompile Include="Terrain.cpp">
+      <Filter>RenderSystem\Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -358,6 +361,9 @@
     </ClInclude>
     <ClInclude Include="OBB.h">
       <Filter>GameSystem\Header Files\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Terrain.h">
+      <Filter>RenderSystem\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

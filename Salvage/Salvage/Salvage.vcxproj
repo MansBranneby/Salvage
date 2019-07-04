@@ -62,6 +62,7 @@
     <ClCompile Include="StartOfGameState.cpp" />
     <ClCompile Include="State.cpp" />
     <ClCompile Include="StaticObject.cpp" />
+    <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureLoader.cpp" />
     <ClCompile Include="UIHandler.cpp" />
@@ -118,6 +119,7 @@
     <ClInclude Include="StartOfGameState.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="StaticObject.h" />
+    <ClInclude Include="Terrain.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureLoader.h" />
     <ClInclude Include="UIHandler.h" />
