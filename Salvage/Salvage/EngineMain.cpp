@@ -145,17 +145,8 @@ void imGuiUpdate()
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 }
 
-void updateBuffers()
-{
-	//D3D11_MAPPED_SUBRESOURCE mappedMemory;
-	//gGR->getDeviceContext()->Map(*gCamera->getConstantBuffer(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedMemory);
-	//memcpy(mappedMemory.pData, gCamera->getTransformMatrices(), sizeof(*gCamera->getTransformMatrices()));
-	//gGR->getDeviceContext()->Unmap(*gCamera->getConstantBuffer(), 0);
-}
-
 void update()
 {
-	//updateBuffers();
 	gGame->handleInput();
 	gGame->update();
 }
@@ -185,8 +176,11 @@ void render()
 	gGR->getDeviceContext()->IASetInputLayout(&gVSBV->getvertexLayout());
 	gGR->getDeviceContext()->PSSetSamplers(0, 0, nullptr);
 
-	gGame->getPlayer()->drawBoundingVolume(gGR->getDeviceContext());
-	gGame->getLevelHandler()->getGameObject(0)->drawBoundingVolume(gGR->getDeviceContext());
+	// Temporary solution to drawing bounding volumes (Drawing these in gamestate does not work)
+	gGame->getPlayer()->drawBoundingVolume(gGR->getDeviceContext()); // draw player bounding volume
+	// Loop through all the objects in levelhandler and draw their bounding volumes
+	for(size_t i = 0; i < gGame->getLevelHandler()->getNrOfGameObjects(); i++)
+		gGame->getLevelHandler()->getGameObject(i)->drawBoundingVolume(gGR->getDeviceContext());
 }
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)

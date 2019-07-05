@@ -62,6 +62,11 @@ void GameObjectHandler::addGameObject(ObjectType objType, XMVECTOR position, std
 	}
 }
 
+int GameObjectHandler::getNrOfObjects() const
+{
+	return _nrOfObjects;
+}
+
 void GameObjectHandler::drawObjects()
 {
 	for (size_t i = 0; i < _nrOfObjects; i++)

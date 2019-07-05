@@ -11,7 +11,12 @@ void GameState::handleInput(Game* game)
 	float diagonalDeltaSpeed = deltaSpeed * cos(DirectX::XM_PI / 4); // Delta speed * cos(pi/4) = diogonal delta speed (if you don't multiply with cos(pi/4) the player will move double as fast diagonally)
 	XMVECTOR playerVelocity{ 0.0f, 0.0f, 0.0f, 0.0f };
 
-	if (!game->getPlayer()->getBoundingVolume()->intersectsWithOBB(game->getLevelHandler()->getGameObject(0)->getBoundingVolume()))
+	int nrOfObjects = game->getLevelHandler()->getNrOfGameObjects();
+	bool colliding = false;
+	for (int i = 0; i < nrOfObjects && colliding == false; i++)
+		colliding = game->getPlayer()->getBoundingVolume()->intersectsWithOBB(game->getLevelHandler()->getGameObject(i)->getBoundingVolume()); //Not safe, will crasch if you try to access gameobject outside of array.
+
+	if (colliding == false)
 	{
 		//Keyboard
 		if (kb.W) //Forward
@@ -57,11 +62,19 @@ void GameState::handleInput(Game* game)
 void GameState::update(Game* game)
 {
 	// if collision between player and other gameobject do something
-	// currently just moves player in the opposite direction until no collision. This also prevents player from "gliding along the surface".
-	if (game->getPlayer()->getBoundingVolume()->intersectsWithOBB(game->getLevelHandler()->getGameObject(0)->getBoundingVolume())) //Not safe, will crasch if you try to access gameobject outside of array.
+	// currently just moves player in the opposite direction until no collision. This also prevents player from "gliding along the surface" which isn't good.
+	// In order to fix not being able to slide along the surface one has to find the collision normal and push out that way
+	int nrOfObjects = game->getLevelHandler()->getNrOfGameObjects();
+	bool colliding = false;
+
+	for (int i = 0; i < nrOfObjects && colliding == false; i++)
+		colliding = game->getPlayer()->getBoundingVolume()->intersectsWithOBB(game->getLevelHandler()->getGameObject(i)->getBoundingVolume()); //Not safe, will crasch if you try to access gameobject outside of array.		
+	// move player in the opposite direction if collision is detected
+	if (colliding)
 		game->getPlayer()->move(-game->getPlayer()->getVelocity());
 	else
 		game->getPlayer()->move(game->getPlayer()->getVelocity());
+
 
 	game->getPlayer()->updateLogic();																	    //Update player
 	game->getCamera()->followObject(game->getPlayer()->getPosition(), game->getClock()->getDeltaSeconds()); //Update camera based on player position

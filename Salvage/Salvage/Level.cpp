@@ -16,6 +16,11 @@ void Level::drawLevel()
 	_objHandler->drawObjects();
 }
 
+int Level::getNrOfGameObjects() const
+{
+	return _objHandler->getNrOfObjects();
+}
+
 GameObject * Level::getGameObject(int index)
 {
 	return _objHandler->getGameObject(index);

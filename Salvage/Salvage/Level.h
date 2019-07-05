@@ -12,5 +12,7 @@ public:
 	~Level();
 
 	void drawLevel();
+	int getNrOfGameObjects() const;
 	GameObject* getGameObject(int index);
+
 };

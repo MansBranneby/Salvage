@@ -36,7 +36,7 @@ public:
 	void update();													   //Calls update on current state
 	void draw();													   //Calls draw on current state
 
-	ID3D11DeviceContext* getDeviceContext();
+	ID3D11DeviceContext* getDeviceContext() const;
 	Player* getPlayer();
 	Clock* getClock();
 	InputController* getInputController();

@@ -104,7 +104,7 @@ void Game::draw()
 			_states[i]->draw(this);
 }
 
-ID3D11DeviceContext * Game::getDeviceContext()
+ID3D11DeviceContext * Game::getDeviceContext() const
 {
 	return _deviceContext;
 }

@@ -24,6 +24,7 @@ public:
 	virtual~GameObjectHandler();
 
 	void addGameObject(ObjectType objType, XMVECTOR position, std::string modelFile);
+	int getNrOfObjects() const;
 	void drawObjects();
 	GameObject* getGameObject(int index) const;
 };
