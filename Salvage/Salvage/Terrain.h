@@ -2,6 +2,7 @@
 #include "DirectXMath.h"
 #include <stdio.h>
 #include <Windows.h>
+
 class Terrain
 {
 private:

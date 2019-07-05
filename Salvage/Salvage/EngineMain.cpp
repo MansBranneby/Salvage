@@ -138,17 +138,7 @@ void imGuiUpdate()
 	gGame->getCamera()->setSmoothSpeed(gSmoothSpeed);
 	gGame->getCamera()->setLookAtSpeed(gLookAtSpeed);
 
-	ImGui::Text("X: %.2f, Y: %.2f, Z: %.2f", XMVectorGetX(gGame->getPlayer()->getPosition()), XMVectorGetY(gGame->getPlayer()->getPosition()), XMVectorGetZ(gGame->getPlayer()->getPosition()));
-	ImGui::Text("X: %.2f, Y: %.2f, Z: %.2f", XMVectorGetX(gGame->getPlayer()->getBoundingVolume()->getCenter()), XMVectorGetY(gGame->getPlayer()->getBoundingVolume()->getCenter()), XMVectorGetZ(gGame->getPlayer()->getBoundingVolume()->getCenter()));
-
-	//// Camera modes
-	//if (ImGui::Button("Debug mode"))
-	//	//gCamera->setMode(DEBUG);
-
-	////ImGui::SameLine();
-
-	//if (ImGui::Button("Game mode"))
-	//	//gCamera->setMode(GAME);
+	ImGui::Text("Player position: X: %.2f, Y: %.2f, Z: %.2f", XMVectorGetX(gGame->getPlayer()->getPosition()), XMVectorGetY(gGame->getPlayer()->getPosition()), XMVectorGetZ(gGame->getPlayer()->getPosition()));
 
 	ImGui::End();
 	ImGui::Render();
@@ -163,21 +153,11 @@ void updateBuffers()
 	//gGR->getDeviceContext()->Unmap(*gCamera->getConstantBuffer(), 0);
 }
 
-void updateCamera()
-{
-	//DirectX::Mouse::State ms = gInputCtrl->getMouseState();
-	//gInputCtrl->setMouseMode();
-	//gCamera->update(gInputCtrl->getKeyboardState(), ms, gClock.getDeltaSeconds());
-}
-
 void update()
 {
-	updateBuffers();
-	//updateCamera();
+	//updateBuffers();
 	gGame->handleInput();
 	gGame->update();
-	//gModel.animate(10);
-	//gOriginObject.animate(0);
 }
 
 

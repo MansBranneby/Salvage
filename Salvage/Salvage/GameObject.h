@@ -6,7 +6,7 @@ using namespace DirectX;
 enum ObjectType //Troligtvis ett tillfälligt sätt att hantera detta.
 {
 	PLAYER,
-	Enemy,
+	ENEMY,
 	STATICOBJECT
 };
 
@@ -25,7 +25,7 @@ protected:
 	void updateTransformations(XMFLOAT3 position);
 
 public:
-
+	GameObject();
 	GameObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext, ObjectType objType, DirectX::XMVECTOR position, std::string modelFile);
 	~GameObject();
 

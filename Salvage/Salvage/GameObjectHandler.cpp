@@ -51,7 +51,7 @@ void GameObjectHandler::addGameObject(ObjectType objType, XMVECTOR position, std
 	case PLAYER:
 		_gameObjects[_nrOfObjects++] = new Player(_device, _deviceContext, position, modelFile);
 		break;
-	case Enemy:
+	case ENEMY:
 		//_gameObjects[_nrOfObjects++] = new Enemy(_device, _deviceContext, position);
 		break;
 	case STATICOBJECT:

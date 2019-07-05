@@ -5,6 +5,10 @@ void GameObject::updateTransformations(XMFLOAT3 position)
 	_model.updateTransformation(position);
 }
 
+GameObject::GameObject()
+{
+}
+
 GameObject::GameObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext, ObjectType objType, DirectX::XMVECTOR position, std::string modelFile)
 {
 	_position = position;
