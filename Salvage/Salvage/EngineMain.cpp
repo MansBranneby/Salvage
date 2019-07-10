@@ -178,7 +178,8 @@ void render()
 
 	if (drawBoundingVolume == true)
 	{
-		// Temporary solution to drawing bounding volumes (Drawing these in gamestate does not work)
+		// Temporary solution to drawing bounding volumes (Drawing these in gamestate does not work because we have to set shaders (look above))
+		// draw player bounding volume
 		gGame->getPlayer()->drawBoundingVolume(gGR->getDeviceContext()); // draw player bounding volume
 		// Loop through all the objects in levelhandler and draw their bounding volumes
 		for(int i = 0; i < gGame->getLevelHandler()->getNrOfGameObjects(); i++)
@@ -225,7 +226,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 				float clearColour[] = {0.0f,0.0f,0.0f};
 
 				gGR->getDeviceContext()->ClearRenderTargetView(*gGR->getBackBuffer(), clearColour);
-				gGR->getDeviceContext()->OMSetRenderTargets(1, gGR->getBackBuffer(), gGR->getDepthStencilView());//ENABLE DEPTH TEST WHEN WE HAVE A CAMERA
+				gGR->getDeviceContext()->OMSetRenderTargets(1, gGR->getBackBuffer(), gGR->getDepthStencilView());
 				gGR->getDeviceContext()->ClearDepthStencilView(gGR->getDepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 				update();

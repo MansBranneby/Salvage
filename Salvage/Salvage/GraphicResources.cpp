@@ -43,6 +43,10 @@ void GraphicResources::createDepthStencil()
 	dsDesc.DepthEnable = true; //SET TRUE WHEN WE HAVE A CAMERA
 	dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 	dsDesc.DepthFunc = D3D11_COMPARISON_LESS;
+	
+	//dsDesc.StencilEnable = true;
+	//dsDesc.StencilReadMask = 0xFF;
+	//dsDesc.StencilWriteMask = 0xFF;
 
 	//// Stencil operations if pixel is front-facing
 	//dsDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
