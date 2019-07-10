@@ -86,6 +86,7 @@ PixelShader* gPSBV = nullptr;
 // IMGUI VARIABLES //
 float gSmoothSpeed = 1.0f;
 float gLookAtSpeed = 1.0f;
+bool drawBoundingVolume = false;
 
 void initializeResources(HWND wndHandle)
 {
@@ -137,9 +138,8 @@ void imGuiUpdate()
 	ImGui::SliderFloat("LookAtSpeed", &gLookAtSpeed, 0.0f, 20.0f);
 	gGame->getCamera()->setSmoothSpeed(gSmoothSpeed);
 	gGame->getCamera()->setLookAtSpeed(gLookAtSpeed);
-
 	ImGui::Text("Player position: X: %.2f, Y: %.2f, Z: %.2f", XMVectorGetX(gGame->getPlayer()->getPosition()), XMVectorGetY(gGame->getPlayer()->getPosition()), XMVectorGetZ(gGame->getPlayer()->getPosition()));
-
+	ImGui::Checkbox("Draw bounding volume", &drawBoundingVolume);
 	ImGui::End();
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
@@ -176,11 +176,14 @@ void render()
 	gGR->getDeviceContext()->IASetInputLayout(&gVSBV->getvertexLayout());
 	gGR->getDeviceContext()->PSSetSamplers(0, 0, nullptr);
 
-	// Temporary solution to drawing bounding volumes (Drawing these in gamestate does not work)
-	gGame->getPlayer()->drawBoundingVolume(gGR->getDeviceContext()); // draw player bounding volume
-	// Loop through all the objects in levelhandler and draw their bounding volumes
-	for(size_t i = 0; i < gGame->getLevelHandler()->getNrOfGameObjects(); i++)
-		gGame->getLevelHandler()->getGameObject(i)->drawBoundingVolume(gGR->getDeviceContext());
+	if (drawBoundingVolume == true)
+	{
+		// Temporary solution to drawing bounding volumes (Drawing these in gamestate does not work)
+		gGame->getPlayer()->drawBoundingVolume(gGR->getDeviceContext()); // draw player bounding volume
+		// Loop through all the objects in levelhandler and draw their bounding volumes
+		for(int i = 0; i < gGame->getLevelHandler()->getNrOfGameObjects(); i++)
+			gGame->getLevelHandler()->getGameObject(i)->drawBoundingVolume(gGR->getDeviceContext());
+	}
 }
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)

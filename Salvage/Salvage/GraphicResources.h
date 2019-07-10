@@ -26,10 +26,6 @@ private:
 	
 	// SAMPLERS //
 	ID3D11SamplerState* _samplerState = nullptr;
-	
-	// BUFFERS //
-	//TEXTURES //
-	//Dess lär nog bara finnas i externa klasser
 
 public:
 	

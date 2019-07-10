@@ -1,10 +1,5 @@
 #include "Game.h"
 
-//void Game::updateCamera()
-//{
-//	_camera->followObject(_player->getPosition());
-//}
-
 void Game::updateCameraBuffers()
 {
 	D3D11_MAPPED_SUBRESOURCE mappedMemory;

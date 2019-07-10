@@ -8,7 +8,7 @@ public:
 	float u, v;
 	float weights[4];
 	float boneIndices[4];
-	//float r, g, b; // Senare u, v; 
+
 	Vertex();
 	~Vertex();
 };

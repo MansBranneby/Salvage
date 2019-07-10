@@ -1,14 +1,13 @@
 #include "Terrain.h"
 
-void Terrain::loadHeightMap()
+void Terrain::loadHeightmap()
 {
 	FILE* filePtr;
 	BITMAPFILEHEADER bitmapFileHeader;        //Structure which stores information about file
 	BITMAPINFOHEADER bitmapInfoHeader;        //Structure which stores information about image
-	size_t imageSize, index;
-	unsigned char height;
 
-	if (fopen_s(&filePtr, _filename, "rb"))
+	size_t imageSize;
+	if (fopen_s(&filePtr, _filename.c_str(), "rb") == 0)
 	{
 		fread(&bitmapFileHeader, sizeof(BITMAPFILEHEADER), 1, filePtr);
 		fread(&bitmapInfoHeader, sizeof(BITMAPINFOHEADER), 1, filePtr);
@@ -33,43 +32,66 @@ void Terrain::loadHeightMap()
 		fclose(filePtr);
 
 		//store vertices for terrain
-		_vertices = new DirectX::XMFLOAT3[_terrainWidth * _terrainHeight];
+		_heightmap.resize(_terrainWidth * _terrainHeight);
 
-		
-
-		// We divide the height by this number to "water down" the terrains height, otherwise the terrain will
-		// appear to be "spikey" and not so smooth.
-		float heightFactor = 10.0f;
 		// We use a greyscale image, so all 3 rgb values are the same, but we only need one for the height
 		// So we use this counter to skip the next two components in the image data (we read R, then skip BG)
 		int k = 0;
-
-		for (size_t i = 0; i < _terrainHeight; i++)
+		unsigned char height;
+		size_t index;
+		for (size_t i = 0; i < _terrainHeight; ++i)
 		{
-			for (size_t j = 0; j < _terrainWidth; j++)
+			for (size_t j = 0; j < _terrainWidth; ++j)
 			{
 				height = bitmapImage[k];
 				index = (_terrainHeight * i) + j;
 
-				_vertices[index].x = (float)j;
-				_vertices[index].y = (float)height / heightFactor;
-				_vertices[index].z = (float)i;
+				_heightmap[index].x = (float)j;
+				_heightmap[index].y = (float)height / _heightFactor;
+				_heightmap[index].z = (float)i;
 
 				k += 3;
 			}
 		}
 
-		delete bitmapImage;
-		bitmapImage = nullptr;
+		delete [] bitmapImage;
+		bitmapImage = 0;
 	}
 
 }
 
-Terrain::Terrain(char * filename)
+Terrain::Terrain(ID3D11Device* device, ID3D11DeviceContext* deviceContext, DirectX::XMVECTOR startingPosition, std::string filename)
+	:StaticObject(TERRAIN, startingPosition)
 {
-	_filename = filename;
+	_filename = ".\\Resources\\HeightMaps\\" + filename;
 	_terrainWidth = 0;
 	_terrainHeight = 0;
-	//Load height map
-	loadHeightMap();
+	_heightFactor = 10.0f; //Decides how spikey the terrain is
+	//Load heightmap
+	loadHeightmap();
+
+	//function in GameObject
+	//create grid with heightmap
+	loadTerrainModel(device, deviceContext, _terrainWidth, _terrainHeight, _heightmap); 
+}
+
+Terrain::~Terrain()
+{
+}
+
+float Terrain::getHeight(float worldX, float worldZ)
+{
+	// Convert world space -> terrain space
+	DirectX::XMMATRIX inverseModel = DirectX::XMMatrixInverse(nullptr, DirectX::XMMatrixIdentity());
+	DirectX::XMVECTOR terrainSpace = DirectX::XMVector4Transform(DirectX::XMVECTOR{ worldX, 0.0f, worldZ, 1.0f }, inverseModel);
+	int x = (int)DirectX::XMVectorGetX(terrainSpace);
+	int z = (int)DirectX::XMVectorGetZ(terrainSpace);
+
+	if (x < 0 || z < 0 || x > _terrainWidth || z > _terrainHeight)
+		return 0.0f;
+
+	// location in array
+	int index = z * _terrainHeight + x;
+
+	return _heightmap[index].y;
 }

@@ -5,8 +5,10 @@ void GameObject::updateTransformations(XMFLOAT3 position)
 	_model.updateTransformation(position);
 }
 
-GameObject::GameObject()
+GameObject::GameObject(ObjectType objectType, DirectX::XMVECTOR startingPosition)
 {
+	_position = startingPosition;
+	_objectType = objectType;
 }
 
 GameObject::GameObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext, ObjectType objType, DirectX::XMVECTOR position, std::string modelFile)
@@ -14,9 +16,6 @@ GameObject::GameObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 	_position = position;
 	_objectType = objType;
 	createModel(device, deviceContext, modelFile);
-
-	//Initial orientation of object
-	_lookAt = DirectX::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
 } 
 
 GameObject::~GameObject()
@@ -41,6 +40,11 @@ bool GameObject::createModel(ID3D11Device* device, ID3D11DeviceContext* deviceCo
 		break;
 	};
 	return true;
+}
+
+void GameObject::loadTerrainModel(ID3D11Device* device, ID3D11DeviceContext* deviceContext, size_t terrainWidth, size_t terrainHeight, std::vector<DirectX::XMFLOAT3> heightmap)
+{
+	_model.processHeightmap(device, deviceContext, terrainWidth, terrainHeight, heightmap);
 }
 
 void GameObject::draw(ID3D11DeviceContext * deviceContext)

@@ -25,3 +25,8 @@ GameObject * LevelHandler::getGameObject(int index)
 {
 	return _level->getGameObject(index);
 }
+
+Terrain * LevelHandler::getTerrain(int index)
+{
+	return _level->getTerrain(index);
+}

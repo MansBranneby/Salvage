@@ -2,6 +2,7 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "StaticObject.h"
+#include "Terrain.h"
 
 class GameObjectHandler
 {
@@ -14,6 +15,7 @@ private:
 	int _capacity;
 	int _nrOfObjects;
 	GameObject** _gameObjects = nullptr;
+	std::vector<Terrain*> _terrain; // vector filled with terrain
 
 	//Manage container
 	void freeMemory();
@@ -25,6 +27,9 @@ public:
 
 	void addGameObject(ObjectType objType, XMVECTOR position, std::string modelFile);
 	int getNrOfObjects() const;
+	std::vector<Terrain*> getTerrain();
+
+	void drawTerrain();
 	void drawObjects();
 	GameObject* getGameObject(int index) const;
 };

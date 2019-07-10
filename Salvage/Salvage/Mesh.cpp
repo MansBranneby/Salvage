@@ -5,7 +5,7 @@ void Mesh::createBuffers(ID3D11Device * device, std::vector<Vertex> vertices, st
 	//CREATE VERTEX BUFFER
 	D3D11_BUFFER_DESC vdesc;
 	vdesc.Usage = D3D11_USAGE_IMMUTABLE;
-	vdesc.ByteWidth = sizeof(Vertex) * vertices.size();
+	vdesc.ByteWidth = sizeof(Vertex) * (UINT)vertices.size();
 	vdesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	vdesc.CPUAccessFlags = 0;
 	vdesc.MiscFlags = 0;
@@ -20,7 +20,7 @@ void Mesh::createBuffers(ID3D11Device * device, std::vector<Vertex> vertices, st
 	//CREATE INDEX BUFFER
 	D3D11_BUFFER_DESC idesc;
 	idesc.Usage = D3D11_USAGE_IMMUTABLE;
-	idesc.ByteWidth = sizeof(int) * indices.size();
+	idesc.ByteWidth = sizeof(int) * (UINT)indices.size();
 	idesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	idesc.CPUAccessFlags = 0;
 	idesc.MiscFlags = 0;
@@ -65,5 +65,5 @@ void Mesh::draw(ID3D11DeviceContext * deviceContext, ID3D11Buffer* transformatio
 
 	deviceContext->PSSetShaderResources(0, 1, &_textures[0]._texture);
 
-	deviceContext->DrawIndexed(_indices.size(), 0, 0);
+	deviceContext->DrawIndexed((UINT)_indices.size(), 0, 0);
 }

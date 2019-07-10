@@ -14,5 +14,6 @@ public:
 	void drawLevel();
 	int getNrOfGameObjects() const;
 	GameObject* getGameObject(int index);
+	Terrain* getTerrain(int index);
 
 };

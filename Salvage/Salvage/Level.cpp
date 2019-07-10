@@ -14,6 +14,7 @@ Level::~Level()
 void Level::drawLevel()
 {
 	_objHandler->drawObjects();
+	_objHandler->drawTerrain();
 }
 
 int Level::getNrOfGameObjects() const
@@ -24,4 +25,9 @@ int Level::getNrOfGameObjects() const
 GameObject * Level::getGameObject(int index)
 {
 	return _objHandler->getGameObject(index);
+}
+
+Terrain * Level::getTerrain(int index)
+{
+	return _objHandler->getTerrain()[index];
 }

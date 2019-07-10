@@ -1,54 +1,53 @@
 #include "Model.h"
-#include "Model.h"
 
-aiNode * Model::findNodeRecursivelyByName(const aiNode* node, aiString channelName)
-{
-	aiNode thisNode = *node;
-	aiNode* returnNode;
-	//Check name for current node
-	if (node->mName == channelName)
-		returnNode = &thisNode;
-	else
-		returnNode = NULL;
-	//Go down tree and process all nodes
-	if (node->mNumChildren && returnNode == NULL)
-	{
-		for (size_t i = 0; i < node->mNumChildren && returnNode == NULL; i++)
-		{
-			returnNode = findNodeRecursivelyByName(node->mChildren[i], channelName);
-
-		}
-	}
-	if (node->mName == channelName)
-	{
-
-	}
-	return returnNode;
-
-	//aiNode* returnNode;
-	////Check name for current node
-	//if (node->mName == channelName)
-	//{
-	//	returnNode = node;
-	//	return node;
-	//}
-	//else
-	//	returnNode = NULL;
-	////Go down tree and process all nodes
-	//if (node->mNumChildren && returnNode == NULL)
-	//{
-	//	for (size_t i = 0; i < node->mNumChildren && returnNode == NULL; i++)
-	//	{
-	//		return findNodeRecursivelyByName(node->mChildren[i], channelName);
-
-	//	}
-	//}
-	//if (node->mName == channelName)
-	//{
-
-	//}
-	//return returnNode;
-}
+//aiNode * Model::findNodeRecursivelyByName(const aiNode* node, aiString channelName)
+//{
+//	aiNode thisNode = *node;
+//	aiNode* returnNode;
+//	//Check name for current node
+//	if (node->mName == channelName)
+//		returnNode = &thisNode;
+//	else
+//		returnNode = NULL;
+//	//Go down tree and process all nodes
+//	if (node->mNumChildren && returnNode == NULL)
+//	{
+//		for (size_t i = 0; i < node->mNumChildren && returnNode == NULL; i++)
+//		{
+//			returnNode = findNodeRecursivelyByName(node->mChildren[i], channelName);
+//
+//		}
+//	}
+//	if (node->mName == channelName)
+//	{
+//
+//	}
+//	return returnNode;
+//
+//	//aiNode* returnNode;
+//	////Check name for current node
+//	//if (node->mName == channelName)
+//	//{
+//	//	returnNode = node;
+//	//	return node;
+//	//}
+//	//else
+//	//	returnNode = NULL;
+//	////Go down tree and process all nodes
+//	//if (node->mNumChildren && returnNode == NULL)
+//	//{
+//	//	for (size_t i = 0; i < node->mNumChildren && returnNode == NULL; i++)
+//	//	{
+//	//		return findNodeRecursivelyByName(node->mChildren[i], channelName);
+//
+//	//	}
+//	//}
+//	//if (node->mName == channelName)
+//	//{
+//
+//	//}
+//	//return returnNode;
+//}
 
 void Model::processNode(ID3D11Device* device, aiNode * node)
 {
@@ -71,9 +70,7 @@ Mesh* Model::processMesh(ID3D11Device* device, aiMesh * mesh)
 	std::vector<Vertex> vertices;
 	std::vector<int> indices;
 	std::vector<Texture> textures;
-	//Bounding volume
-	DirectX::XMFLOAT3 maxCoordinates = { 0, 0, 0 };
-	DirectX::XMFLOAT3 minCoordinates = { 0, 0, 0 };
+
 	//std::vector<VertexBoneData> bones;
 	//bones.resize(mesh->mNumVertices); // Kanske rätt? Hoppas det är numVer för mesh och inte för scene...
 	//int numBones = 0; //Kom ihåg att skicka denna till Mesh konstruktorn
@@ -85,6 +82,9 @@ Mesh* Model::processMesh(ID3D11Device* device, aiMesh * mesh)
 			texType = determineTextureType(material);
 	}
 
+	//Bounding volume
+	DirectX::XMFLOAT3 maxCoordinates = { 0, 0, 0 };
+	DirectX::XMFLOAT3 minCoordinates = { 0, 0, 0 };
 	//Loop vertices
 	for (size_t i = 0; i < mesh->mNumVertices; i++)
 	{
@@ -228,7 +228,7 @@ std::vector<Texture> Model::loadTextures(aiMaterial* material, aiTextureType tex
 			else
 			{
 				std::string filename = std::string(str.C_Str()); //Some string magic
-				filename = _directory + '\\' + filename; //Tror inte det ska vara '/'
+				filename = _directory + '\\' + filename;
 				std::wstring filenamews = std::wstring(filename.begin(), filename.end());
 				hr = CoInitialize(NULL);
 				hr = DirectX::CreateWICTextureFromFile(_device, filenamews.c_str(), NULL, &texture._texture);
@@ -365,61 +365,61 @@ bool Model::loadModel(ID3D11Device * device, ID3D11DeviceContext * deviceContext
 	return true;
 }
 
-void Model::animate(float timeInSec)
-{
-	_scene->mRootNode->mTransformation = aiMatrix4x4(aiVector3D(1, 1, 1), aiQuaternion(0, 0, 0), aiVector3D(0, timeInSec, 0));
-
-	D3D11_MAPPED_SUBRESOURCE mappedMemory;
-	_deviceContext->Map(_transformationBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedMemory);
-	memcpy(mappedMemory.pData, &_scene->mRootNode->mTransformation, sizeof(_scene->mRootNode->mTransformation));
-	_deviceContext->Unmap(_transformationBuffer, 0);
-
-	//if (_scene->HasAnimations())
-	//{
-
-	//}
-	//const aiAnimation* anim = _scene->mAnimations[0];
-	//double currentTime = fmod(timeInSec * 1000, anim->mDuration);
-	//for (size_t i = 0; i < anim->mNumChannels; ++i)
-	//{
-	//	const aiNodeAnim* channel = anim->mChannels[i];
-	//	aiVector3D curPosition;
-	//	aiQuaternion curRotation;
-	//	// scaling purposefully left out 
-	//	// find the node which the channel affects
-	//	aiNode* targetNode = findNodeRecursivelyByName(_scene->mRootNode, channel->mNodeName);
-	//	// find current position
-	//	size_t posIndex = 0;
-	//	while (1)
-	//	{
-	//		// break if this is the last key - there are no more keys after this one, we need to use it
-	//		if (posIndex + 1 >= channel->mNumPositionKeys)
-	//			break;
-	//		// break if the next key lies in the future - the current one is the correct one then
-	//		if (channel->mPositionKeys[posIndex + 1].mTime > currentTime)
-	//			break;
-	//		posIndex++;
-	//	}
-	//	// maybe add a check here if the anim has any position keys at all
-	//	curPosition = channel->mPositionKeys[posIndex].mValue;
-	//	// same goes for rotation, but I shorten it now
-	//	size_t rotIndex = 0;
-	//	while (1)
-	//	{
-	//		if (rotIndex + 1 >= channel->mNumRotationKeys)
-	//			break;
-	//		if (channel->mRotationKeys[rotIndex + 1].mTime > currentTime)
-	//			break;
-	//		rotIndex++;
-	//	}
-	//	curRotation = channel->mRotationKeys[posIndex].mValue;
-	//	// now build a transformation matrix from it. First rotation, thenn push position in it as well. 
-	//	aiMatrix4x4 trafo = aiMatrix4x4(curRotation.GetMatrix());
-	//	trafo.a4 = curPosition.x; trafo.b4 = curPosition.y; trafo.c4 = curPosition.z;
-	//	// assign this transformation to the node
-	//	targetNode->mTransformation = trafo;
-	//}
-}
+//void Model::animate(float timeInSec)
+//{
+//	//_scene->mRootNode->mTransformation = aiMatrix4x4(aiVector3D(1, 1, 1), aiQuaternion(0, 0, 0), aiVector3D(0, timeInSec, 0));
+//
+//	//D3D11_MAPPED_SUBRESOURCE mappedMemory;
+//	//_deviceContext->Map(_transformationBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedMemory);
+//	//memcpy(mappedMemory.pData, &_scene->mRootNode->mTransformation, sizeof(_scene->mRootNode->mTransformation));
+//	//_deviceContext->Unmap(_transformationBuffer, 0);
+//
+//	//if (_scene->HasAnimations())
+//	//{
+//
+//	//}
+//	//const aiAnimation* anim = _scene->mAnimations[0];
+//	//double currentTime = fmod(timeInSec * 1000, anim->mDuration);
+//	//for (size_t i = 0; i < anim->mNumChannels; ++i)
+//	//{
+//	//	const aiNodeAnim* channel = anim->mChannels[i];
+//	//	aiVector3D curPosition;
+//	//	aiQuaternion curRotation;
+//	//	// scaling purposefully left out 
+//	//	// find the node which the channel affects
+//	//	aiNode* targetNode = findNodeRecursivelyByName(_scene->mRootNode, channel->mNodeName);
+//	//	// find current position
+//	//	size_t posIndex = 0;
+//	//	while (1)
+//	//	{
+//	//		// break if this is the last key - there are no more keys after this one, we need to use it
+//	//		if (posIndex + 1 >= channel->mNumPositionKeys)
+//	//			break;
+//	//		// break if the next key lies in the future - the current one is the correct one then
+//	//		if (channel->mPositionKeys[posIndex + 1].mTime > currentTime)
+//	//			break;
+//	//		posIndex++;
+//	//	}
+//	//	// maybe add a check here if the anim has any position keys at all
+//	//	curPosition = channel->mPositionKeys[posIndex].mValue;
+//	//	// same goes for rotation, but I shorten it now
+//	//	size_t rotIndex = 0;
+//	//	while (1)
+//	//	{
+//	//		if (rotIndex + 1 >= channel->mNumRotationKeys)
+//	//			break;
+//	//		if (channel->mRotationKeys[rotIndex + 1].mTime > currentTime)
+//	//			break;
+//	//		rotIndex++;
+//	//	}
+//	//	curRotation = channel->mRotationKeys[posIndex].mValue;
+//	//	// now build a transformation matrix from it. First rotation, thenn push position in it as well. 
+//	//	aiMatrix4x4 trafo = aiMatrix4x4(curRotation.GetMatrix());
+//	//	trafo.a4 = curPosition.x; trafo.b4 = curPosition.y; trafo.c4 = curPosition.z;
+//	//	// assign this transformation to the node
+//	//	targetNode->mTransformation = trafo;
+//	//}
+//}
 
 void Model::draw(ID3D11DeviceContext* deviceContext, ID3D11Buffer* transformationBuffer)
 {
@@ -439,4 +439,120 @@ void Model::draw(ID3D11DeviceContext* deviceContext)
 void Model::drawBoundingVolume(ID3D11DeviceContext * deviceContext)
 {
 	_boundingVolume->draw(deviceContext, _transformationBuffer);
+}
+
+void Model::processHeightmap(ID3D11Device* device, ID3D11DeviceContext* deviceContext, size_t terrainWidth, size_t terrainHeight, std::vector<DirectX::XMFLOAT3> heightmap)
+{
+	_device = device;
+	_deviceContext = deviceContext;
+
+	// Used following tutorial: https://www.braynzarsoft.net/viewtutorial/q16390-30-heightmap-terrain
+	// Why ++i instead of i++?: https://stackoverflow.com/questions/4706199/post-increment-and-pre-increment-within-a-for-loop-produce-same-output
+
+	// TERRAIN (CREATING GRID) //
+	//***********
+	// LOAD HEIGHTMAP TO VERTICES //
+	std::vector<Vertex> vertices(terrainWidth * terrainHeight);
+	for (size_t i = 0; i < terrainWidth; ++i)
+	{
+		for (size_t j = 0; j < terrainHeight; ++j)
+		{
+			vertices[(i * (int)terrainWidth) + j].x = heightmap[(i * (int)terrainWidth) + j].x;
+			vertices[(i * (int)terrainWidth) + j].y = heightmap[(i * (int)terrainWidth) + j].y;
+			vertices[(i * (int)terrainWidth) + j].z = heightmap[(i * (int)terrainWidth) + j].z;
+		}
+	}
+
+	// INDICES AND TEXTURE COORDINATES
+	int k = 0;
+	int texUIndex = 0;
+	int texVIndex = 0;
+	int nrOfFaces = ((int)terrainWidth - 1)*((int)terrainHeight - 1) * 2;
+	std::vector<int> indices(nrOfFaces * 3);
+
+	for (size_t i = 0; i < (int)terrainWidth - 1; ++i)
+	{
+		for (size_t j = 0; j < (int)terrainHeight - 1; ++j)
+		{
+			indices[k] = (int)(i * terrainHeight + j);        // Bottom left of quad
+			vertices[i*terrainHeight + j].u = texUIndex + 0.0f;
+			vertices[i*terrainHeight + j].v = texVIndex + 1.0f;
+
+			indices[k + 1] = (int)(i * terrainHeight + j + 1);        // Bottom right of quad
+			vertices[i*terrainHeight + j + 1].u = texUIndex + 1.0f;
+			vertices[i*terrainHeight + j + 1].v = texVIndex + 1.0f;
+
+			indices[k + 2] = (int)((i + 1)*terrainHeight + j);    // Top left of quad
+			vertices[(i + 1)*terrainHeight + j].u = texUIndex + 0.0f;
+			vertices[(i + 1)*terrainHeight + j].v = texVIndex + 0.0f;
+
+
+			indices[k + 3] = (int)((i + 1)*terrainHeight + j);    // Top left of quad
+			vertices[(i + 1)*terrainHeight + j].u = texUIndex + 0.0f; 
+			vertices[(i + 1)*terrainHeight + j].v = texVIndex + 0.0f;
+
+			indices[k + 4] = (int)(i * terrainHeight + j + 1);        // Bottom right of quad
+			vertices[i*terrainHeight + j + 1].u = texUIndex + 1.0f;
+			vertices[i*terrainHeight + j + 1].u = texVIndex + 1.0f;
+
+			indices[k + 5] = (int)((i + 1)*terrainHeight + j + 1);    // Top right of quad
+			vertices[(i + 1)*terrainHeight + j + 1].u = texUIndex + 1.0f;
+			vertices[(i + 1)*terrainHeight + j + 1].u = texVIndex + 0.0f;
+
+			k += 6; // next quad
+			texUIndex++;
+		}
+		texUIndex = 0;
+		texVIndex++;
+	}
+	
+	// TEXTURE(S)
+	std::vector<Texture> textures;
+	Texture texture;
+	std::string filename = ".\\Resources\\Models\\grass.jpg";
+	std::wstring filenameWS = std::wstring(filename.begin(), filename.end());
+	
+	HRESULT hr = CoInitialize(NULL);
+	hr = DirectX::CreateWICTextureFromFile(_device, filenameWS.c_str(), NULL, &texture._texture);
+	if (FAILED(hr))
+		MessageBox(NULL, L"Texture couldn't be loader in function processHeightmap", L"Error!", MB_ICONERROR | MB_OK);
+	
+
+	textures.push_back(texture);
+	_loadedTextures.push_back(texture);
+
+
+	// BOUNDING VOLUME
+	_boundingVolume = new OBB(_device, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+	// MESH
+	_meshes.push_back(new Mesh(_device, vertices, indices, textures)); // GLENN
+
+
+
+	DirectX::XMMATRIX id = DirectX::XMMatrixIdentity();
+
+		//CONSTANT BUFFER
+	D3D11_BUFFER_DESC cbDesc;
+	cbDesc.ByteWidth = sizeof(id);
+	cbDesc.Usage = D3D11_USAGE_DYNAMIC;
+	cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	cbDesc.MiscFlags = 0;
+	cbDesc.StructureByteStride = 0;
+
+	// Fill in the subresource data.
+	D3D11_SUBRESOURCE_DATA InitData;
+	InitData.pSysMem = &id;
+	InitData.SysMemPitch = 0;
+	InitData.SysMemSlicePitch = 0;
+
+	// create a Constant Buffer
+	HRESULT result = device->CreateBuffer(&cbDesc, &InitData, &_transformationBuffer);
+	if (FAILED(result))
+		MessageBox(NULL, L"Error _transformationBuffer", L"Error", MB_OK | MB_ICONERROR);
+
+	D3D11_MAPPED_SUBRESOURCE mappedMemory;
+	_deviceContext->Map(_transformationBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedMemory);
+	memcpy(mappedMemory.pData, &id, sizeof(id));
+	_deviceContext->Unmap(_transformationBuffer, 0);
 }

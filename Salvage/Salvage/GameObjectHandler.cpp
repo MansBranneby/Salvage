@@ -16,6 +16,10 @@ void GameObjectHandler::freeMemory()
 	for (size_t i = 0; i < _nrOfObjects; i++)
 		delete _gameObjects[i];
 	delete[] _gameObjects;
+
+
+	for (size_t i = 0; i < _terrain.size(); i++)
+		delete _terrain[i];
 }
 
 void GameObjectHandler::expand()
@@ -57,6 +61,9 @@ void GameObjectHandler::addGameObject(ObjectType objType, XMVECTOR position, std
 	case STATICOBJECT:
 		_gameObjects[_nrOfObjects++] = new StaticObject(_device, _deviceContext, position, modelFile);
 		break;
+	case TERRAIN:
+		_terrain.push_back(new Terrain(_device, _deviceContext, position, modelFile));
+		break;
 	default:
 		break;
 	}
@@ -65,6 +72,17 @@ void GameObjectHandler::addGameObject(ObjectType objType, XMVECTOR position, std
 int GameObjectHandler::getNrOfObjects() const
 {
 	return _nrOfObjects;
+}
+
+std::vector<Terrain*> GameObjectHandler::getTerrain()
+{
+	return _terrain;
+}
+
+void GameObjectHandler::drawTerrain()
+{
+	for (size_t i = 0; i < _terrain.size(); i++)
+		_terrain[i]->draw(_deviceContext);
 }
 
 void GameObjectHandler::drawObjects()

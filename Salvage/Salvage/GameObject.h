@@ -7,7 +7,8 @@ enum ObjectType //Troligtvis ett tillfälligt sätt att hantera detta.
 {
 	PLAYER,
 	ENEMY,
-	STATICOBJECT
+	STATICOBJECT,
+	TERRAIN
 };
 
 class GameObject
@@ -18,6 +19,7 @@ private:
 	Model _model;
 	ObjectType _objectType;
 	std::string _modelDirectory = ".\\Resources\\Models\\";
+	
 
 protected:
 	XMVECTOR _position;
@@ -25,11 +27,12 @@ protected:
 	void updateTransformations(XMFLOAT3 position);
 
 public:
-	GameObject();
+	GameObject(ObjectType objectType, DirectX::XMVECTOR startingPosition);
 	GameObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext, ObjectType objType, DirectX::XMVECTOR position, std::string modelFile);
-	~GameObject();
+	virtual ~GameObject();
 
 	bool createModel(ID3D11Device* device, ID3D11DeviceContext* deviceContext, std::string modelFile); //Return true if everything works out
+	void loadTerrainModel(ID3D11Device* device, ID3D11DeviceContext* deviceContext, size_t terrainWidth, size_t terrainHeight, std::vector <DirectX::XMFLOAT3> heightmap);
 	void draw(ID3D11DeviceContext* deviceContext);
 	void drawBoundingVolume(ID3D11DeviceContext* deviceContext);
 	virtual void updateLogic() = 0;
