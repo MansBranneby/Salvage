@@ -204,6 +204,9 @@
     <ClCompile Include="Terrain.cpp">
       <Filter>RenderSystem\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>RenderSystem\Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -363,6 +366,9 @@
       <Filter>GameSystem\Header Files\Collision</Filter>
     </ClInclude>
     <ClInclude Include="Terrain.h">
+      <Filter>RenderSystem\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.h">
       <Filter>RenderSystem\Header Files</Filter>
     </ClInclude>
   </ItemGroup>

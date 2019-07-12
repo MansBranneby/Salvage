@@ -1,5 +1,6 @@
 #pragma once
 #include "LevelHandler.h"
+#include "Light.h"
 #include "Player.h"
 #include "State.h"
 #include "Clock.h"

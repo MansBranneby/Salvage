@@ -29,6 +29,8 @@
 #include "Drawable.h"
 #include "Model.h"
 #include "GameState.h"
+#include "Light.h" // GLENN
+#include "ConstantBuffer.h" // GLENN
 
 // DirectXTK
 #include "CommonStates.h"
@@ -108,9 +110,9 @@ void initializeResources(HWND wndHandle)
 	//GAME
 	gGame = new Game(gGR->getDevice(), gGR->getDeviceContext(), WIDTH, HEIGHT, gClock, gInputCtrl);
 	gGame->pushState(&gGameState); // Change which state the game is in, not done yet.
-	//TESTMODEL
-	//gModel.loadModel(gGR->getDevice(), gGR->getDeviceContext(), ".\\Resources\\Models\\gubbe1Ani.dae");
-	//gOriginObject.loadModel(gGR->getDevice(), gGR->getDeviceContext(), ".\\Resources\\Models\\noani.dae");
+
+	Light lit = Light(gGR->getDevice(), gGR->getDeviceContext(), XMFLOAT4(250.0f, 100.0f, 250.0f, 0.0f), XMFLOAT4(1.0, 1.0f, 1.0f, 0.0f));
+	gGR->getDeviceContext()->PSSetConstantBuffers(0, 1, ConstantBuffer(gGR->getDevice(), &lit, sizeof(lit)).getConstantBuffer());
 
 	//IMGUI
 	IMGUI_CHECKVERSION();

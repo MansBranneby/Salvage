@@ -6,12 +6,11 @@ class ConstantBuffer
 {
 private:
 	ID3D11Buffer* _constantBuffer = nullptr;
+	void createConstantBuffer(ID3D11Device* device, const void* data, UINT dataSize);
 
 public:
-	ConstantBuffer();
+	ConstantBuffer(ID3D11Device* device, const void* data, UINT dataSize);
 	~ConstantBuffer();
 
-	void createConstantBuffer(ID3D11Device* device, const void* data, UINT dataSize);
-	void createConstantBuffer(ID3D11Device* device, DirectX::XMMATRIX data);
 	ID3D11Buffer** getConstantBuffer();
 };

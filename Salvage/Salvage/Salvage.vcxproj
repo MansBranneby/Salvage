@@ -49,6 +49,7 @@
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="LevelAI.cpp" />
     <ClCompile Include="LevelHandler.cpp" />
+    <ClCompile Include="Light.cpp" />
     <ClCompile Include="LowerBody.cpp" />
     <ClCompile Include="MenuState.cpp" />
     <ClCompile Include="Mesh.cpp" />
@@ -107,6 +108,7 @@
     <ClInclude Include="Level.h" />
     <ClInclude Include="LevelAI.h" />
     <ClInclude Include="LevelHandler.h" />
+    <ClInclude Include="Light.h" />
     <ClInclude Include="LowerBody.h" />
     <ClInclude Include="MenuState.h" />
     <ClInclude Include="Mesh.h" />

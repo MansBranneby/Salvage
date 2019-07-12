@@ -66,7 +66,7 @@ Terrain::Terrain(ID3D11Device* device, ID3D11DeviceContext* deviceContext, Direc
 	_filename = ".\\Resources\\HeightMaps\\" + filename;
 	_terrainWidth = 0;
 	_terrainHeight = 0;
-	_heightFactor = 10.0f; //Decides how spikey the terrain is
+	_heightFactor = 10.0f; //Decides how spikey the terrain will be
 	//Load heightmap
 	loadHeightmap();
 
@@ -87,7 +87,7 @@ float Terrain::getHeight(float worldX, float worldZ)
 	int x = (int)DirectX::XMVectorGetX(terrainSpace);
 	int z = (int)DirectX::XMVectorGetZ(terrainSpace);
 
-	if (x < 0 || z < 0 || x > _terrainWidth || z > _terrainHeight)
+	if (x < 0 || z < 0 || x > (_terrainWidth - 1) || z > (_terrainHeight - 1))
 		return 0.0f;
 
 	// location in array

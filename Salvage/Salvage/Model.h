@@ -63,7 +63,7 @@ public:
 
 	void updateTransformation(DirectX::XMFLOAT3 position);
 	bool loadModel(ID3D11Device* device, ID3D11DeviceContext* deviceContext, std::string filename);
-	void animate(float timeInSec);
+	//void animate(float timeInSec);
 	void draw(ID3D11DeviceContext* deviceContext, ID3D11Buffer* transformationBuffer);
 	void draw(ID3D11DeviceContext* deviceContext);
 	void drawBoundingVolume(ID3D11DeviceContext* deviceContext);

@@ -82,38 +82,43 @@ Mesh* Model::processMesh(ID3D11Device* device, aiMesh * mesh)
 			texType = determineTextureType(material);
 	}
 
-	//Bounding volume
+	// Bounding volume
 	DirectX::XMFLOAT3 maxCoordinates = { 0, 0, 0 };
 	DirectX::XMFLOAT3 minCoordinates = { 0, 0, 0 };
-	//Loop vertices
+	// Loop vertices
 	for (size_t i = 0; i < mesh->mNumVertices; i++)
 	{
 		Vertex vertex;
 
-		//Vertex
-		vertex.x = mesh->mVertices[i].x;
-		vertex.y = mesh->mVertices[i].y;
-		vertex.z = mesh->mVertices[i].z;
+		// Vertex pos
+		vertex._position.x = mesh->mVertices[i].x;
+		vertex._position.y = mesh->mVertices[i].y;
+		vertex._position.z = mesh->mVertices[i].z;
 		
-		// BOUNDING VOLUME //
-		//Look for maximum XYZ coordinates for OBB
-		maxCoordinates.x = std::max(maxCoordinates.x, vertex.x);
-		maxCoordinates.y = std::max(maxCoordinates.y, vertex.y);
-		maxCoordinates.z = std::max(maxCoordinates.z, vertex.z);
-		//Look for minimum XYZ coordinates for OBB
-		minCoordinates.x = std::min(minCoordinates.x, vertex.x);
-		minCoordinates.y = std::min(minCoordinates.y, vertex.y);
-		minCoordinates.z = std::min(minCoordinates.z, vertex.z);
+		// Vertex normals
+		vertex._normal.x = mesh->mNormals[i].x;
+		vertex._normal.y = mesh->mNormals[i].y;
+		vertex._normal.z = mesh->mNormals[i].z;
 		
-		//Texturecoord
+		// Vertex texture coordinates
 		if (mesh->mTextureCoords[0])
 		{
-			vertex.u = (float)mesh->mTextureCoords[0][i].x; //Jag antar att diffuse texture ligger på index 0.
-			vertex.v = (float)mesh->mTextureCoords[0][i].y; //Så när vi vill ha normal map ligger den troligen på ett annat index.
+			vertex._textureCoords.x = (float)mesh->mTextureCoords[0][i].x; //Jag antar att diffuse texture ligger på index 0.
+			vertex._textureCoords.x = (float)mesh->mTextureCoords[0][i].y; //Så när vi vill ha normal map ligger den troligen på ett annat index.
 		}
 
 		//Save vertex
 		vertices.push_back(vertex);
+
+		// BOUNDING VOLUME //
+		// Look for maximum XYZ coordinates for OBB
+		maxCoordinates.x = std::max(maxCoordinates.x, vertex._position.x);
+		maxCoordinates.y = std::max(maxCoordinates.y, vertex._position.y);
+		maxCoordinates.z = std::max(maxCoordinates.z, vertex._position.z);
+		// Look for minimum XYZ coordinates for OBB
+		minCoordinates.x = std::min(minCoordinates.x, vertex._position.x);
+		minCoordinates.y = std::min(minCoordinates.y, vertex._position.y);
+		minCoordinates.z = std::min(minCoordinates.z, vertex._position.z);
 	}
 	// Create bounding volume
 	_boundingVolume = new OBB(device, minCoordinates, maxCoordinates);
@@ -457,9 +462,14 @@ void Model::processHeightmap(ID3D11Device* device, ID3D11DeviceContext* deviceCo
 	{
 		for (size_t j = 0; j < terrainHeight; ++j)
 		{
-			vertices[(i * (int)terrainWidth) + j].x = heightmap[(i * (int)terrainWidth) + j].x;
-			vertices[(i * (int)terrainWidth) + j].y = heightmap[(i * (int)terrainWidth) + j].y;
-			vertices[(i * (int)terrainWidth) + j].z = heightmap[(i * (int)terrainWidth) + j].z;
+			vertices[(i * (int)terrainWidth) + j]._position.x = heightmap[(i * (int)terrainWidth) + j].x;
+			vertices[(i * (int)terrainWidth) + j]._position.y = heightmap[(i * (int)terrainWidth) + j].y;
+			vertices[(i * (int)terrainWidth) + j]._position.z = heightmap[(i * (int)terrainWidth) + j].z;
+
+			//NORMALS
+			vertices[(i * (int)terrainWidth) + j]._normal.x = 0.0f;
+			vertices[(i * (int)terrainWidth) + j]._normal.y = 1.0f;
+			vertices[(i * (int)terrainWidth) + j]._normal.z = 0.0f;
 		}
 	}
 
@@ -474,30 +484,30 @@ void Model::processHeightmap(ID3D11Device* device, ID3D11DeviceContext* deviceCo
 	{
 		for (size_t j = 0; j < (int)terrainHeight - 1; ++j)
 		{
-			indices[k] = (int)(i * terrainHeight + j);        // Bottom left of quad
-			vertices[i*terrainHeight + j].u = texUIndex + 0.0f;
-			vertices[i*terrainHeight + j].v = texVIndex + 1.0f;
-
-			indices[k + 1] = (int)(i * terrainHeight + j + 1);        // Bottom right of quad
-			vertices[i*terrainHeight + j + 1].u = texUIndex + 1.0f;
-			vertices[i*terrainHeight + j + 1].v = texVIndex + 1.0f;
-
-			indices[k + 2] = (int)((i + 1)*terrainHeight + j);    // Top left of quad
-			vertices[(i + 1)*terrainHeight + j].u = texUIndex + 0.0f;
-			vertices[(i + 1)*terrainHeight + j].v = texVIndex + 0.0f;
-
-
-			indices[k + 3] = (int)((i + 1)*terrainHeight + j);    // Top left of quad
-			vertices[(i + 1)*terrainHeight + j].u = texUIndex + 0.0f; 
-			vertices[(i + 1)*terrainHeight + j].v = texVIndex + 0.0f;
+			indices[k + 5] = (int)(i * terrainHeight + j);        // Bottom left of quad
+			vertices[i*terrainHeight + j]._textureCoords.x = texUIndex + 0.0f;
+			vertices[i*terrainHeight + j]._textureCoords.y = texVIndex + 1.0f;
 
 			indices[k + 4] = (int)(i * terrainHeight + j + 1);        // Bottom right of quad
-			vertices[i*terrainHeight + j + 1].u = texUIndex + 1.0f;
-			vertices[i*terrainHeight + j + 1].u = texVIndex + 1.0f;
+			vertices[i*terrainHeight + j + 1]._textureCoords.x = texUIndex + 1.0f;
+			vertices[i*terrainHeight + j + 1]._textureCoords.y = texVIndex + 1.0f;
 
-			indices[k + 5] = (int)((i + 1)*terrainHeight + j + 1);    // Top right of quad
-			vertices[(i + 1)*terrainHeight + j + 1].u = texUIndex + 1.0f;
-			vertices[(i + 1)*terrainHeight + j + 1].u = texVIndex + 0.0f;
+			indices[k + 3] = (int)((i + 1)*terrainHeight + j);    // Top left of quad
+			vertices[(i + 1)*terrainHeight + j]._textureCoords.x = texUIndex + 0.0f;
+			vertices[(i + 1)*terrainHeight + j]._textureCoords.y = texVIndex + 0.0f;
+
+
+			indices[k + 2] = (int)((i + 1)*terrainHeight + j);    // Top left of quad
+			vertices[(i + 1)*terrainHeight + j]._textureCoords.x = texUIndex + 0.0f;
+			vertices[(i + 1)*terrainHeight + j]._textureCoords.y = texVIndex + 0.0f;
+
+			indices[k + 1] = (int)(i * terrainHeight + j + 1);        // Bottom right of quad
+			vertices[i*terrainHeight + j + 1]._textureCoords.x = texUIndex + 1.0f;
+			vertices[i*terrainHeight + j + 1]._textureCoords.y = texVIndex + 1.0f;
+
+			indices[k] = (int)((i + 1)*terrainHeight + j + 1);    // Top right of quad
+			vertices[(i + 1)*terrainHeight + j + 1]._textureCoords.x = texUIndex + 1.0f;
+			vertices[(i + 1)*terrainHeight + j + 1]._textureCoords.y = texVIndex + 0.0f;
 
 			k += 6; // next quad
 			texUIndex++;

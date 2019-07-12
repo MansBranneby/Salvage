@@ -29,24 +29,9 @@ HRESULT VertexShader::createVertexShader(LPCWSTR fileName, ID3D11Device * device
 void VertexShader::createInputLayout(ID3D11Device* device, ID3DBlob** pVS)
 {
 	D3D11_INPUT_ELEMENT_DESC inputDesc[] = {
-		{
-			"POSITION",		// "semantic" name in shader
-			0,				// "semantic" index (not used)
-			DXGI_FORMAT_R32G32B32_FLOAT, // size of ONE element (3 floats)
-			0,							 // input slot
-			0,							 // offset of first element
-			D3D11_INPUT_PER_VERTEX_DATA, // specify data PER vertex
-			0							 // used for INSTANCING (ignore)
-		},
-		{
-			"TEXCOORD",
-			0,				// same slot as previous (same vertexBuffer)
-			DXGI_FORMAT_R32G32_FLOAT,
-			0,
-			12,							// offset of FIRST element (after POSITION)
-			D3D11_INPUT_PER_VERTEX_DATA,
-			0
-		},
+		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"NORMAL"  , 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,    0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0}
 	};
 
 	device->CreateInputLayout(inputDesc, ARRAYSIZE(inputDesc), (*pVS)->GetBufferPointer(), (*pVS)->GetBufferSize(), &_vertexLayout);
