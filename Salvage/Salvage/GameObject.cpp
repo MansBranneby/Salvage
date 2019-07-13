@@ -22,6 +22,11 @@ GameObject::~GameObject()
 {
 }
 
+Model * GameObject::getModel()
+{
+	return &_model;
+}
+
 bool GameObject::createModel(ID3D11Device* device, ID3D11DeviceContext* deviceContext, std::string modelFile)
 {
 	switch (_objectType)
@@ -40,11 +45,6 @@ bool GameObject::createModel(ID3D11Device* device, ID3D11DeviceContext* deviceCo
 		break;
 	};
 	return true;
-}
-
-void GameObject::loadTerrainModel(ID3D11Device* device, ID3D11DeviceContext* deviceContext, size_t terrainWidth, size_t terrainHeight, std::vector<DirectX::XMFLOAT3> heightmap)
-{
-	_model.processHeightmap(device, deviceContext, terrainWidth, terrainHeight, heightmap);
 }
 
 void GameObject::draw(ID3D11DeviceContext * deviceContext)

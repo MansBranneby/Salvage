@@ -5,7 +5,7 @@ class DynamicObject : public GameObject
 {
 public:
 	DynamicObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext, ObjectType objType, DirectX::XMVECTOR startingPosition, std::string modelFile);
-	~DynamicObject();
+	virtual ~DynamicObject();
 
 	void move(DirectX::XMVECTOR velocity);
 	void updateLogic();

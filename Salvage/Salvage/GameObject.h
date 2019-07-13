@@ -14,9 +14,8 @@ enum ObjectType //Troligtvis ett tillfälligt sätt att hantera detta.
 class GameObject
 {
 private:
-	XMMATRIX _rotMatrix;
-	float yaw;
 	Model _model;
+	XMMATRIX _rotMatrix;
 	ObjectType _objectType;
 	std::string _modelDirectory = ".\\Resources\\Models\\";
 	
@@ -31,8 +30,8 @@ public:
 	GameObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext, ObjectType objType, DirectX::XMVECTOR position, std::string modelFile);
 	virtual ~GameObject();
 
+	Model* getModel();
 	bool createModel(ID3D11Device* device, ID3D11DeviceContext* deviceContext, std::string modelFile); //Return true if everything works out
-	void loadTerrainModel(ID3D11Device* device, ID3D11DeviceContext* deviceContext, size_t terrainWidth, size_t terrainHeight, std::vector <DirectX::XMFLOAT3> heightmap);
 	void draw(ID3D11DeviceContext* deviceContext);
 	void drawBoundingVolume(ID3D11DeviceContext* deviceContext);
 	virtual void updateLogic() = 0;

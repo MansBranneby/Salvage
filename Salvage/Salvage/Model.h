@@ -55,12 +55,14 @@ private:
 	//Bounding volume
 	BoundingVolume* _boundingVolume = nullptr;
 
-
 public:
 	Model();
 	~Model();
-
+	
+	std::vector<Mesh*>* getMeshes();
+	std::vector<Texture>* getLoadedTextures();
 	BoundingVolume* getBoundingVolume();
+	void setTransformationBuffer(ConstantBuffer* transformationBuffer);
 
 	void updateTransformation(DirectX::XMFLOAT3 position);
 	bool loadModel(ID3D11Device* device, ID3D11DeviceContext* deviceContext, std::string filename);
@@ -68,7 +70,4 @@ public:
 	void draw(ID3D11DeviceContext* deviceContext, ID3D11Buffer* transformationBuffer);
 	void draw(ID3D11DeviceContext* deviceContext);
 	void drawBoundingVolume(ID3D11DeviceContext* deviceContext);
-
-	//process heightmap (create grid of vertices from heightmap)
-	void processHeightmap(ID3D11Device* device, ID3D11DeviceContext* deviceContext, size_t terrainWidth, size_t terrainHeight, std::vector<DirectX::XMFLOAT3> heightmap);
 };

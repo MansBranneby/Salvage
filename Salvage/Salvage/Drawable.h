@@ -7,7 +7,7 @@ private:
 	//Kanske en pekare till deviceContext här??
 public:
 	Drawable();
-	~Drawable();
+	virtual ~Drawable();
 
 	virtual void draw(ID3D11DeviceContext* deviceContext, ID3D11Buffer* transformationBuffer) = 0;
 };
