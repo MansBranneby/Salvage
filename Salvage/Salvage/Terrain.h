@@ -15,7 +15,7 @@ private:
 	float _heightFactor;
 	std::vector<DirectX::XMFLOAT3> _heightmap;
 	void loadHeightmap();
-
+	//void processHeightmap(ID3D11Device* device, ID3D11DeviceContext* deviceContext, size_t terrainWidth, size_t terrainHeight, std::vector<DirectX::XMFLOAT3> heightmap);
 public:
 	Terrain(ID3D11Device* device, ID3D11DeviceContext* deviceContext, DirectX::XMVECTOR startingPosititon, std::string filename);
 	~Terrain();

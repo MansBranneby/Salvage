@@ -304,7 +304,7 @@ Model::Model()
 Model::~Model()
 {
 	if (_transformationBuffer)
-		_transformationBuffer->Release();
+		delete _transformationBuffer;
 
 	for (size_t i = 0; i < _meshes.size(); i++)
 		delete _meshes[i];
@@ -326,9 +326,9 @@ void Model::updateTransformation(DirectX::XMFLOAT3 position)
 	_scene->mRootNode->mTransformation = aiMatrix4x4(aiVector3D(1, 1, 1), aiQuaternion(0, 0, 0), aiVector3D(position.x, position.y, position.z));
 
 	D3D11_MAPPED_SUBRESOURCE mappedMemory;
-	_deviceContext->Map(_transformationBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedMemory);
+	_deviceContext->Map(*_transformationBuffer->getConstantBuffer(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedMemory);
 	memcpy(mappedMemory.pData, &_scene->mRootNode->mTransformation, sizeof(_scene->mRootNode->mTransformation));
-	_deviceContext->Unmap(_transformationBuffer, 0);
+	_deviceContext->Unmap(*_transformationBuffer->getConstantBuffer(), 0);
 }
 
 bool Model::loadModel(ID3D11Device * device, ID3D11DeviceContext * deviceContext, std::string filename)
@@ -347,26 +347,8 @@ bool Model::loadModel(ID3D11Device * device, ID3D11DeviceContext * deviceContext
 	//Start processing all the nodes in the model
 	processNode(device, _scene->mRootNode);
 
-	//CONSTANT BUFFER
-	D3D11_BUFFER_DESC cbDesc;
-	cbDesc.ByteWidth = sizeof(_scene->mRootNode->mTransformation);
-	cbDesc.Usage = D3D11_USAGE_DYNAMIC;
-	cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	cbDesc.MiscFlags = 0;
-	cbDesc.StructureByteStride = 0;
+	_transformationBuffer = new ConstantBuffer(_device, &_scene->mRootNode->mTransformation, sizeof(_scene->mRootNode->mTransformation));
 
-	// Fill in the subresource data.
-	D3D11_SUBRESOURCE_DATA InitData;
-	InitData.pSysMem = &_scene->mRootNode->mTransformation;
-	InitData.SysMemPitch = 0;
-	InitData.SysMemSlicePitch = 0;
-
-	// create a Constant Buffer
-	HRESULT result = device->CreateBuffer(&cbDesc, &InitData, &_transformationBuffer);
-	if (FAILED(result))
-		MessageBox(NULL, L"Error _transformationBuffer", L"Error", MB_OK | MB_ICONERROR);
-	
 	return true;
 }
 
@@ -430,20 +412,20 @@ void Model::draw(ID3D11DeviceContext* deviceContext, ID3D11Buffer* transformatio
 {
 	for (int i = 0; i < _meshes.size(); i++)
 	{
-		_meshes[i]->draw(deviceContext, _transformationBuffer);
+		_meshes[i]->draw(deviceContext, *_transformationBuffer->getConstantBuffer());
 	}
 }
 void Model::draw(ID3D11DeviceContext* deviceContext)
 {
 	for (int i = 0; i < _meshes.size(); i++)
 	{
-		_meshes[i]->draw(deviceContext, _transformationBuffer);
+		_meshes[i]->draw(deviceContext, *_transformationBuffer->getConstantBuffer());
 	}
 }
 
 void Model::drawBoundingVolume(ID3D11DeviceContext * deviceContext)
 {
-	_boundingVolume->draw(deviceContext, _transformationBuffer);
+	_boundingVolume->draw(deviceContext, *_transformationBuffer->getConstantBuffer());
 }
 
 void Model::processHeightmap(ID3D11Device* device, ID3D11DeviceContext* deviceContext, size_t terrainWidth, size_t terrainHeight, std::vector<DirectX::XMFLOAT3> heightmap)
@@ -541,28 +523,10 @@ void Model::processHeightmap(ID3D11Device* device, ID3D11DeviceContext* deviceCo
 
 	DirectX::XMMATRIX id = DirectX::XMMatrixIdentity();
 
-		//CONSTANT BUFFER
-	D3D11_BUFFER_DESC cbDesc;
-	cbDesc.ByteWidth = sizeof(id);
-	cbDesc.Usage = D3D11_USAGE_DYNAMIC;
-	cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	cbDesc.MiscFlags = 0;
-	cbDesc.StructureByteStride = 0;
-
-	// Fill in the subresource data.
-	D3D11_SUBRESOURCE_DATA InitData;
-	InitData.pSysMem = &id;
-	InitData.SysMemPitch = 0;
-	InitData.SysMemSlicePitch = 0;
-
-	// create a Constant Buffer
-	HRESULT result = device->CreateBuffer(&cbDesc, &InitData, &_transformationBuffer);
-	if (FAILED(result))
-		MessageBox(NULL, L"Error _transformationBuffer", L"Error", MB_OK | MB_ICONERROR);
+	_transformationBuffer = new ConstantBuffer(device, &id, sizeof(id));
 
 	D3D11_MAPPED_SUBRESOURCE mappedMemory;
-	_deviceContext->Map(_transformationBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedMemory);
+	_deviceContext->Map(*_transformationBuffer->getConstantBuffer(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedMemory);
 	memcpy(mappedMemory.pData, &id, sizeof(id));
-	_deviceContext->Unmap(_transformationBuffer, 0);
+	_deviceContext->Unmap(*_transformationBuffer->getConstantBuffer(), 0);
 }

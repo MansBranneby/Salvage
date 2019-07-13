@@ -16,6 +16,7 @@
 #include "assimp/postprocess.h"
 #include "BoundingVolume.h"
 #include "OBB.h"
+#include "ConstantBuffer.h"
 
 struct BoneInfo
 {
@@ -28,7 +29,7 @@ class Model: public Drawable
 private:
 	ID3D11Device* _device;
 	ID3D11DeviceContext* _deviceContext;
-	ID3D11Buffer* _transformationBuffer;
+	ConstantBuffer* _transformationBuffer;
 	std::string _directory;
 	std::vector<Mesh*> _meshes;
 	std::vector<Texture> _loadedTextures;
