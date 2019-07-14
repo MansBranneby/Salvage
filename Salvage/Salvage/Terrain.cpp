@@ -67,7 +67,8 @@ void Terrain::processHeightmap(ID3D11Device* device, ID3D11DeviceContext* device
 
 	// TERRAIN (CREATING GRID) //
 	//***********
-	// LOAD HEIGHTMAP TO VERTICES //
+	// LOAD HEIGHTMAP AND CALCULATE NORMALS//
+	XMVECTOR normal(XMVectorZero());
 	std::vector<Vertex> vertices(terrainWidth * terrainHeight);
 	for (size_t i = 0; i < terrainWidth; ++i)
 	{
@@ -77,10 +78,17 @@ void Terrain::processHeightmap(ID3D11Device* device, ID3D11DeviceContext* device
 			vertices[(i * (int)terrainWidth) + j]._position.y = heightmap[(i * (int)terrainWidth) + j].y;
 			vertices[(i * (int)terrainWidth) + j]._position.z = heightmap[(i * (int)terrainWidth) + j].z;
 
-			//NORMALS
-			vertices[(i * (int)terrainWidth) + j]._normal.x = 0.0f;
-			vertices[(i * (int)terrainWidth) + j]._normal.y = 1.0f;
-			vertices[(i * (int)terrainWidth) + j]._normal.z = 0.0f;
+			// NORMALS
+			//https://stackoverflow.com/questions/13983189/opengl-how-to-calculate-normals-in-a-terrain-height-grid
+			float hL = getHeight(j - 1, i);
+			float hR = getHeight(j + 1, i);
+			float hD = getHeight(j, i - 1);
+			float hU = getHeight(j, i + 1);
+
+			normal = DirectX::XMVectorSet(hL - hR, hD - hU, 2.0, 0.0f);
+			normal = XMVector3Normalize(normal);
+
+			XMStoreFloat3(&vertices[(i * (int)terrainWidth) + j]._normal, normal);
 		}
 	}
 
