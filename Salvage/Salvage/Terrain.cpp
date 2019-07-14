@@ -80,10 +80,10 @@ void Terrain::processHeightmap(ID3D11Device* device, ID3D11DeviceContext* device
 
 			// NORMALS
 			//https://stackoverflow.com/questions/13983189/opengl-how-to-calculate-normals-in-a-terrain-height-grid
-			float hL = getHeight(j - 1, i);
-			float hR = getHeight(j + 1, i);
-			float hD = getHeight(j, i - 1);
-			float hU = getHeight(j, i + 1);
+			float hL = getHeight((float)j - 1.0f, (float)i);
+			float hR = getHeight((float)j + 1.0f, (float)i);
+			float hD = getHeight((float)j, (float)i - 1.0f);
+			float hU = getHeight((float)j, (float)i + 1.0f);
 
 			normal = DirectX::XMVectorSet(hL - hR, hD - hU, 2.0, 0.0f);
 			normal = XMVector3Normalize(normal);
