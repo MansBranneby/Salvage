@@ -179,8 +179,8 @@ Terrain::~Terrain()
 float Terrain::getHeight(float worldX, float worldZ)
 {
 	// Convert world space -> terrain space
-	DirectX::XMMATRIX inverseModel = DirectX::XMMatrixInverse(nullptr, DirectX::XMMatrixIdentity());
-	DirectX::XMVECTOR terrainSpace = DirectX::XMVector4Transform(DirectX::XMVECTOR{ worldX, 0.0f, worldZ, 1.0f }, inverseModel);
+	DirectX::XMMATRIX inverseWorldMatrix = DirectX::XMMatrixInverse(nullptr, DirectX::XMMatrixIdentity());
+	DirectX::XMVECTOR terrainSpace = DirectX::XMVector4Transform(DirectX::XMVECTOR{ worldX, 0.0f, worldZ, 1.0f }, inverseWorldMatrix);
 	int x = (int)DirectX::XMVectorGetX(terrainSpace);
 	int z = (int)DirectX::XMVectorGetZ(terrainSpace);
 

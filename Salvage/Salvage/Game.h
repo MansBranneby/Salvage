@@ -20,8 +20,6 @@ private:
 	InputController* _inputController = nullptr; //Input from player
 	Clock* _clock = nullptr; //Get delta seconds
 	std::vector<State*> _states; //Holds states that should be updated
-	//GameObject* _staticObject; //test
-
 	LevelHandler* _levelHandler = nullptr;
 	void updateCameraBuffers();
 	

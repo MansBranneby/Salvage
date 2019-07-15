@@ -16,26 +16,28 @@ class BoundingVolume : public Drawable
 private:
 	std::vector<BoundingVolumeVertex> _vertices;
 	std::vector<int> _indices;
+	DirectX::XMMATRIX _worldMatrix;
 
 	ID3D11Buffer* _vertexBuffer;
 	ID3D11Buffer* _indexBuffer;
 
-protected:
 	DirectX::XMVECTOR _center;
-	//Local axes
-	DirectX::XMVECTOR _xAxis;
-	DirectX::XMVECTOR _yAxis;
-	DirectX::XMVECTOR _zAxis;
+protected:
+
 
 	virtual void createBuffers(ID3D11Device* device, std::vector<BoundingVolumeVertex> vertices, std::vector<int> indices);
 
 public:
 	BoundingVolume();
+	BoundingVolume(DirectX::XMFLOAT3 minCoordinates, DirectX::XMFLOAT3 maxCoordinates);
 	virtual ~BoundingVolume();
 	virtual DirectX::XMVECTOR getCenter();
 	std::vector<BoundingVolumeVertex>* getVertices();
 	std::vector<int>* getIndices();
+	DirectX::XMMATRIX getWorldMatrix();
 
+	virtual void setCenter(DirectX::XMVECTOR center);
+	virtual void setWorldMatrix(DirectX::XMMATRIX worldMatrix);
 	virtual void move(DirectX::XMVECTOR speed);
 
 	void draw(ID3D11DeviceContext* deviceContext, ID3D11Buffer* transformationBuffer);

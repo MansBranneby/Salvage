@@ -12,7 +12,7 @@ DynamicObject::~DynamicObject()
 void DynamicObject::move(DirectX::XMVECTOR velocity)
 {
 	_position += velocity;
-	getBoundingVolume()->move(velocity);
+	getBoundingVolume()->move(velocity); // GLENN
 }
 
 void DynamicObject::updateLogic()

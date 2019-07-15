@@ -3,8 +3,6 @@
 
 class GameState : public State
 {
-private:
-
 public:
 	virtual void handleInput(Game* game);
 	virtual void update(Game* game);

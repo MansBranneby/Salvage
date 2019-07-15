@@ -1,6 +1,7 @@
 #include "OBB.h"
 
 OBB::OBB(ID3D11Device* device, DirectX::XMFLOAT3 minCoordinates, DirectX::XMFLOAT3 maxCoordinates)
+	:BoundingVolume(maxCoordinates, minCoordinates)
 {
 	using namespace DirectX;
 
@@ -17,17 +18,11 @@ OBB::OBB(ID3D11Device* device, DirectX::XMFLOAT3 minCoordinates, DirectX::XMFLOA
 		(maxCoordinates.z - minCoordinates.z) / 4,
 	};
 
-	//Center
-	_center = 
-	{ 
-		(maxCoordinates.x + minCoordinates.x) / 2,
-		(maxCoordinates.y + minCoordinates.y) / 2,
-		(maxCoordinates.z + minCoordinates.z) / 2,
-	};
-	
-
 	//Calculate vertices
+	
+	// Colour
 	XMFLOAT3 colour{ 1.0f, 1.0f, 1.0f };
+	
 	//Near vertices
 	getVertices()->push_back({ maxCoordinates.x, maxCoordinates.y, minCoordinates.z, colour.x, colour.y, colour.z }); //0. Right up near 
 	getVertices()->push_back({ maxCoordinates.x, minCoordinates.y, minCoordinates.z, colour.x, colour.y, colour.z }); //1. Right down near
@@ -64,7 +59,10 @@ bool OBB::intersectsWithOBB(BoundingVolume * other)
 	//It returns a null pointer if the object referred to doesn't contain the type casted to as a base class 
 	if(OBB* otherOBB = dynamic_cast<OBB*> (other))
 	{
-		XMVECTOR vectorToOBB = otherOBB->_center - _center;    //Vector from center to center
+		// Convert otherOBB center to this local space
+		XMMATRIX inverseWorldMatrix = XMMatrixInverse(nullptr, getWorldMatrix());
+		XMVECTOR otherCenter = XMVector4Transform(otherOBB->getCenter(), inverseWorldMatrix);
+		XMVECTOR vectorToOBB = otherCenter - getCenter();
 
 		//Seperating axis (SA) = _xAxis
 		float projection = abs(XMVectorGetX((XMVector3Dot(vectorToOBB, _xAxis))));

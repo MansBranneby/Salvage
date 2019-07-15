@@ -17,6 +17,7 @@ void Player::abstract()
 void Player::setHeight(float height)
 {
 	_position = DirectX::XMVectorSet(DirectX::XMVectorGetX(_position), height + 1.5f, DirectX::XMVectorGetZ(_position), 1.0f);
+	getBoundingVolume()->setCenter(DirectX::XMVectorSet(DirectX::XMVectorGetX(_position), height + 1.5f, DirectX::XMVectorGetZ(_position), 1.0f));
 }
 
 void Player::handleInput(Keyboard::State kb, GamePad::State gp, float deltaSeconds)

@@ -4,13 +4,11 @@
 class OBB : public BoundingVolume
 {
 private:
-	////Center of OBB
-	//DirectX::XMVECTOR _center;
-	////Local axes
-	//DirectX::XMVECTOR _xAxis;
-	//DirectX::XMVECTOR _yAxis;
-	//DirectX::XMVECTOR _zAxis;
-	//Half width, height and depth
+	// Local axes
+	DirectX::XMVECTOR _xAxis;
+	DirectX::XMVECTOR _yAxis;
+	DirectX::XMVECTOR _zAxis;
+	// Half with, height and length
 	DirectX::XMFLOAT3 _halfXYZ;
 
 public:

@@ -72,8 +72,6 @@ InputController* gInputCtrl;
 
 // CLOCK //
 Clock* gClock;
-//ID3D11Buffer* constantBuffer; //TILLFÄLLIG
-//Model gModel, gOriginObject;
 
 // STATES
 GameState gGameState;
@@ -111,7 +109,7 @@ void initializeResources(HWND wndHandle)
 	gGame = new Game(gGR->getDevice(), gGR->getDeviceContext(), WIDTH, HEIGHT, gClock, gInputCtrl);
 	gGame->pushState(&gGameState); // Change which state the game is in, not done yet.
 
-	Light lit = Light(gGR->getDevice(), gGR->getDeviceContext(), XMFLOAT4(250.0f, 100.0f, 250.0f, 0.0f), XMFLOAT4(1.0, 1.0f, 1.0f, 0.0f));
+	Light lit = Light(gGR->getDevice(), gGR->getDeviceContext(), XMFLOAT4(250.0f, 75.0f, 250.0f, 0.0f), XMFLOAT4(1.0, 1.0f, 1.0f, 0.0f));
 	gGR->getDeviceContext()->PSSetConstantBuffers(0, 1, ConstantBuffer(gGR->getDevice(), &lit, sizeof(lit)).getConstantBuffer());
 
 	//IMGUI
