@@ -7,7 +7,7 @@ void Terrain::loadHeightmap()
 	BITMAPINFOHEADER bitmapInfoHeader;        //Structure which stores information about image
 
 	size_t imageSize;
-	if (fopen_s(&filePtr, _filename.c_str(), "rb") == 0)
+	if (fopen_s(&filePtr, _filename.c_str(), "rb") == NULL)
 	{
 		fread(&bitmapFileHeader, sizeof(BITMAPFILEHEADER), 1, filePtr);
 		fread(&bitmapInfoHeader, sizeof(BITMAPINFOHEADER), 1, filePtr);
@@ -16,7 +16,7 @@ void Terrain::loadHeightmap()
 		_terrainWidth = bitmapInfoHeader.biWidth;
 		_terrainHeight = bitmapInfoHeader.biHeight;
 
-
+		// image size: example 513x513 pixels, each pixel has rgb values
 		imageSize = _terrainWidth * _terrainHeight * 3;
 
 		// array store image data
@@ -44,6 +44,7 @@ void Terrain::loadHeightmap()
 			for (size_t j = 0; j < _terrainWidth; ++j)
 			{
 				height = bitmapImage[k];
+
 				index = (_terrainHeight * i) + j;
 
 				_heightmap[index].x = (float)j;
@@ -56,7 +57,7 @@ void Terrain::loadHeightmap()
 		}
 
 		delete [] bitmapImage;
-		bitmapImage = 0;
+		bitmapImage = nullptr;
 	}
 
 }
