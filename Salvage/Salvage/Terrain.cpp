@@ -37,7 +37,7 @@ void Terrain::loadHeightmap()
 		// We use a greyscale image, so all 3 rgb values are the same, but we only need one for the height
 		// So we use this counter to skip the next two components in the image data (we read R, then skip BG)
 		int k = 0;
-		unsigned char height;
+		unsigned char height = 0;
 		size_t index;
 		for (size_t i = 0; i < _terrainHeight; ++i)
 		{
@@ -74,9 +74,8 @@ void Terrain::processHeightmap(ID3D11Device* device, ID3D11DeviceContext* device
 	{
 		for (size_t j = 0; j < terrainHeight; ++j)
 		{
-			vertices[(i * (int)terrainWidth) + j]._position.x = heightmap[(i * (int)terrainWidth) + j].x;
-			vertices[(i * (int)terrainWidth) + j]._position.y = heightmap[(i * (int)terrainWidth) + j].y;
-			vertices[(i * (int)terrainWidth) + j]._position.z = heightmap[(i * (int)terrainWidth) + j].z;
+			// POSITIONS
+			vertices[i * terrainWidth + j]._position = heightmap[i * terrainWidth + j];
 
 			// NORMALS
 			// https://stackoverflow.com/questions/13983189/opengl-how-to-calculate-normals-in-a-terrain-height-grid
@@ -89,7 +88,7 @@ void Terrain::processHeightmap(ID3D11Device* device, ID3D11DeviceContext* device
 			normal = DirectX::XMVectorSet(hL - hR, 2.0f, hD - hU , 0.0f);
 			normal = XMVector3Normalize(normal);
 
-			XMStoreFloat3(&vertices[(i * (int)terrainWidth) + j]._normal, normal);
+			XMStoreFloat3(&vertices[i * terrainWidth + j]._normal, normal);
 		}
 	}
 
@@ -97,10 +96,10 @@ void Terrain::processHeightmap(ID3D11Device* device, ID3D11DeviceContext* device
 	int k = 0;
 	int texUIndex = 0;
 	int texVIndex = 0;
-	int nrOfFaces = ((int)terrainWidth - 1)*((int)terrainHeight - 1) * 2;
+	size_t nrOfFaces = (terrainWidth - 1)*(terrainHeight - 1) * 2;
 	std::vector<int> indices(nrOfFaces * 3);
 
-	for (size_t i = 0; i < (int)terrainWidth - 1; ++i)
+	for (size_t i = 0; i < terrainWidth - 1; ++i)
 	{
 		for (size_t j = 0; j < (int)terrainHeight - 1; ++j)
 		{
