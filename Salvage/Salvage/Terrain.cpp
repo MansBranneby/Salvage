@@ -52,6 +52,7 @@ void Terrain::loadHeightmap()
 
 				k += 3;
 			}
+			k++;
 		}
 
 		delete [] bitmapImage;
