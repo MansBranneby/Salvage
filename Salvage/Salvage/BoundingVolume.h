@@ -3,7 +3,7 @@
 #include <DirectXMath.h>
 #include <vector>
 
-enum boundingVolumes { ORIENTED_BOUNDING_BOX};
+enum BoundingVolumes { ORIENTED_BOUNDING_BOX};
 
 struct BoundingVolumeVertex
 {

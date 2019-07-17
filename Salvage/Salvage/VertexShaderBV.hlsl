@@ -7,7 +7,7 @@ struct VS_IN
 struct VS_OUT
 {
 	float4 pos : SV_POSITION;
-	float3 col : TEXCOORD;
+	float3 col : COLOUR;
 };
 
 cbuffer VS_CONSTANT_BUFFER : register(b0)

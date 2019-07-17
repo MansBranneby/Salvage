@@ -94,10 +94,10 @@ void initializeResources(HWND wndHandle)
 	gGR = new GraphicResources(wndHandle);
 
 	//SHADERS
-	gVS = new VertexShader(L"VertexShader.hlsl", gGR->getDevice());
+	gVS = new VertexShader(L"VertexShader.hlsl", gGR->getDevice(), POSITION_NORMAL_COLOUR);
 	gPS = new PixelShader(L"PixelShader.hlsl", gGR->getDevice());
 	
-	gVSBV = new VertexShader(L"VertexShaderBV.hlsl", gGR->getDevice());
+	gVSBV = new VertexShader(L"VertexShaderBV.hlsl", gGR->getDevice(), POSITION_COLOUR);
 	gPSBV = new PixelShader(L"PixelShaderBV.hlsl", gGR->getDevice());
 
 	//INPUT CONTROLLER
