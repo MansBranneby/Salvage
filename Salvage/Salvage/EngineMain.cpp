@@ -29,8 +29,8 @@
 #include "Drawable.h"
 #include "Model.h"
 #include "GameState.h"
-#include "Light.h" // GLENN
-#include "ConstantBuffer.h" // GLENN
+#include "Light.h"
+#include "ConstantBuffer.h
 
 // DirectXTK
 #include "CommonStates.h"

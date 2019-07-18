@@ -152,7 +152,7 @@ void Terrain::processHeightmap(ID3D11Device* device, ID3D11DeviceContext* device
 	getModel()->getLoadedTextures()->push_back(texture);
 
 	// Create a mesh with vertices, indices and textures computed in the code above
-	getModel()->getMeshes()->push_back(new Mesh(device, vertices, indices, textures)); // GLENN
+	getModel()->getMeshes()->push_back(new Mesh(device, vertices, indices, textures));
 
 	// Create transformationbuffer, this buffer is sent into vertex shader to transform the terrain, currently just identity matrix
 	getModel()->setTransformationBuffer(new ConstantBuffer(device, &DirectX::XMMatrixIdentity(), sizeof(DirectX::XMMatrixIdentity())));
