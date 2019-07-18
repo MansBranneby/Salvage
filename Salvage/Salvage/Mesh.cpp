@@ -62,7 +62,7 @@ void Mesh::draw(ID3D11DeviceContext * deviceContext, ID3D11Buffer* transformatio
 	deviceContext->IASetVertexBuffers(0, 1, &_vertexBuffer, &vertexSize, &offset);
 	deviceContext->IASetIndexBuffer(_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 	deviceContext->VSSetConstantBuffers(1, 1, &transformationBuffer);
-
+	
 	deviceContext->PSSetShaderResources(0, 1, &_textures[0]._texture);
 
 	deviceContext->DrawIndexed((UINT)_indices.size(), 0, 0);

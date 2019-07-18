@@ -30,7 +30,7 @@
 #include "Model.h"
 #include "GameState.h"
 #include "Light.h"
-#include "ConstantBuffer.h
+#include "ConstantBuffer.h"
 
 // DirectXTK
 #include "CommonStates.h"
