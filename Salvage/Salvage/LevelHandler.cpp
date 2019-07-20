@@ -11,9 +11,9 @@ LevelHandler::~LevelHandler()
 	delete _level;
 }
 
-void LevelHandler::drawLevel()
+void LevelHandler::drawLevel(GraphicResources* graphicResources)
 {
-	_level->drawLevel();
+	_level->drawLevel(graphicResources);
 }
 
 int LevelHandler::getNrOfGameObjects() const
@@ -29,4 +29,9 @@ GameObject * LevelHandler::getGameObject(int index)
 Terrain * LevelHandler::getTerrain(int index)
 {
 	return _level->getTerrain(index);
+}
+
+Player * LevelHandler::getPlayer()
+{
+	return _level->getPlayer();
 }

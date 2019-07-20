@@ -1,5 +1,6 @@
 #pragma once
 #include "Level.h"
+#include "GraphicResources.h"
 
 class LevelHandler
 {
@@ -10,8 +11,9 @@ public:
 	LevelHandler(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
 	~LevelHandler();
 
-	void drawLevel();
+	void drawLevel(GraphicResources* graphicResources);
 	int getNrOfGameObjects() const;
 	GameObject* getGameObject(int index);
 	Terrain* getTerrain(int index);
+	Player* getPlayer();
 };

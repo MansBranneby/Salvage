@@ -207,6 +207,9 @@
     <ClCompile Include="Light.cpp">
       <Filter>RenderSystem\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ShaderHandler.cpp">
+      <Filter>RenderSystem\Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -369,6 +372,9 @@
       <Filter>RenderSystem\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Light.h">
+      <Filter>RenderSystem\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderHandler.h">
       <Filter>RenderSystem\Header Files</Filter>
     </ClInclude>
   </ItemGroup>

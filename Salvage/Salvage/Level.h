@@ -1,5 +1,6 @@
 #pragma once
 #include "LevelAI.h"
+#include "GraphicResources.h"
 
 class Level
 {
@@ -11,9 +12,9 @@ public:
 	Level(ID3D11Device* device, ID3D11DeviceContext* deviceContext, int levelNr);
 	~Level();
 
-	void drawLevel();
+	void drawLevel(GraphicResources* graphicResources);
 	int getNrOfGameObjects() const;
 	GameObject* getGameObject(int index);
 	Terrain* getTerrain(int index);
-
+	Player* getPlayer();
 };

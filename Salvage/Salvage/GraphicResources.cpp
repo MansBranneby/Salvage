@@ -15,6 +15,8 @@ void GraphicResources::initializeResources(HWND wndHandle)
 	setRasterizerState();
 	setSamplerState();
 	setViewPort();
+	
+	_shaderHandler = new ShaderHandler(_device);
 }
 
 void GraphicResources::createDepthStencil()
@@ -201,6 +203,8 @@ GraphicResources::~GraphicResources()
 		_backbufferRTV->Release();
 	if (_samplerState)
 		_samplerState->Release();
+	if (_shaderHandler)
+		delete _shaderHandler;
 }
 
 ID3D11Device * GraphicResources::getDevice()
@@ -236,4 +240,9 @@ ID3D11RenderTargetView ** GraphicResources::getBackBuffer()
 ID3D11SamplerState ** GraphicResources::getSamplerState()
 {
 	return &_samplerState;
+}
+
+ShaderHandler * GraphicResources::getShaderHandler()
+{
+	return _shaderHandler;
 }

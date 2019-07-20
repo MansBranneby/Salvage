@@ -6,6 +6,7 @@
 #include "Clock.h"
 #include "InputController.h"
 #include "Camera.h"
+#include "GraphicResources.h"
 #include <Keyboard.h>
 #include <vector>
 
@@ -33,10 +34,9 @@ public:
 
 	void handleInput();												   //Calls handleInput of the current state
 	void update();													   //Calls update on current state
-	void draw();													   //Calls draw on current state
+	void draw(GraphicResources * graphicResources);													   //Calls draw on current state
 
 	ID3D11DeviceContext* getDeviceContext() const;
-	Player* getPlayer();
 	Clock* getClock();
 	InputController* getInputController();
 	LevelHandler* getLevelHandler();

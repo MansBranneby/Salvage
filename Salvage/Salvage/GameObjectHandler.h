@@ -16,6 +16,7 @@ private:
 	int _nrOfObjects;
 	GameObject** _gameObjects = nullptr;
 	std::vector<Terrain*> _terrain; // vector filled with terrain
+	Player* _player;
 
 	//Manage container
 	void freeMemory();
@@ -28,7 +29,9 @@ public:
 	void addGameObject(ObjectType objType, XMVECTOR position, std::string modelFile);
 	int getNrOfObjects() const;
 	std::vector<Terrain*> getTerrain();
+	Player* getPlayer();
 
+	void drawPlayer();
 	void drawTerrain();
 	void drawObjects();
 	GameObject* getGameObject(int index) const;

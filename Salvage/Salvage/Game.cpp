@@ -91,22 +91,17 @@ void Game::update()
 			_states[i]->update(this);
 }
 
-void Game::draw()
+void Game::draw(GraphicResources * graphicResources)
 {
 	//Draw models if not paused
 	for (int i = 0; i < _states.size(); i++)
 		if (!_states[i]->isPaused())
-			_states[i]->draw(this);
+			_states[i]->draw(this, graphicResources);
 }
 
 ID3D11DeviceContext * Game::getDeviceContext() const
 {
 	return _deviceContext;
-}
-
-Player* Game::getPlayer()
-{
-	return _player;
 }
 
 Clock* Game::getClock()

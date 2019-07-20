@@ -60,6 +60,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="RightArm.cpp" />
     <ClCompile Include="Robot.cpp" />
+    <ClCompile Include="ShaderHandler.cpp" />
     <ClCompile Include="StartOfGameState.cpp" />
     <ClCompile Include="State.cpp" />
     <ClCompile Include="StaticObject.cpp" />
@@ -118,6 +119,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="RightArm.h" />
     <ClInclude Include="Robot.h" />
+    <ClInclude Include="ShaderHandler.h" />
     <ClInclude Include="StartOfGameState.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="StaticObject.h" />

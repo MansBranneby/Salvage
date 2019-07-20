@@ -1,5 +1,6 @@
 #pragma once
 #include <d3d11.h>
+#include "ShaderHandler.h"
 
 #define WIDTH 1920.0f
 #define HEIGHT 1080.0f
@@ -27,6 +28,9 @@ private:
 	// SAMPLERS //
 	ID3D11SamplerState* _samplerState = nullptr;
 
+	// SHADERS //
+	ShaderHandler* _shaderHandler;
+
 public:
 	
 	// Member functions
@@ -41,5 +45,6 @@ public:
 	ID3D11DepthStencilView* getDepthStencilView() const;
 	ID3D11RenderTargetView** getBackBuffer();
 	ID3D11SamplerState** getSamplerState();
+	ShaderHandler* getShaderHandler();
 
 };

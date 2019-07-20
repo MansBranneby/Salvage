@@ -7,15 +7,17 @@ void GameState::handleInput(Game* game)
 	float deltaSeconds = game->getClock()->getDeltaSeconds();
 
 	
-
+	// Check for collision, if there is collision then we don't want to allow the player to move until it's resolved (pushed out of collision)
 	int nrOfObjects = game->getLevelHandler()->getNrOfGameObjects();
 	bool colliding = false;
+	Player* player = game->getLevelHandler()->getPlayer();
+	// Check collision
 	for (int i = 0; i < nrOfObjects && colliding == false; i++)
-		colliding = game->getPlayer()->getBoundingVolume()->intersectsWithOBB(game->getLevelHandler()->getGameObject(i)->getBoundingVolume()); //Not safe, will crasch if you try to access gameobject outside of array.
-
+		colliding = player->getBoundingVolume()->intersectsWithOBB(game->getLevelHandler()->getGameObject(i)->getBoundingVolume()); //Not safe, will crasch if you try to access gameobject outside of array.
+	// Handle input if there is no collison
 	if (colliding == false)
 	{
-		game->getPlayer()->handleInput(kb, gp, deltaSeconds);
+		player->handleInput(kb, gp, deltaSeconds);
 
 	
 	}
@@ -28,25 +30,28 @@ void GameState::update(Game* game)
 	// In order to fix not being able to slide along the surface one has to find the collision normal and push out that way
 	int nrOfObjects = game->getLevelHandler()->getNrOfGameObjects();
 	bool colliding = false;
+	Player* player = game->getLevelHandler()->getPlayer();
+
 	for (int i = 0; i < nrOfObjects && colliding == false; i++)
-		colliding = game->getPlayer()->getBoundingVolume()->intersectsWithOBB(game->getLevelHandler()->getGameObject(i)->getBoundingVolume()); //Not safe, will crasch if you try to access gameobject outside of array.		
+		colliding = player->getBoundingVolume()->intersectsWithOBB(game->getLevelHandler()->getGameObject(i)->getBoundingVolume()); //Not safe, will crasch if you try to access gameobject outside of array.		
 	// if collision between player and object change travel direction
 	if (colliding)
-		game->getPlayer()->move(-game->getPlayer()->getVelocity());
+		player->move(-player->getVelocity());
 	else
-		game->getPlayer()->move(game->getPlayer()->getVelocity());
+		player->move(player->getVelocity());
 	
 	// Set player height to terrain
-	Terrain* terrain = game->getLevelHandler()->getTerrain(0);
-	float height = terrain->getHeight(DirectX::XMVectorGetX(game->getPlayer()->getPosition()), DirectX::XMVectorGetZ(game->getPlayer()->getPosition()));
-	game->getPlayer()->setHeight(height);
+	Terrain* terrain = game->getLevelHandler()->getTerrain(0); // currently only works for one terrain
+	float height = terrain->getHeight(DirectX::XMVectorGetX(player->getPosition()), DirectX::XMVectorGetZ(player->getPosition()));
+	player->setHeight(height);
 
-	game->getPlayer()->updateLogic();																	    //Update player
-	game->getCamera()->followObject(game->getPlayer()->getPosition(), game->getClock()->getDeltaSeconds()); //Update camera based on player position
+	player->updateLogic();																	    //Update player
+	game->getCamera()->followObject(player->getPosition(), game->getClock()->getDeltaSeconds()); //Update camera based on player position
 }
 
-void GameState::draw(Game* game)
+void GameState::draw(Game* game, GraphicResources * graphicResources)
 {
-	game->getPlayer()->draw(game->getDeviceContext()); //Draw player
-	game->getLevelHandler()->drawLevel();              //Draw level
+	// Draw active level. 
+	// A level may contain terrain, objects and a player
+	game->getLevelHandler()->drawLevel(graphicResources);      
 }

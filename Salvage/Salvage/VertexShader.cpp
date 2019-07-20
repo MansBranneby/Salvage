@@ -26,7 +26,7 @@ HRESULT VertexShader::createVertexShader(LPCWSTR fileName, ID3D11Device * device
 	return result;
 }
 
-void VertexShader::createInputLayoutPosNorCol(ID3D11Device* device, ID3DBlob** pVS)
+void VertexShader::createInputLayoutPosNorTex(ID3D11Device* device, ID3DBlob** pVS)
 {
 	D3D11_INPUT_ELEMENT_DESC inputDesc[] = {
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0},
@@ -62,15 +62,15 @@ VertexShader::VertexShader(LPCWSTR fileName, ID3D11Device* device, InputLayout i
 	// Decide the input layout
 	switch (inputLayout)
 	{
-	case POSITION_NORMAL_COLOUR:
-		createInputLayoutPosNorCol(device, &pVS);
+	case POSITION_NORMAL_TEXTURE:
+		createInputLayoutPosNorTex(device, &pVS);
 		break;
 	case POSITION_COLOUR:
 		createInputLayoutPosCol(device, &pVS);
 		break;
 	}
 
-	// Release "refence" to pVS and errorBlob interface object
+	// Release "reference" to pVS and errorBlob interface object
 	if(pVS) pVS->Release();
 	if (errorBlob) errorBlob->Release();
 }
@@ -88,7 +88,7 @@ ID3D11VertexShader & VertexShader::getVertexShader() const
 	return *_vertexShader;
 }
 
-ID3D11InputLayout & VertexShader::getvertexLayout() const
+ID3D11InputLayout & VertexShader::getVertexLayout() const
 {
 	return *_vertexLayout;
 }

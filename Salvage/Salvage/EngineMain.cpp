@@ -76,13 +76,6 @@ Clock* gClock;
 // STATES
 GameState gGameState;
 
-// SHADERS //
-VertexShader* gVS = nullptr;
-PixelShader* gPS = nullptr;
-
-VertexShader* gVSBV = nullptr;
-PixelShader* gPSBV = nullptr;
-
 // IMGUI VARIABLES //
 float gSmoothSpeed = 1.0f;
 float gLookAtSpeed = 1.0f;
@@ -92,13 +85,6 @@ void initializeResources(HWND wndHandle)
 {
 	//GRAPHIC RESOURCES
 	gGR = new GraphicResources(wndHandle);
-
-	//SHADERS
-	gVS = new VertexShader(L"VertexShader.hlsl", gGR->getDevice(), POSITION_NORMAL_COLOUR);
-	gPS = new PixelShader(L"PixelShader.hlsl", gGR->getDevice());
-	
-	gVSBV = new VertexShader(L"VertexShaderBV.hlsl", gGR->getDevice(), POSITION_COLOUR);
-	gPSBV = new PixelShader(L"PixelShaderBV.hlsl", gGR->getDevice());
 
 	//INPUT CONTROLLER
 	gInputCtrl = new InputController(wndHandle);
@@ -138,7 +124,7 @@ void imGuiUpdate()
 	ImGui::SliderFloat("LookAtSpeed", &gLookAtSpeed, 0.0f, 20.0f);
 	gGame->getCamera()->setSmoothSpeed(gSmoothSpeed);
 	gGame->getCamera()->setLookAtSpeed(gLookAtSpeed);
-	ImGui::Text("Player position: X: %.2f, Y: %.2f, Z: %.2f", XMVectorGetX(gGame->getPlayer()->getPosition()), XMVectorGetY(gGame->getPlayer()->getPosition()), XMVectorGetZ(gGame->getPlayer()->getPosition()));
+	ImGui::Text("Player position: X: %.2f, Y: %.2f, Z: %.2f", XMVectorGetX(gGame->getLevelHandler()->getPlayer()->getPosition()), XMVectorGetY(gGame->getLevelHandler()->getPlayer()->getPosition()), XMVectorGetZ(gGame->getLevelHandler()->getPlayer()->getPosition()));
 	ImGui::Checkbox("Draw bounding volume", &drawBoundingVolume);
 	ImGui::End();
 	ImGui::Render();
@@ -154,33 +140,34 @@ void update()
 
 void render()
 {
-	gGR->getDeviceContext()->VSSetShader(&gVS->getVertexShader(), nullptr, 0);
+	// THIS HAS BEEN MOVED TO Level.cpp
+	//gGR->getDeviceContext()->VSSetShader(&gGR->getShaderHandler()->getObjectVS()->getVertexShader(), nullptr, 0);
+	//gGR->getDeviceContext()->HSSetShader(nullptr, nullptr, 0);
+	//gGR->getDeviceContext()->DSSetShader(nullptr, nullptr, 0);
+	//gGR->getDeviceContext()->GSSetShader(nullptr, nullptr, 0);
+	//gGR->getDeviceContext()->PSSetShader(&gGR->getShaderHandler()->getObjectPS()->getPixelShader(), nullptr, 0);
+
+	//gGR->getDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	//gGR->getDeviceContext()->IASetInputLayout(&gGR->getShaderHandler()->getObjectVS()->getVertexLayout());
+	//gGR->getDeviceContext()->PSSetSamplers(0, 1, gGR->getSamplerState());
+
+	gGame->draw(gGR);
+
+	gGR->getDeviceContext()->VSSetShader(&gGR->getShaderHandler()->getBoundingVolumeVS()->getVertexShader(), nullptr, 0);
 	gGR->getDeviceContext()->HSSetShader(nullptr, nullptr, 0);
 	gGR->getDeviceContext()->DSSetShader(nullptr, nullptr, 0);
 	gGR->getDeviceContext()->GSSetShader(nullptr, nullptr, 0);
-	gGR->getDeviceContext()->PSSetShader(&gPS->getPixelShader(), nullptr, 0);
-
-	gGR->getDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	gGR->getDeviceContext()->IASetInputLayout(&gVS->getvertexLayout());
-	gGR->getDeviceContext()->PSSetSamplers(0, 1, gGR->getSamplerState());
-
-	gGame->draw();
-
-	gGR->getDeviceContext()->VSSetShader(&gVSBV->getVertexShader(), nullptr, 0);
-	gGR->getDeviceContext()->HSSetShader(nullptr, nullptr, 0);
-	gGR->getDeviceContext()->DSSetShader(nullptr, nullptr, 0);
-	gGR->getDeviceContext()->GSSetShader(nullptr, nullptr, 0);
-	gGR->getDeviceContext()->PSSetShader(&gPSBV->getPixelShader(), nullptr, 0);
+	gGR->getDeviceContext()->PSSetShader(&gGR->getShaderHandler()->getBoundingVolumePS()->getPixelShader(), nullptr, 0);
 
 	gGR->getDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
-	gGR->getDeviceContext()->IASetInputLayout(&gVSBV->getvertexLayout());
+	gGR->getDeviceContext()->IASetInputLayout(&gGR->getShaderHandler()->getBoundingVolumeVS()->getVertexLayout());
 	gGR->getDeviceContext()->PSSetSamplers(0, 0, nullptr);
 
 	if (drawBoundingVolume == true)
 	{
 		// Temporary solution to drawing bounding volumes (Drawing these in gamestate does not work because we have to set shaders (look above))
 		// draw player bounding volume
-		gGame->getPlayer()->drawBoundingVolume(gGR->getDeviceContext()); // draw player bounding volume
+		gGame->getLevelHandler()->getPlayer()->drawBoundingVolume(gGR->getDeviceContext()); // draw player bounding volume
 		// Loop through all the objects in levelhandler and draw their bounding volumes
 		for(int i = 0; i < gGame->getLevelHandler()->getNrOfGameObjects(); i++)
 			gGame->getLevelHandler()->getGameObject(i)->drawBoundingVolume(gGR->getDeviceContext());
@@ -249,13 +236,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 		//CLEAR - kanske i en separat funktion
 		delete gGR;
-		delete gVS;
-		delete gPS;
 		delete gInputCtrl;
 		delete gGame;
 		delete gClock;
-		delete gVSBV;
-		delete gPSBV;
 	}
 }
 
