@@ -81,13 +81,13 @@ void Terrain::processHeightmap(ID3D11Device* device, ID3D11DeviceContext* device
 
 			// NORMALS
 			// https://stackoverflow.com/questions/13983189/opengl-how-to-calculate-normals-in-a-terrain-height-grid
-		    // https://www.gamedev.net/forums/topic/163625-fast-way-to-calculate-heightmap-normals/
+			// https://www.gamedev.net/forums/topic/163625-fast-way-to-calculate-heightmap-normals/
 			float hL = getHeight((float)j - 1.0f, (float)i);
 			float hR = getHeight((float)j + 1.0f, (float)i);
 			float hD = getHeight((float)j, (float)i - 1.0f);
 			float hU = getHeight((float)j, (float)i + 1.0f);
 
-			normal = DirectX::XMVectorSet(hL - hR, 2.0f, hD - hU , 0.0f);
+			normal = DirectX::XMVectorSet(hL - hR, 2.0f, hD - hU, 0.0f);
 			normal = XMVector3Normalize(normal);
 
 			XMStoreFloat3(&vertices[i * terrainWidth + j]._normal, normal);
@@ -138,18 +138,17 @@ void Terrain::processHeightmap(ID3D11Device* device, ID3D11DeviceContext* device
 	}
 
 	// TEXTURE(S)
+
+	// GLENN
 	std::vector<Texture> textures;
-	Texture texture;
-	std::string filename = ".\\Resources\\Models\\grass.jpg";
-	std::wstring filenameWS = std::wstring(filename.begin(), filename.end());
-
-	HRESULT hr = CoInitialize(NULL);
-	hr = DirectX::CreateWICTextureFromFile(device, filenameWS.c_str(), NULL, &texture._texture);
-	if (FAILED(hr))
-		MessageBox(NULL, L"Texture couldn't be loader in function processHeightmap", L"Error!", MB_ICONERROR | MB_OK);
-
-	textures.push_back(texture);
-	getModel()->getLoadedTextures()->push_back(texture);
+	textures.push_back(Texture(device, ".\\Resources\\Textures\\grass.jpg"));
+	textures.push_back(Texture(device, ".\\Resources\\Textures\\purple.png"));
+	textures.push_back(Texture(device, ".\\Resources\\Textures\\texture.png"));
+	textures.push_back(Texture(device, ".\\Resources\\Textures\\ground.png"));
+	getModel()->getLoadedTextures()->push_back(textures[0]);
+	getModel()->getLoadedTextures()->push_back(textures[1]);
+	getModel()->getLoadedTextures()->push_back(textures[2]);
+	getModel()->getLoadedTextures()->push_back(textures[3]);
 
 	// Create a mesh with vertices, indices and textures computed in the code above
 	getModel()->getMeshes()->push_back(new Mesh(device, vertices, indices, textures));

@@ -1,12 +1,14 @@
 #pragma once
 #include <string>
 #include <d3d11.h>
+#include <WICTextureLoader.h>
+
 
 class Texture
 {
 private:
 
-	void createSRV();
+	void createSRV(ID3D11Device* device);
 
 public:
 	std::string _type;
@@ -14,5 +16,6 @@ public:
 	ID3D11ShaderResourceView* _texture;
 	
 	Texture();
+	Texture(ID3D11Device* device, std::string path);
 	~Texture();
 };

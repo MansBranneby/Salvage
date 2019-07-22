@@ -1,4 +1,4 @@
-0 250.0 0.0 250.0 gubbe1ani.dae
+0 0.0 0.0 0.0 gubbe1ani.dae
 2 47.0 25.0 35.0 gubbe1.dae
 2 40.0 25.0 32.0 gubbe1.dae
-3 0.0 0.0 2.0 Heightmap1.bmp
+3 0.0 0.0 2.0 heightmap1.bmp

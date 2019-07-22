@@ -385,11 +385,17 @@
     <FxCompile Include="PixelShader.hlsl">
       <Filter>RenderSystem\Source Files\Shaders\Pixel</Filter>
     </FxCompile>
-    <FxCompile Include="VertexShaderBV.hlsl">
+    <FxCompile Include="BoundingVolumePS.hlsl">
+      <Filter>RenderSystem\Source Files\Shaders\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="BoundingVolumeVS.hlsl">
       <Filter>RenderSystem\Source Files\Shaders\Vertex</Filter>
     </FxCompile>
-    <FxCompile Include="PixelShaderBV.hlsl">
+    <FxCompile Include="TerrainPS.hlsl">
       <Filter>RenderSystem\Source Files\Shaders\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="TerrainVS.hlsl">
+      <Filter>RenderSystem\Source Files\Shaders\Vertex</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

@@ -26,6 +26,18 @@ HRESULT VertexShader::createVertexShader(LPCWSTR fileName, ID3D11Device * device
 	return result;
 }
 
+void VertexShader::createInputLayoutPosNorTexTex(ID3D11Device * device, ID3DBlob ** pVS)
+{
+	D3D11_INPUT_ELEMENT_DESC inputDesc[] = {
+		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"NORMAL"  , 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"TEXCOORD0", 0, DXGI_FORMAT_R32G32_FLOAT,    0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"TEXCOORD1", 0, DXGI_FORMAT_R32G32_FLOAT,    0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0}
+	};
+
+	device->CreateInputLayout(inputDesc, ARRAYSIZE(inputDesc), (*pVS)->GetBufferPointer(), (*pVS)->GetBufferSize(), &_vertexLayout);
+}
+
 void VertexShader::createInputLayoutPosNorTex(ID3D11Device* device, ID3DBlob** pVS)
 {
 	D3D11_INPUT_ELEMENT_DESC inputDesc[] = {
@@ -62,6 +74,9 @@ VertexShader::VertexShader(LPCWSTR fileName, ID3D11Device* device, InputLayout i
 	// Decide the input layout
 	switch (inputLayout)
 	{
+	case POSITION_NORMAL_TEXTURE_TEXTURE:
+		createInputLayoutPosNorTexTex(device, &pVS);
+		break;
 	case POSITION_NORMAL_TEXTURE:
 		createInputLayoutPosNorTex(device, &pVS);
 		break;

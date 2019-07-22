@@ -5,6 +5,7 @@
 // used in constructor to decide the input layout
 enum InputLayout
 {
+	POSITION_NORMAL_TEXTURE_TEXTURE,
 	POSITION_NORMAL_TEXTURE,
 	POSITION_COLOUR
 };
@@ -17,6 +18,7 @@ private:
 
 	// Creates VertexBuffer, this is called upon in the Constructor
 	HRESULT createVertexShader(LPCWSTR fileName, ID3D11Device* device, ID3DBlob** pVS, ID3DBlob** errorBlob);
+	void createInputLayoutPosNorTexTex(ID3D11Device* device, ID3DBlob** pVS);
 	void createInputLayoutPosNorTex(ID3D11Device* device, ID3DBlob** pVS);
 	void createInputLayoutPosCol(ID3D11Device* device, ID3DBlob** pVS);
 

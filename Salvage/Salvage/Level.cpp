@@ -15,9 +15,6 @@ void Level::drawLevel(GraphicResources* graphicResources)
 {
 	// GLENN
 	graphicResources->getDeviceContext()->VSSetShader(&graphicResources->getShaderHandler()->getObjectVS()->getVertexShader(), nullptr, 0);
-	graphicResources->getDeviceContext()->HSSetShader(nullptr, nullptr, 0);
-	graphicResources->getDeviceContext()->DSSetShader(nullptr, nullptr, 0);
-	graphicResources->getDeviceContext()->GSSetShader(nullptr, nullptr, 0);
 	graphicResources->getDeviceContext()->PSSetShader(&graphicResources->getShaderHandler()->getObjectPS()->getPixelShader(), nullptr, 0);
 
 	graphicResources->getDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -26,6 +23,14 @@ void Level::drawLevel(GraphicResources* graphicResources)
 
 	_objHandler->drawPlayer();
 	_objHandler->drawObjects();
+
+	graphicResources->getDeviceContext()->VSSetShader(&graphicResources->getShaderHandler()->getTerrainVS()->getVertexShader(), nullptr, 0);
+	graphicResources->getDeviceContext()->PSSetShader(&graphicResources->getShaderHandler()->getTerrainPS()->getPixelShader(), nullptr, 0);
+
+	graphicResources->getDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	graphicResources->getDeviceContext()->IASetInputLayout(&graphicResources->getShaderHandler()->getTerrainVS()->getVertexLayout());
+	graphicResources->getDeviceContext()->PSSetSamplers(0, 1, graphicResources->getSamplerState());
+
 	_objHandler->drawTerrain();
 
 }

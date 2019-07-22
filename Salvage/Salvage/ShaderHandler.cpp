@@ -8,13 +8,13 @@ ShaderHandler::ShaderHandler(ID3D11Device* device)
 {
 	// Create vertex shaders
 	_objectVS = new VertexShader(L"VertexShader.hlsl", device, POSITION_NORMAL_TEXTURE);
-	_boundingVolumeVS = new VertexShader(L"VertexShaderBV.hlsl", device, POSITION_COLOUR);
-	//_terrainVS = new VertexShader(L"TerrainVS.hlsl", device, POSITION_NORMAL_TEXTURE);
+	_boundingVolumeVS = new VertexShader(L"BoundingVolumeVS.hlsl", device, POSITION_COLOUR);
+	_terrainVS = new VertexShader(L"TerrainVS.hlsl", device, POSITION_NORMAL_TEXTURE);
 
 	// Create pixel shaders
 	_objectPS = new PixelShader(L"PixelShader.hlsl", device);
-	_boundingVolumePS = new PixelShader(L"PixelShaderBV.hlsl", device);
-	//_terrainPS = new PixelShader(L"TerrainPS.hlsl", device);
+	_boundingVolumePS = new PixelShader(L"BoundingVolumePS.hlsl", device);
+	_terrainPS = new PixelShader(L"TerrainPS.hlsl", device);
 }
 
 ShaderHandler::~ShaderHandler()
