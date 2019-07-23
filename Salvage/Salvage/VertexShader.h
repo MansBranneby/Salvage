@@ -1,14 +1,8 @@
 #pragma once
 #include <d3d11.h>
 #include <d3dcompiler.h>
-
-// used in constructor to decide the input layout
-enum InputLayout
-{
-	POSITION_NORMAL_TEXTURE_TEXTURE,
-	POSITION_NORMAL_TEXTURE,
-	POSITION_COLOUR
-};
+#include <vector>
+#pragma comment(lib, "dxguid.lib")
 
 class VertexShader
 {
@@ -18,13 +12,11 @@ private:
 
 	// Creates VertexBuffer, this is called upon in the Constructor
 	HRESULT createVertexShader(LPCWSTR fileName, ID3D11Device* device, ID3DBlob** pVS, ID3DBlob** errorBlob);
-	void createInputLayoutPosNorTexTex(ID3D11Device* device, ID3DBlob** pVS);
-	void createInputLayoutPosNorTex(ID3D11Device* device, ID3DBlob** pVS);
-	void createInputLayoutPosCol(ID3D11Device* device, ID3DBlob** pVS);
+	HRESULT createInputLayout(ID3D11Device* device, ID3DBlob** pVS);
 
 public:
 	VertexShader();
-	VertexShader(LPCWSTR fileName, ID3D11Device* device, InputLayout inputLayout);
+	VertexShader(LPCWSTR fileName, ID3D11Device* device);
 	~VertexShader();
 
 	ID3D11VertexShader & getVertexShader() const;

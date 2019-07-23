@@ -197,7 +197,7 @@ Mesh* Model::processMesh(ID3D11Device* device, aiMesh * mesh)
 				vertices[i].weights[j] = vertices[i].weights[j] + ((vertices[i].weights[0] / prevPer)*missPer);
 		}
 	}
-	Mesh* returnMesh = new Mesh(device, vertices, indices, textures);
+	Mesh* returnMesh = new ObjectMesh(device, vertices, indices, textures);
 	return returnMesh;
 }
 

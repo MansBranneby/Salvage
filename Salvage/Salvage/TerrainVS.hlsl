@@ -1,8 +1,9 @@
 struct VS_IN
 {
-	float3 pos      : POSITION;
-	float3 normal   : NORMAL;
-	float2 texCoord : TEXCOORD;
+	float3 pos       : POSITION;
+	float3 normal    : NORMAL;
+	float2 texCoord0 : TEXCOORD;
+	float2 texCoord1 : TEXCOORD;
 };
 
 struct VS_OUT
@@ -37,7 +38,7 @@ VS_OUT VS_main(VS_IN input)
 	output.pos = mul(output.pos, view);
 	output.pos = mul(output.pos, projection);
 
-	output.texCoord = input.texCoord;
+	output.texCoord = input.texCoord0;
 	output.normal = mul(input.normal, (float3x3)transformMatrix);
 
 	return output;

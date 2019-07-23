@@ -71,7 +71,7 @@ void Terrain::processHeightmap(ID3D11Device* device, ID3D11DeviceContext* device
 	//***********
 	// LOAD HEIGHTMAP AND CALCULATE NORMALS//
 	XMVECTOR normal(XMVectorZero());
-	std::vector<Vertex> vertices(terrainWidth * terrainHeight);
+	std::vector<TerrainVertex> vertices(terrainWidth * terrainHeight);
 	for (size_t i = 0; i < terrainWidth; ++i)
 	{
 		for (size_t j = 0; j < terrainHeight; ++j)
@@ -106,29 +106,29 @@ void Terrain::processHeightmap(ID3D11Device* device, ID3D11DeviceContext* device
 		for (size_t j = 0; j < (int)terrainHeight - 1; ++j)
 		{
 			indices[k + 5] = (int)(i * terrainHeight + j);        // Bottom left of quad
-			vertices[i*terrainHeight + j]._textureCoords.x = texUIndex + 0.0f;
-			vertices[i*terrainHeight + j]._textureCoords.y = texVIndex + 1.0f;
+			vertices[i*terrainHeight + j]._textureCoords0.x = texUIndex + 0.0f;
+			vertices[i*terrainHeight + j]._textureCoords0.y = texVIndex + 1.0f;
 
 			indices[k + 4] = (int)(i * terrainHeight + j + 1);        // Bottom right of quad
-			vertices[i*terrainHeight + j + 1]._textureCoords.x = texUIndex + 1.0f;
-			vertices[i*terrainHeight + j + 1]._textureCoords.y = texVIndex + 1.0f;
+			vertices[i*terrainHeight + j + 1]._textureCoords0.x = texUIndex + 1.0f;
+			vertices[i*terrainHeight + j + 1]._textureCoords0.y = texVIndex + 1.0f;
 
 			indices[k + 3] = (int)((i + 1)*terrainHeight + j);    // Top left of quad
-			vertices[(i + 1)*terrainHeight + j]._textureCoords.x = texUIndex + 0.0f;
-			vertices[(i + 1)*terrainHeight + j]._textureCoords.y = texVIndex + 0.0f;
+			vertices[(i + 1)*terrainHeight + j]._textureCoords0.x = texUIndex + 0.0f;
+			vertices[(i + 1)*terrainHeight + j]._textureCoords0.y = texVIndex + 0.0f;
 
 
 			indices[k + 2] = (int)((i + 1)*terrainHeight + j);    // Top left of quad
-			vertices[(i + 1)*terrainHeight + j]._textureCoords.x = texUIndex + 0.0f;
-			vertices[(i + 1)*terrainHeight + j]._textureCoords.y = texVIndex + 0.0f;
+			vertices[(i + 1)*terrainHeight + j]._textureCoords0.x = texUIndex + 0.0f;
+			vertices[(i + 1)*terrainHeight + j]._textureCoords0.y = texVIndex + 0.0f;
 
 			indices[k + 1] = (int)(i * terrainHeight + j + 1);        // Bottom right of quad
-			vertices[i*terrainHeight + j + 1]._textureCoords.x = texUIndex + 1.0f;
-			vertices[i*terrainHeight + j + 1]._textureCoords.y = texVIndex + 1.0f;
+			vertices[i*terrainHeight + j + 1]._textureCoords0.x = texUIndex + 1.0f;
+			vertices[i*terrainHeight + j + 1]._textureCoords0.y = texVIndex + 1.0f;
 
 			indices[k] = (int)((i + 1)*terrainHeight + j + 1);    // Top right of quad
-			vertices[(i + 1)*terrainHeight + j + 1]._textureCoords.x = texUIndex + 1.0f;
-			vertices[(i + 1)*terrainHeight + j + 1]._textureCoords.y = texVIndex + 0.0f;
+			vertices[(i + 1)*terrainHeight + j + 1]._textureCoords0.x = texUIndex + 1.0f;
+			vertices[(i + 1)*terrainHeight + j + 1]._textureCoords0.y = texVIndex + 0.0f;
 
 			k += 6; // next quad
 			texUIndex++;
@@ -151,7 +151,7 @@ void Terrain::processHeightmap(ID3D11Device* device, ID3D11DeviceContext* device
 	getModel()->getLoadedTextures()->push_back(textures[3]);
 
 	// Create a mesh with vertices, indices and textures computed in the code above
-	getModel()->getMeshes()->push_back(new Mesh(device, vertices, indices, textures));
+	getModel()->getMeshes()->push_back(new TerrainMesh(device, vertices, indices, textures));
 
 	// Create transformationbuffer, this buffer is sent into vertex shader to transform the terrain, currently just identity matrix
 	getModel()->setTransformationBuffer(new ConstantBuffer(device, &DirectX::XMMatrixIdentity(), sizeof(DirectX::XMMatrixIdentity())));

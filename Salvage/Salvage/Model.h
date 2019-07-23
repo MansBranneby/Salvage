@@ -10,6 +10,8 @@
 #include "WICTextureLoader.h" //Denna används
 
 #include "Mesh.h"
+#include "TerrainMesh.h"
+#include "ObjectMesh.h"
 #include "assimp/Importer.hpp"
 #include "assimp/cimport.h"
 #include "assimp/scene.h"
