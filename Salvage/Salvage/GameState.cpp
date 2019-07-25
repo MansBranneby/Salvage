@@ -44,7 +44,7 @@ void GameState::update(Game* game)
 	Terrain* terrain = game->getLevelHandler()->getTerrain(0); // currently only works for one terrain
 	float height = terrain->getHeight(DirectX::XMVectorGetX(player->getPosition()), DirectX::XMVectorGetZ(player->getPosition()));
 	player->setHeight(height);
-
+	
 	player->updateLogic();																	    //Update player
 	game->getCamera()->followObject(player->getPosition(), game->getClock()->getDeltaSeconds()); //Update camera based on player position
 }

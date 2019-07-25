@@ -86,7 +86,7 @@ void Terrain::processHeightmap(ID3D11Device* device, ID3D11DeviceContext* device
 			float hR = getHeight((float)j + 1.0f, (float)i);
 			float hD = getHeight((float)j, (float)i - 1.0f);
 			float hU = getHeight((float)j, (float)i + 1.0f);
-
+		
 			normal = DirectX::XMVectorSet(hL - hR, 2.0f, hD - hU, 0.0f);
 			normal = XMVector3Normalize(normal);
 
@@ -217,14 +217,43 @@ float Terrain::getHeight(float worldX, float worldZ)
 	// Convert world space -> terrain space
 	DirectX::XMMATRIX inverseWorldMatrix = DirectX::XMMatrixInverse(nullptr, DirectX::XMMatrixIdentity());
 	DirectX::XMVECTOR terrainSpace = DirectX::XMVector4Transform(DirectX::XMVECTOR{ worldX, 0.0f, worldZ, 1.0f }, inverseWorldMatrix);
-	int x = (int)DirectX::XMVectorGetX(terrainSpace);
-	int z = (int)DirectX::XMVectorGetZ(terrainSpace);
+	float x = DirectX::XMVectorGetX(terrainSpace);
+	float z = DirectX::XMVectorGetZ(terrainSpace);
 
-	if (x < 0 || z < 0 || x > (_terrainWidth - 1) || z > (_terrainHeight - 1))
+	// Terrain space to cell space
+	// Find out which row and column object is in
+	int column = (int)floorf(x);
+	int row    = (int)floorf(z);
+
+	if (row < 0 || column < 0 || row >= (_terrainWidth - 1) || column >= (_terrainHeight - 1))
 		return 0.0f;
 
-	// location in array
-	int index = z * (int)_terrainHeight + x;
+	// Get heights of the vertices in the cell we're in (cell = quad)
+	// TL = top left
+	// TR = top right
+	// BL = bottom left
+	// BR = bottom right
+	float TL = _heightmap[row * _terrainWidth + column].y;
+	float TR = _heightmap[row * _terrainWidth + column + 1].y;
+	float BL = _heightmap[(row + 1) * _terrainWidth + column].y;
+	float BR = _heightmap[(row + 1) * _terrainWidth + column + 1].y;
 
-	return _heightmap[index].y;
+	// s and t are the coordinates inside the quad we're in
+	// s and t are both in the range of [0, 1] and start in the upper left corner of the cell, just like UV coordinates for textures
+	float s = x - (float)column;
+	float t = z - (float)row;
+
+	// If s + t <= 1.0f we're in upper triangle, otherwise we're in the lower
+	if (s + t <= 1.0f)
+	{
+		float uy = TR - TL;
+		float vy = BL - TL;
+		return TL + s * uy + t * vy;
+	}
+	else
+	{
+		float uy = BL - BR;
+		float vy = TR - BR;
+		return BR + (1.0f - s)*uy + (1.0f - t)*vy;
+	}
 }
