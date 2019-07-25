@@ -19,10 +19,19 @@ OBB::OBB(ID3D11Device* device, DirectX::XMFLOAT3 minCoordinates, DirectX::XMFLOA
 	};
 
 	//Calculate vertices
-	
+
 	// Colour
 	XMFLOAT3 colour{ 1.0f, 1.0f, 1.0f };
-	
+
+	// Make the drawn bounding volume a bit bigger to prevent overlapping
+	// This will only be visual and won't actually affect the collision
+	maxCoordinates.x += 0.02f;
+	maxCoordinates.y += 0.02f;
+	maxCoordinates.z += 0.02f;
+	minCoordinates.x -= 0.02f;
+	minCoordinates.y -= 0.02f;
+	minCoordinates.z -= 0.02f;
+
 	//Near vertices
 	getVertices()->push_back({ maxCoordinates.x, maxCoordinates.y, minCoordinates.z, colour.x, colour.y, colour.z }); //0. Right up near 
 	getVertices()->push_back({ maxCoordinates.x, minCoordinates.y, minCoordinates.z, colour.x, colour.y, colour.z }); //1. Right down near

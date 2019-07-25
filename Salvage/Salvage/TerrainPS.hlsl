@@ -26,10 +26,10 @@ cbuffer PS_CONSTANT_BUFFER : register(b0)
 float4 PS_main(PS_IN input) : SV_Target
 {
 	// Sample texture layers with tiled coordinates
-	float4 texColour0 = texture0.Sample(SampleType, float3(input.texCoord0, 1.0f));
-	float4 texColour1 = texture1.Sample(SampleType, float3(input.texCoord0, 2.0f));
-	float4 texColour2 = texture2.Sample(SampleType, float3(input.texCoord0, 3.0f));
-	float4 texColour3 = texture3.Sample(SampleType, float3(input.texCoord0, 4.0f));
+	float4 texColour0 = texture0.Sample(SampleType, input.texCoord0);
+	float4 texColour1 = texture1.Sample(SampleType, input.texCoord0);
+	float4 texColour2 = texture2.Sample(SampleType, input.texCoord0);
+	float4 texColour3 = texture3.Sample(SampleType, input.texCoord0);
 
 	// Sample blend map with calculated coordinates
 	float4 blendMap = blendMapTexture.Sample(SampleType, input.texCoord1);
