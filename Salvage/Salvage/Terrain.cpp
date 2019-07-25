@@ -101,40 +101,74 @@ void Terrain::processHeightmap(ID3D11Device* device, ID3D11DeviceContext* device
 	size_t nrOfFaces = (terrainWidth - 1)*(terrainHeight - 1) * 2;
 	std::vector<int> indices(nrOfFaces * 3);
 
+	// Texture coordinates for blend map
+	float incrementUV = 1.0f / ((float)terrainHeight - 1.0f);
+	float tu2Left = 0.0f;
+	float tu2Right = incrementUV;
+	float tv2Bottom = 1.0f;
+	float tv2Top = 1.0f - incrementUV;
+
 	for (size_t i = 0; i < terrainWidth - 1; ++i)
 	{
 		for (size_t j = 0; j < (int)terrainHeight - 1; ++j)
 		{
-			indices[k + 5] = (int)(i * terrainHeight + j);        // Bottom left of quad
+			// QUAD
+
+			// BL
+			indices[k + 5] = (int)(i * terrainHeight + j);    
 			vertices[i*terrainHeight + j]._textureCoords0.x = texUIndex + 0.0f;
 			vertices[i*terrainHeight + j]._textureCoords0.y = texVIndex + 1.0f;
-
-			indices[k + 4] = (int)(i * terrainHeight + j + 1);        // Bottom right of quad
+			vertices[i*terrainHeight + j]._textureCoords1.x = tu2Left;
+			vertices[i*terrainHeight + j]._textureCoords1.y = tv2Bottom;
+			// BR
+			indices[k + 4] = (int)(i * terrainHeight + j + 1);        
 			vertices[i*terrainHeight + j + 1]._textureCoords0.x = texUIndex + 1.0f;
 			vertices[i*terrainHeight + j + 1]._textureCoords0.y = texVIndex + 1.0f;
-
-			indices[k + 3] = (int)((i + 1)*terrainHeight + j);    // Top left of quad
+			vertices[i*terrainHeight + j + 1]._textureCoords1.x = tu2Right;
+			vertices[i*terrainHeight + j + 1]._textureCoords1.y = tv2Bottom;
+			// UL
+			indices[k + 3] = (int)((i + 1)*terrainHeight + j);   
 			vertices[(i + 1)*terrainHeight + j]._textureCoords0.x = texUIndex + 0.0f;
 			vertices[(i + 1)*terrainHeight + j]._textureCoords0.y = texVIndex + 0.0f;
+			vertices[(i + 1)*terrainHeight + j]._textureCoords1.x = tu2Left;
+			vertices[(i + 1)*terrainHeight + j]._textureCoords1.y = tv2Top;
 
-
-			indices[k + 2] = (int)((i + 1)*terrainHeight + j);    // Top left of quad
+			// UL
+			indices[k + 2] = (int)((i + 1)*terrainHeight + j);   
 			vertices[(i + 1)*terrainHeight + j]._textureCoords0.x = texUIndex + 0.0f;
 			vertices[(i + 1)*terrainHeight + j]._textureCoords0.y = texVIndex + 0.0f;
-
-			indices[k + 1] = (int)(i * terrainHeight + j + 1);        // Bottom right of quad
+			vertices[(i + 1)*terrainHeight + j]._textureCoords1.x = tu2Left;
+			vertices[(i + 1)*terrainHeight + j]._textureCoords1.y = tv2Top;
+			// BR
+			indices[k + 1] = (int)(i * terrainHeight + j + 1);       
 			vertices[i*terrainHeight + j + 1]._textureCoords0.x = texUIndex + 1.0f;
 			vertices[i*terrainHeight + j + 1]._textureCoords0.y = texVIndex + 1.0f;
-
-			indices[k] = (int)((i + 1)*terrainHeight + j + 1);    // Top right of quad
+			vertices[i*terrainHeight + j + 1]._textureCoords1.x = tu2Right;
+			vertices[i*terrainHeight + j + 1]._textureCoords1.y = tv2Bottom;
+			// UR
+			indices[k] = (int)((i + 1)*terrainHeight + j + 1);  
 			vertices[(i + 1)*terrainHeight + j + 1]._textureCoords0.x = texUIndex + 1.0f;
 			vertices[(i + 1)*terrainHeight + j + 1]._textureCoords0.y = texVIndex + 0.0f;
+			vertices[(i + 1)*terrainHeight + j + 1]._textureCoords1.x = tu2Right;
+			vertices[(i + 1)*terrainHeight + j + 1]._textureCoords1.y = tv2Top;
 
-			k += 6; // next quad
+			// Next quad
+			k += 6;
 			texUIndex++;
+			//GLENN
+			tu2Right += incrementUV;
+			tu2Left += incrementUV;
 		}
 		texUIndex = 0;
 		texVIndex++;
+		//GLENN
+		// Reset the tu texture coordinate increments for the alpha map.
+		tu2Left = 0.0f;
+		tu2Right = incrementUV;
+
+		// Increment the tv texture coords for the alpha map.
+		tv2Top -= incrementUV;
+		tv2Bottom -= incrementUV;
 	}
 
 	// TEXTURE(S)
@@ -145,10 +179,12 @@ void Terrain::processHeightmap(ID3D11Device* device, ID3D11DeviceContext* device
 	textures.push_back(Texture(device, ".\\Resources\\Textures\\purple.png"));
 	textures.push_back(Texture(device, ".\\Resources\\Textures\\texture.png"));
 	textures.push_back(Texture(device, ".\\Resources\\Textures\\ground.png"));
+	textures.push_back(Texture(device, ".\\Resources\\Textures\\blendmap.png"));
 	getModel()->getLoadedTextures()->push_back(textures[0]);
 	getModel()->getLoadedTextures()->push_back(textures[1]);
 	getModel()->getLoadedTextures()->push_back(textures[2]);
 	getModel()->getLoadedTextures()->push_back(textures[3]);
+	getModel()->getLoadedTextures()->push_back(textures[4]);
 
 	// Create a mesh with vertices, indices and textures computed in the code above
 	getModel()->getMeshes()->push_back(new TerrainMesh(device, vertices, indices, textures));
