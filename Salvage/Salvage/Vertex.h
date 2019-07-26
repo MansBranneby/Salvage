@@ -4,7 +4,6 @@
 
 class Vertex
 {
-private:
 public:
 	DirectX::XMFLOAT3 _position;
 	DirectX::XMFLOAT3 _normal;

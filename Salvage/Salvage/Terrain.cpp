@@ -176,7 +176,7 @@ void Terrain::processHeightmap(ID3D11Device* device, ID3D11DeviceContext* device
 	// GLENN
 	std::vector<Texture> textures;
 	textures.push_back(Texture(device, ".\\Resources\\Textures\\grass.jpg"));
-	textures.push_back(Texture(device, ".\\Resources\\Textures\\purple.png"));
+	textures.push_back(Texture(device, ".\\Resources\\Textures\\rock.jpg"));
 	textures.push_back(Texture(device, ".\\Resources\\Textures\\texture.png"));
 	textures.push_back(Texture(device, ".\\Resources\\Textures\\ground.png"));
 	textures.push_back(Texture(device, ".\\Resources\\Textures\\blendmap.png"));
