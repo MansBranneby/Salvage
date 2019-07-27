@@ -6,7 +6,7 @@ void Terrain::loadHeightmap()
 	BITMAPFILEHEADER bitmapFileHeader;        //Structure which stores information about file
 	BITMAPINFOHEADER bitmapInfoHeader;        //Structure which stores information about image
 
-	size_t imageSize;
+	UINT imageSize;
 	if (fopen_s(&filePtr, _filename.c_str(), "rb") == NULL)
 	{
 		fread(&bitmapFileHeader, sizeof(BITMAPFILEHEADER), 1, filePtr);
@@ -38,10 +38,10 @@ void Terrain::loadHeightmap()
 		// So we use this counter to skip the next two components in the image data (we read R, then skip BG)
 		int k = 0;
 		unsigned char height = 0;
-		size_t index;
-		for (size_t i = 0; i < _terrainHeight; ++i)
+		UINT index;
+		for (UINT i = 0; i < _terrainHeight; ++i)
 		{
-			for (size_t j = 0; j < _terrainWidth; ++j)
+			for (UINT j = 0; j < _terrainWidth; ++j)
 			{
 				height = bitmapImage[k];
 
@@ -56,13 +56,16 @@ void Terrain::loadHeightmap()
 			k++;
 		}
 
+		// Smoothing terrain, reduces sharp edges
+		Smooth();
+
 		delete [] bitmapImage;
 		bitmapImage = nullptr;
 	}
 
 }
 
-void Terrain::processHeightmap(ID3D11Device* device, ID3D11DeviceContext* deviceContext, size_t terrainWidth, size_t terrainHeight, std::vector<DirectX::XMFLOAT3> heightmap)
+void Terrain::processHeightmap(ID3D11Device* device, ID3D11DeviceContext* deviceContext, UINT terrainWidth, UINT terrainHeight, std::vector<DirectX::XMFLOAT3> heightmap)
 {
 	// Used following tutorial: https://www.braynzarsoft.net/viewtutorial/q16390-30-heightmap-terrain
 	// Why ++i instead of i++?: https://stackoverflow.com/questions/4706199/post-increment-and-pre-increment-within-a-for-loop-produce-same-output
@@ -72,9 +75,9 @@ void Terrain::processHeightmap(ID3D11Device* device, ID3D11DeviceContext* device
 	// LOAD HEIGHTMAP AND CALCULATE NORMALS//
 	XMVECTOR normal(XMVectorZero());
 	std::vector<TerrainVertex> vertices(terrainWidth * terrainHeight);
-	for (size_t i = 0; i < terrainWidth; ++i)
+	for (UINT i = 0; i < terrainWidth; ++i)
 	{
-		for (size_t j = 0; j < terrainHeight; ++j)
+		for (UINT j = 0; j < terrainHeight; ++j)
 		{
 			// POSITIONS
 			vertices[i * terrainWidth + j]._position = heightmap[i * terrainWidth + j];
@@ -98,7 +101,7 @@ void Terrain::processHeightmap(ID3D11Device* device, ID3D11DeviceContext* device
 	int k = 0;
 	int texUIndex = 0;
 	int texVIndex = 0;
-	size_t nrOfFaces = (terrainWidth - 1)*(terrainHeight - 1) * 2;
+	UINT nrOfFaces = (terrainWidth - 1)*(terrainHeight - 1) * 2;
 	std::vector<int> indices(nrOfFaces * 3);
 
 	// Texture coordinates for blend map
@@ -108,9 +111,9 @@ void Terrain::processHeightmap(ID3D11Device* device, ID3D11DeviceContext* device
 	float tv2Bottom = 1.0f;
 	float tv2Top = 1.0f - incrementUV;
 
-	for (size_t i = 0; i < terrainWidth - 1; ++i)
+	for (UINT i = 0; i < terrainWidth - 1; ++i)
 	{
-		for (size_t j = 0; j < (int)terrainHeight - 1; ++j)
+		for (UINT j = 0; j < terrainHeight - 1; ++j)
 		{
 			// QUAD
 
@@ -193,6 +196,88 @@ void Terrain::processHeightmap(ID3D11Device* device, ID3D11DeviceContext* device
 	getModel()->setTransformationBuffer(new ConstantBuffer(device, &DirectX::XMMatrixIdentity(), sizeof(DirectX::XMMatrixIdentity())));
 }
 
+bool Terrain::inBounds(int i, int j)
+{
+	return i >= 0 && i < (int)(_terrainHeight - 1) &&
+		   j >= 0 && j < (int)(_terrainWidth - 1);
+}
+
+float Terrain::average(int i, int j)
+{
+	// Sample neighboring 8 neighboring pixel heights, average them.
+	// 
+    // ------------------------------
+	//| i-1, j-1 | i-1, j | i-1, j+1 |
+	// ------------------------------
+	//| i  , j-1 | i  , j | i  , j+1 |
+	// ------------------------------
+	//| i+1, j-1 | i+1, j | i+1, j+1 |
+	// ------------------------------
+
+	float sumOfHeights = 0; //sum of the sampled heights from neighbors
+	float nrOfSamples = 0;  // number of neighbors that have been sampled
+
+	for (int m = i - 1; m < i + 1; ++m)
+	{
+		for (int n = j - 1; n < j + 1; ++n)
+		{
+			if (inBounds(m, n))
+			{
+				sumOfHeights += _heightmap[m * _terrainWidth + n].y;
+				++nrOfSamples;
+			}
+		}
+	}
+	return sumOfHeights / nrOfSamples; // Averaged height   
+}
+
+void Terrain::Smooth()
+{
+	// Smooth reduces sharp edges in terrain
+	for (UINT i = 0; i < _terrainHeight; ++i)
+	{
+		for (UINT j = 0; j < _terrainWidth; ++j)
+		{
+			_heightmap[i * _terrainWidth + j].y = average(i, j);
+		}
+	}
+}
+
+void Terrain::createSRV(ID3D11Device* device)
+{
+	//D3D11_TEXTURE2D_DESC desc;
+	//desc.Width = _terrainWidth;
+	//desc.Height = _terrainHeight;
+	//desc.MipLevels = 1;
+	//desc.ArraySize = 1;
+	//desc.Format = DXGI_FORMAT_R16_FLOAT;
+	//desc.SampleDesc.Count = 1;
+	//desc.SampleDesc.Quality = 0;
+	//desc.Usage = D3D11_USAGE_DEFAULT;
+	//desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+	//desc.CPUAccessFlags = 0;
+	//desc.MiscFlags = 0;
+
+	//// HALF is defined in xnamath.h, for storing 16-bit float.
+	//std::vector<DirectX::PackedVector::HALF> hmap(_heightmap.size());
+	//std::transform(_heightmap.begin(), _heightmap.end(), hmap.begin(), DirectX::PackedVector::XMConvertFloatToHalf);
+	//D3D11_SUBRESOURCE_DATA data;
+	//data.pSysMem = &hmap[0];
+	//data.SysMemPitch = _terrainWidth * sizeof(DirectX::PackedVector::HALF);
+	//data.SysMemSlicePitch = 0;
+	//ID3D11Texture2D* hmapTex = 0;
+	//HRESULT hr = device->CreateTexture2D(&desc, &data, &hmapTex);
+	//D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
+	//srvDesc.Format = desc.Format;
+	//srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	//srvDesc.Texture2D.MostDetailedMip = 0;
+	//srvDesc.Texture2D.MipLevels = -1;
+	//HRESULT hr = device->CreateShaderResourceView(hmapTex, &srvDesc, &_heightmapSRV);
+	//
+	//if(hmapTex)
+	//	hmapTex->Release();
+}
+
 Terrain::Terrain(ID3D11Device* device, ID3D11DeviceContext* deviceContext, DirectX::XMVECTOR startingPosition, std::string filename)
 	:StaticObject(TERRAIN, startingPosition)
 {
@@ -225,7 +310,7 @@ float Terrain::getHeight(float worldX, float worldZ)
 	int column = (int)floorf(x);
 	int row    = (int)floorf(z);
 
-	if (row < 0 || column < 0 || row >= (_terrainWidth - 1) || column >= (_terrainHeight - 1))
+	if (row < 0 || column < 0 || row >= (int)(_terrainWidth - 1) || column >= (int)(_terrainHeight - 1))
 		return 0.0f;
 
 	// Get heights of the vertices in the cell we're in (cell = quad)
