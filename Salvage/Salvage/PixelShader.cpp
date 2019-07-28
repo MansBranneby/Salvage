@@ -25,9 +25,9 @@ HRESULT PixelShader::createPixelShader(LPCWSTR fileName, ID3D11Device* device)
 		return result;
 	}
 
+	// Compilation successful
 	device->CreatePixelShader(pPS->GetBufferPointer(), pPS->GetBufferSize(), nullptr, &_pixelShader);
-	
-	if (pPS) 
+	if (pPS)
 		pPS->Release();
 
 	return result;

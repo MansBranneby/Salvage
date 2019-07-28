@@ -6,10 +6,10 @@ class PixelShader
 {
 private:
 	ID3D11PixelShader* _pixelShader;
-	HRESULT createPixelShader(LPCWSTR fileName, ID3D11Device* device);
+	HRESULT createPixelShader(LPCWSTR filename, ID3D11Device* device);
 public:
 	PixelShader();
-	PixelShader(LPCWSTR fileName, ID3D11Device* device);
+	PixelShader(LPCWSTR filename, ID3D11Device* device);
 	~PixelShader();
 
 	ID3D11PixelShader & getPixelShader() const;

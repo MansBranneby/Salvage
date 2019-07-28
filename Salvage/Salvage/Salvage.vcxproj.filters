@@ -22,18 +22,6 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="RenderSystem\Source Files\Shaders">
-      <UniqueIdentifier>{c588c90d-ac1a-4ff6-ac6b-67a630746984}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="RenderSystem\Source Files\Shaders\Vertex">
-      <UniqueIdentifier>{28bb2de3-f071-4ea2-a879-ca50cf372944}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="RenderSystem\Source Files\Shaders\Pixel">
-      <UniqueIdentifier>{2febca3f-5b75-428e-b3fd-374600b9a32b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="RenderSystem\ImGui">
-      <UniqueIdentifier>{16084789-5ad7-46e7-8469-e50129d3d8d0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="GameSystem\Header Files">
       <UniqueIdentifier>{52fd1ec9-7c15-4022-a804-b800a79c329b}</UniqueIdentifier>
     </Filter>
@@ -49,37 +37,55 @@
     <Filter Include="GameSystem\Header Files\Collision">
       <UniqueIdentifier>{b70f717a-112b-4845-9c16-91881cca177e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="GameSystem\Source Files\Collision">
+    <Filter Include="RenderSystem\Source Files\ImGui">
+      <UniqueIdentifier>{16084789-5ad7-46e7-8469-e50129d3d8d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderSystem\HLSL shaders">
+      <UniqueIdentifier>{c588c90d-ac1a-4ff6-ac6b-67a630746984}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderSystem\HLSL shaders\Vertex">
+      <UniqueIdentifier>{28bb2de3-f071-4ea2-a879-ca50cf372944}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderSystem\HLSL shaders\Pixel">
+      <UniqueIdentifier>{2febca3f-5b75-428e-b3fd-374600b9a32b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderSystem\HLSL shaders\Hull">
+      <UniqueIdentifier>{54ca52d1-8332-4080-992c-0824b67bab41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderSystem\HLSL shaders\Domain">
+      <UniqueIdentifier>{ea0c9082-80d3-4b96-830b-9ea91526ac6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameSystem\Source Files\BoundingVolumes">
       <UniqueIdentifier>{8d6d3a39-a327-4c54-b627-9351964d64d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderSystem\Header Files\Shaders">
+      <UniqueIdentifier>{3ce3ad5e-5c04-4976-85f9-97e273d1412f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderSystem\Source Files\Shaders">
+      <UniqueIdentifier>{bd846a35-5544-4cdb-88d1-0caf90cd838b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GraphicResources.cpp">
       <Filter>RenderSystem\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PixelShader.cpp">
-      <Filter>RenderSystem\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="VertexShader.cpp">
-      <Filter>RenderSystem\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="imgui\imgui.cpp">
-      <Filter>RenderSystem\ImGui</Filter>
+      <Filter>RenderSystem\Source Files\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui_demo.cpp">
-      <Filter>RenderSystem\ImGui</Filter>
+      <Filter>RenderSystem\Source Files\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui_draw.cpp">
-      <Filter>RenderSystem\ImGui</Filter>
+      <Filter>RenderSystem\Source Files\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui_impl_dx11.cpp">
-      <Filter>RenderSystem\ImGui</Filter>
+      <Filter>RenderSystem\Source Files\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui_impl_win32.cpp">
-      <Filter>RenderSystem\ImGui</Filter>
+      <Filter>RenderSystem\Source Files\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui_widgets.cpp">
-      <Filter>RenderSystem\ImGui</Filter>
+      <Filter>RenderSystem\Source Files\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>RenderSystem\Source Files</Filter>
@@ -196,18 +202,15 @@
       <Filter>GameSystem\Source Files\States</Filter>
     </ClCompile>
     <ClCompile Include="BoundingVolume.cpp">
-      <Filter>GameSystem\Source Files\Collision</Filter>
+      <Filter>GameSystem\Source Files\BoundingVolumes</Filter>
     </ClCompile>
     <ClCompile Include="OBB.cpp">
-      <Filter>GameSystem\Source Files\Collision</Filter>
+      <Filter>GameSystem\Source Files\BoundingVolumes</Filter>
     </ClCompile>
     <ClCompile Include="Terrain.cpp">
       <Filter>RenderSystem\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Light.cpp">
-      <Filter>RenderSystem\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ShaderHandler.cpp">
       <Filter>RenderSystem\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ObjectMesh.cpp">
@@ -219,18 +222,27 @@
     <ClCompile Include="TerrainMesh.cpp">
       <Filter>RenderSystem\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="HullShader.cpp">
+      <Filter>RenderSystem\Source Files\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="PixelShader.cpp">
+      <Filter>RenderSystem\Source Files\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderHandler.cpp">
+      <Filter>RenderSystem\Source Files\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexShader.cpp">
+      <Filter>RenderSystem\Source Files\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="DomainShader.cpp">
+      <Filter>RenderSystem\Source Files\Shaders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphicResources.h">
-      <Filter>RenderSystem\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PixelShader.h">
-      <Filter>RenderSystem\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="VertexShader.h">
       <Filter>RenderSystem\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="imgui\imconfig.h">
@@ -383,9 +395,6 @@
     <ClInclude Include="Light.h">
       <Filter>RenderSystem\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ShaderHandler.h">
-      <Filter>RenderSystem\Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TerrainMesh.h">
       <Filter>RenderSystem\Header Files</Filter>
     </ClInclude>
@@ -395,25 +404,46 @@
     <ClInclude Include="ObjectMesh.h">
       <Filter>RenderSystem\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HullShader.h">
+      <Filter>RenderSystem\Header Files\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexShader.h">
+      <Filter>RenderSystem\Header Files\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="PixelShader.h">
+      <Filter>RenderSystem\Header Files\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderHandler.h">
+      <Filter>RenderSystem\Header Files\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="DomainShader.h">
+      <Filter>RenderSystem\Header Files\Shaders</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="VertexShader.hlsl">
-      <Filter>RenderSystem\Source Files\Shaders\Vertex</Filter>
+      <Filter>RenderSystem\HLSL shaders\Vertex</Filter>
     </FxCompile>
     <FxCompile Include="PixelShader.hlsl">
-      <Filter>RenderSystem\Source Files\Shaders\Pixel</Filter>
+      <Filter>RenderSystem\HLSL shaders\Pixel</Filter>
     </FxCompile>
     <FxCompile Include="BoundingVolumePS.hlsl">
-      <Filter>RenderSystem\Source Files\Shaders\Pixel</Filter>
+      <Filter>RenderSystem\HLSL shaders\Pixel</Filter>
     </FxCompile>
     <FxCompile Include="BoundingVolumeVS.hlsl">
-      <Filter>RenderSystem\Source Files\Shaders\Vertex</Filter>
+      <Filter>RenderSystem\HLSL shaders\Vertex</Filter>
     </FxCompile>
     <FxCompile Include="TerrainPS.hlsl">
-      <Filter>RenderSystem\Source Files\Shaders\Pixel</Filter>
+      <Filter>RenderSystem\HLSL shaders\Pixel</Filter>
     </FxCompile>
     <FxCompile Include="TerrainVS.hlsl">
-      <Filter>RenderSystem\Source Files\Shaders\Vertex</Filter>
+      <Filter>RenderSystem\HLSL shaders\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="TerrainHS.hlsl">
+      <Filter>RenderSystem\HLSL shaders\Hull</Filter>
+    </FxCompile>
+    <FxCompile Include="TerrainDS.hlsl">
+      <Filter>RenderSystem\HLSL shaders\Domain</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>
