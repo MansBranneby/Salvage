@@ -1,7 +1,6 @@
 #pragma once
 #define NOMINMAX
 
-#include "Drawable.h"
 #include "Texture.h"
 #include "Vertex.h"
 #include "TerrainVertex.h"
@@ -13,10 +12,10 @@ struct VertexBoneData
 	float weights[4]; // NUM_BONES_PER_VERTEX?
 };
 
-class Mesh: public Drawable
+class Mesh
 {
 private:
-	UINT _vertexSize;
+protected:
 	std::vector<int> _indices;
 	std::vector<Texture> _textures;
 
@@ -32,5 +31,5 @@ public:
 	Mesh(ID3D11Device* device, std::vector<TerrainVertex> vertices, std::vector<int> indices, std::vector<Texture> textures);
 	virtual ~Mesh() = 0;
 
-	void draw(ID3D11DeviceContext* deviceContext, ID3D11Buffer* transformationBuffer);
+	virtual void draw(ID3D11DeviceContext* deviceContext, ID3D11Buffer* transformationBuffer) = 0;
 };

@@ -1,35 +1,73 @@
-struct DS_OUTPUT
+Texture2D gHeightMap : register(t5);
+
+SamplerState SampleType  : register(s0);;
+
+struct DS_IN
 {
-	float4 vPosition  : SV_POSITION;
-	// TODO: change/add other stuff
+	float3 posW    : POSITION;
+	float2 tex     : TEXCOORD0;
+	float2 boundsY : TEXCOORD1;
 };
 
-// Output control point
-struct HS_CONTROL_POINT_OUTPUT
+struct DS_OUT
 {
-	float3 vPosition : WORLDPOS; 
+	float4 posH : SV_POSITION;
+	float3 posW : POSITION;
+	float2 tex : TEXCOORD0;
+	float2 tiledTex : TEXCOORD1;
 };
 
-// Output patch constant data.
-struct HS_CONSTANT_DATA_OUTPUT
+struct PatchTess
 {
-	float EdgeTessFactor[3]			: SV_TessFactor; // e.g. would be [4] for a quad domain
-	float InsideTessFactor			: SV_InsideTessFactor; // e.g. would be Inside[2] for a quad domain
-	// TODO: change/add other stuff
+	float EdgeTess[4] : SV_TessFactor;
+	float InsideTess[2] : SV_InsideTessFactor;
 };
 
-#define NUM_CONTROL_POINTS 3
 
-[domain("tri")]
-DS_OUTPUT DS_main(
-	HS_CONSTANT_DATA_OUTPUT input,
-	float3 domain : SV_DomainLocation,
-	const OutputPatch<HS_CONTROL_POINT_OUTPUT, NUM_CONTROL_POINTS> patch)
+cbuffer DS_CONSTANT_BUFFER : register(b0)
 {
-	DS_OUTPUT Output;
+	matrix world;
+	matrix view;
+	matrix projection;
+	matrix WVP;
+	float4 camPos;
+	//// When distance is minimum, the tessellation is maximum.
+	//// When distance is maximum, the tessellation is minimum.
+	float gMinDist;
+	float gMaxDist;
+	//// Exponents for power of 2 tessellation. The tessellation
+	//// range is [2^(gMinTess), 2^(gMaxTess)]. Since the maximum
+	//// tessellation is 64, this means gMaxTess can be at most 6
+	//// since 2^6 = 64, and gMinTess must be at least 0 since 2^0 = 1.
+	float gMinTess;
+	float gMaxTess;
+	// How much to tile the texture layers.
+	float2 gTexScale;
+};
 
-	Output.vPosition = float4(
-		patch[0].vPosition*domain.x+patch[1].vPosition*domain.y+patch[2].vPosition*domain.z,1);
-
-	return Output;
+[domain("quad")]
+DS_OUT DS_main(PatchTess patchTess, float2 uv : SV_DomainLocation, const OutputPatch<DS_IN, 4> quad)
+{
+	DS_OUT dout;
+	// Bilinear interpolation.
+	dout.posW = lerp(
+		lerp(quad[0].posW, quad[1].posW, uv.x),
+		lerp(quad[2].posW, quad[3].posW, uv.x),
+		uv.y);
+	dout.tex = lerp(
+		lerp(quad[0].tex, quad[1].tex, uv.x),
+		lerp(quad[2].tex, quad[3].tex, uv.x),
+		uv.y);
+	// Tile layer textures over terrain.
+	dout.tiledTex = dout.tex * gTexScale;
+	// Displacement mapping
+	dout.posW.y = gHeightMap.SampleLevel(SampleType, dout.tex, 0).r;
+	// NOTE: We tried computing the normal in the domain shader
+	// using finite difference, but the vertices move continuously
+	// with fractional_even which creates noticable light shimmering
+	// artifacts as the normal changes. Therefore, we moved the
+	// calculation to the pixel shader.
+	// Project to homogeneous clip space.
+	dout.posH = mul(float4(dout.posW, 1.0f), WVP);
+	return dout;
 }

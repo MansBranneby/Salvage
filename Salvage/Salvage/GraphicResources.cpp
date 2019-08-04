@@ -42,7 +42,7 @@ void GraphicResources::createDepthStencil()
 	D3D11_DEPTH_STENCIL_DESC dsDesc;
 	ZeroMemory(&dsDesc, sizeof(dsDesc));
 	// Depth test parameters
-	dsDesc.DepthEnable = true; //SET TRUE WHEN WE HAVE A CAMERA
+	dsDesc.DepthEnable = true;
 	dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 	dsDesc.DepthFunc = D3D11_COMPARISON_LESS;
 	
@@ -118,7 +118,26 @@ void GraphicResources::setRasterizerState()
 
 void GraphicResources::setSamplerState()
 {
+	HRESULT hr = E_FAIL;
+
+	// SAMPLERS //
+	ID3D11SamplerState* pointClamp;
 	D3D11_SAMPLER_DESC sampDesc;
+	ZeroMemory(&sampDesc, sizeof(sampDesc));
+	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+	sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+	sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+	sampDesc.MinLOD = 0;
+	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+	hr = _device->CreateSamplerState(&sampDesc, &pointClamp);
+	if (FAILED(hr))
+		MessageBox(NULL, L"_samplerState", L"Error", MB_OK | MB_ICONERROR);
+
+
+	ID3D11SamplerState* pointWrap;
 	ZeroMemory(&sampDesc, sizeof(sampDesc));
 	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
 	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
@@ -128,9 +147,25 @@ void GraphicResources::setSamplerState()
 	sampDesc.MinLOD = 0;
 	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
-	HRESULT hr = _device->CreateSamplerState(&sampDesc, &_samplerState);
+	hr = _device->CreateSamplerState(&sampDesc, &pointWrap);
 	if (FAILED(hr))
 		MessageBox(NULL, L"_samplerState", L"Error", MB_OK | MB_ICONERROR);
+
+	// Set samplers
+	_deviceContext->VSSetSamplers(0, 1, &pointClamp);
+	_deviceContext->DSSetSamplers(0, 1, &pointClamp);
+	_deviceContext->PSSetSamplers(0, 1, &pointWrap);
+
+	// release pointers to sampler states
+	pointClamp->Release();
+	pointWrap->Release();
+}
+
+void GraphicResources::setConstantBuffers()
+{
+	_deviceContext->VSSetConstantBuffers(0, 1, ConstantBuffer(_device, &_perFrameCB, sizeof(_perFrameCB)).getConstantBuffer());
+	_deviceContext->HSSetConstantBuffers(0, 1, ConstantBuffer(_device, &_perFrameCB, sizeof(_perFrameCB)).getConstantBuffer());
+	_deviceContext->DSSetConstantBuffers(0, 1, ConstantBuffer(_device, &_perFrameCB, sizeof(_perFrameCB)).getConstantBuffer());
 }
 
 HRESULT GraphicResources::createDirect3DContext(HWND wndHandle)
@@ -170,7 +205,7 @@ HRESULT GraphicResources::createDirect3DContext(HWND wndHandle)
 		// get the address of the back buffer
 		ID3D11Texture2D* pBackBuffer = nullptr;
 		_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
-		//_swapChain->SetFullscreenState(false, NULL); //FULLSCREEN ON/OFF
+		_swapChain->SetFullscreenState(false, NULL); //FULLSCREEN ON/OFF
 		// use the back buffer address to create the render target
 		_device->CreateRenderTargetView(pBackBuffer, NULL, &_backbufferRTV);
 		pBackBuffer->Release();
@@ -245,4 +280,14 @@ ID3D11SamplerState ** GraphicResources::getSamplerState()
 ShaderHandler * GraphicResources::getShaderHandler()
 {
 	return _shaderHandler;
+}
+
+PerFrameData* GraphicResources::getPerFrameData()
+{
+	return _perFrameData;
+}
+
+void GraphicResources::updateConstantBuffers()
+{
+	_deviceContext->UpdateSubresource(*_perFrameCB->getConstantBuffer(), 0, nullptr, &_perFrameData, 0, 0);
 }

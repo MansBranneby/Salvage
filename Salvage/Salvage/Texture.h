@@ -17,5 +17,6 @@ public:
 	
 	Texture();
 	Texture(ID3D11Device* device, std::string path);
+	Texture(ID3D11ShaderResourceView* texture);
 	~Texture();
 };

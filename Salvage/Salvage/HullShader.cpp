@@ -38,3 +38,8 @@ HullShader::~HullShader()
 	if(_hullShader)
 		_hullShader->Release();
 }
+
+ID3D11HullShader & HullShader::getHullShader()
+{
+	return *_hullShader;
+}

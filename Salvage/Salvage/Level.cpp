@@ -19,20 +19,19 @@ void Level::drawLevel(GraphicResources* graphicResources)
 
 	graphicResources->getDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	graphicResources->getDeviceContext()->IASetInputLayout(&graphicResources->getShaderHandler()->getObjectVS()->getVertexLayout());
-	graphicResources->getDeviceContext()->PSSetSamplers(0, 1, graphicResources->getSamplerState());
 
 	_objHandler->drawPlayer();
 	_objHandler->drawObjects();
 
 	graphicResources->getDeviceContext()->VSSetShader(&graphicResources->getShaderHandler()->getTerrainVS()->getVertexShader(), nullptr, 0);
+	graphicResources->getDeviceContext()->HSSetShader(&graphicResources->getShaderHandler()->getTerrainHS()->getHullShader() , nullptr, 0);
+	graphicResources->getDeviceContext()->DSSetShader(&graphicResources->getShaderHandler()->getTerrainDS()->getDomainShader(), nullptr, 0);
 	graphicResources->getDeviceContext()->PSSetShader(&graphicResources->getShaderHandler()->getTerrainPS()->getPixelShader(), nullptr, 0);
 
-	graphicResources->getDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	graphicResources->getDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST);
 	graphicResources->getDeviceContext()->IASetInputLayout(&graphicResources->getShaderHandler()->getTerrainVS()->getVertexLayout());
-	graphicResources->getDeviceContext()->PSSetSamplers(0, 1, graphicResources->getSamplerState());
 
 	_objHandler->drawTerrain();
-
 }
 
 int Level::getNrOfGameObjects() const

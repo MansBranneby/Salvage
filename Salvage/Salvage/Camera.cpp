@@ -89,11 +89,21 @@ void Camera::followObject(DirectX::XMVECTOR objPosition, float deltaSeconds)
 	//Update camera matrices	
 	_view = XMMatrixLookAtLH(_position, _lookAt, _up);
 	_view = XMMatrixTranspose(_view);
-	_WVP = XMMatrixMultiply(_projection, XMMatrixMultiply(_view, _world));
-	_transMatrices.world = _world;
-	_transMatrices.view = _view;
-	_transMatrices.projection = _projection;
-	_transMatrices.WVP = _WVP;
+	_viewProjection = XMMatrixMultiply(_projection, _view);
+
+	//_transMatrices.world = _world;
+	/*_transMatrices.view = _view;
+	_transMatrices.projection = _projection;*/
+	_transMatrices.viewProjection = _viewProjection;
+	_transMatrices.camPos = _position;
+
+	// GLENN
+	_transMatrices.minTess = 0;
+	_transMatrices.maxTess = 6;
+	_transMatrices.minDist = 20;
+	_transMatrices.maxDist = 100;
+
+	_transMatrices.texScale = { 50.0f, 50.0f };
 }
 
 Camera::Camera()
@@ -138,22 +148,21 @@ Camera::Camera(ID3D11Device* device, float width, float height)
 	_offSet = { _camDistance * cos(_theta)* sin(_phi), _camDistance * cos(_phi), _camDistance * sin(_theta)* sin(_phi), 1.0f };
 
 	// Setup space matricies
-	_world = XMMatrixTranslation(0.0f, 0.0f, 0.0f);
+	//_world = XMMatrixTranslation(0.0f, 0.0f, 0.0f);
 	_view = XMMatrixLookAtLH(_position, _lookAt, _up);
 	_projection = XMMatrixPerspectiveFovLH(0.45f * DirectX::XM_PI, width / height, 0.1f, 200.0f);
-
 	_view = XMMatrixTranspose(_view);
 	_projection = XMMatrixTranspose(_projection);
+	_transMatrices.viewProjection = XMMatrixMultiply(_projection, _view);
 
-	_WVP = XMMatrixMultiply(_projection, XMMatrixMultiply(_view, _world));
-	_transMatrices.world = _world;
+	/*_transMatrices.world = _world;
 	_transMatrices.view = _view;
 	_transMatrices.projection = _projection;
-	_transMatrices.WVP = _WVP;
+	_transMatrices.WVP = _WVP;*/
 
 	//CONSTANT BUFFER
 	D3D11_BUFFER_DESC cbDesc;
-	cbDesc.ByteWidth = sizeof(XMMATRIX)*4;
+	cbDesc.ByteWidth = sizeof(perFrameCB);
 	cbDesc.Usage = D3D11_USAGE_DYNAMIC;
 	cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
@@ -207,12 +216,7 @@ void Camera::setLookAtSpeed(float lookAtSpeed)
 	_lookAtSpeed = lookAtSpeed;
 }
 
-XMMATRIX* Camera::getWVP()
-{
-	return &_WVP;
-}
-
-TransformationMatrices * Camera::getTransformMatrices()
+perFrameCB * Camera::getTransformMatrices()
 {
 	return &_transMatrices;
 }
@@ -239,11 +243,13 @@ void Camera::update(DirectX::Keyboard::State kb, DirectX::Mouse::State ms, float
 	}
 
 	//Update camera matrices	
-	_view = XMMatrixLookAtLH(_position, _lookAt, _up);
-	_view = XMMatrixTranspose(_view);
-	_WVP = XMMatrixMultiply(_projection, XMMatrixMultiply(_view, _world));
-	_transMatrices.world = _world;
-	_transMatrices.view = _view;
-	_transMatrices.projection = _projection;
-	_transMatrices.WVP = _WVP;
+	//_view = XMMatrixLookAtLH(_position, _lookAt, _up);
+	//_view = XMMatrixTranspose(_view);
+	//_WVP = XMMatrixMultiply(_projection, XMMatrixMultiply(_view, _world));
+
+	//_transMatrices.world = _world;
+	//_transMatrices.view = _view;
+	//_transMatrices.projection = _projection;
+	//_transMatrices.WVP = _WVP;
+	////_transMatrices.camPos = _position;
 }

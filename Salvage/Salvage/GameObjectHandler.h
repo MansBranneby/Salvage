@@ -34,5 +34,7 @@ public:
 	void drawPlayer();
 	void drawTerrain();
 	void drawObjects();
+
+	void drawPlayerBV();
 	GameObject* getGameObject(int index) const;
 };

@@ -1,5 +1,5 @@
 #pragma once
-#include "Drawable.h"
+#include <d3d11.h>
 #include <DirectXMath.h>
 #include <vector>
 
@@ -11,7 +11,7 @@ struct BoundingVolumeVertex
 	float r, g, b;
 };
 
-class BoundingVolume : public Drawable
+class BoundingVolume
 {
 private:
 	std::vector<BoundingVolumeVertex> _vertices;
@@ -22,9 +22,8 @@ private:
 	ID3D11Buffer* _indexBuffer;
 
 	DirectX::XMVECTOR _center;
+
 protected:
-
-
 	virtual void createBuffers(ID3D11Device* device, std::vector<BoundingVolumeVertex> vertices, std::vector<int> indices);
 
 public:
@@ -40,7 +39,7 @@ public:
 	virtual void setWorldMatrix(DirectX::XMMATRIX worldMatrix);
 	virtual void move(DirectX::XMVECTOR speed);
 
-	void draw(ID3D11DeviceContext* deviceContext, ID3D11Buffer* transformationBuffer);
+	virtual void draw(ID3D11DeviceContext* deviceContext, ID3D11Buffer* transformationBuffer);
 	
 	virtual bool intersectsWithOBB(BoundingVolume* other) = 0;
 };

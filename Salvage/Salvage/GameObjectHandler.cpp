@@ -104,6 +104,11 @@ void GameObjectHandler::drawObjects()
 		_gameObjects[i]->draw(_deviceContext);
 }
 
+void GameObjectHandler::drawPlayerBV()
+{
+	_player->drawBoundingVolume(_deviceContext);
+}
+
 GameObject * GameObjectHandler::getGameObject(int index) const
 {
 	return _gameObjects[index];

@@ -98,8 +98,8 @@ void BoundingVolume::move(DirectX::XMVECTOR speed)
 
 void BoundingVolume::draw(ID3D11DeviceContext * deviceContext, ID3D11Buffer * transformationBuffer)
 {
-	UINT32 vertexSize = sizeof(BoundingVolumeVertex);
-	UINT32 offset = 0;
+	UINT offset = 0;
+	UINT vertexSize = sizeof(BoundingVolumeVertex);
 
 	deviceContext->IASetVertexBuffers(0, 1, &_vertexBuffer, &vertexSize, &offset);
 	deviceContext->IASetIndexBuffer(_indexBuffer, DXGI_FORMAT_R32_UINT, 0);

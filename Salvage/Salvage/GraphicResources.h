@@ -1,9 +1,25 @@
 #pragma once
 #include <d3d11.h>
 #include "ShaderHandler.h"
+#include "ConstantBuffer.h"
 
 #define WIDTH 1920.0f
 #define HEIGHT 1080.0f
+
+struct PerFrameData
+{
+	/*DirectX::XMMATRIX world;
+	DirectX::XMMATRIX view;
+	DirectX::XMMATRIX projection;*/
+	DirectX::XMMATRIX VP;
+	DirectX::XMVECTOR camPos;
+	float minTess;
+	float maxTess;
+	float minDist;
+	float maxDist;
+	DirectX::XMFLOAT2 texScale;
+	DirectX::XMFLOAT2 padding;
+};
 
 class GraphicResources
 {
@@ -13,6 +29,7 @@ private:
 	void setViewPort();
 	void setRasterizerState();
 	void setSamplerState();
+	void setConstantBuffers();
 	HRESULT createDirect3DContext(HWND wndHandle);
 
 	D3D11_VIEWPORT _viewPort; //Min gissning är att denna behövs utanför denna klass
@@ -27,6 +44,10 @@ private:
 	
 	// SAMPLERS //
 	ID3D11SamplerState* _samplerState = nullptr;
+
+	// CONSTANTBUFFERS //
+	PerFrameData* _perFrameData;
+	ConstantBuffer* _perFrameCB;
 
 	// SHADERS //
 	ShaderHandler* _shaderHandler;
@@ -47,4 +68,7 @@ public:
 	ID3D11SamplerState** getSamplerState();
 	ShaderHandler* getShaderHandler();
 
+	PerFrameData* getPerFrameData();
+
+	void updateConstantBuffers();
 };

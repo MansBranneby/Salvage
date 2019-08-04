@@ -11,4 +11,5 @@ private:
 public:
 	HullShader(LPCWSTR filename, ID3D11Device* device);
 	~HullShader();
+	ID3D11HullShader & getHullShader();
 };

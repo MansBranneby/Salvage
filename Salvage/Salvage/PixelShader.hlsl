@@ -4,8 +4,8 @@ SamplerState SampleType;
 struct PS_IN
 {
 	float4 posWS    : WORLDPOSITION;
-	float4 pos		: SV_POSITION;
-	float3 normal   : NORMAL;
+	float4 pos      : SV_POSITION;
+	float3 normal	: NORMAL;
 	float2 texCoord : TEXCOORD;
 };
 

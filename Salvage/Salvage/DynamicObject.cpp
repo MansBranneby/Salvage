@@ -13,9 +13,6 @@ void DynamicObject::move(DirectX::XMVECTOR velocity)
 {
 	_position += velocity;
 	getBoundingVolume()->move(velocity);
-}
 
-void DynamicObject::updateLogic()
-{
 	updateTransformations(XMFLOAT3(XMVectorGetX(_position), XMVectorGetY(_position), XMVectorGetZ(_position)));
 }

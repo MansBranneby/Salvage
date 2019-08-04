@@ -27,7 +27,6 @@
     <ClCompile Include="ConstantBuffer.cpp" />
     <ClCompile Include="DeadState.cpp" />
     <ClCompile Include="DomainShader.cpp" />
-    <ClCompile Include="Drawable.cpp" />
     <ClCompile Include="DynamicObject.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="EnemyAI.cpp" />
@@ -90,7 +89,6 @@
     <ClInclude Include="DeadState.h" />
     <ClInclude Include="DeviceHolder.h" />
     <ClInclude Include="DomainShader.h" />
-    <ClInclude Include="Drawable.h" />
     <ClInclude Include="DynamicObject.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemyAI.h" />

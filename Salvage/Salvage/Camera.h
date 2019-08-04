@@ -12,12 +12,19 @@ using namespace DirectX;
 
 enum cameraMode {DEBUG, GAME};
 
-struct TransformationMatrices
+struct perFrameCB
 {
 	XMMATRIX world;
 	XMMATRIX view;
 	XMMATRIX projection;
-	XMMATRIX WVP;
+	XMMATRIX viewProjection;
+	XMVECTOR camPos;
+	float minTess;
+	float maxTess;
+	float minDist;
+	float maxDist;
+	DirectX::XMFLOAT2 texScale;
+	DirectX::XMFLOAT2 padding;
 };
 
 class Camera
@@ -44,12 +51,12 @@ private:
 	float _camDistance;
 	float _rotationGain; // radian/sec 
 
-	XMMATRIX _world;
+	//XMMATRIX _world;
 	XMMATRIX _view;
 	XMMATRIX _projection;
+	XMMATRIX _viewProjection;
 
-	XMMATRIX _WVP;
-	TransformationMatrices _transMatrices;
+	perFrameCB _transMatrices;
 
 	ID3D11Buffer* _constantBuffer;
 
@@ -80,8 +87,7 @@ public:
 	void setSmoothSpeed(float smoothSpeed);
 	void setLookAtSpeed(float lookAtSpeed);
 
-	XMMATRIX* getWVP();
-	TransformationMatrices* getTransformMatrices();
+	perFrameCB* getTransformMatrices();
 	ID3D11Buffer** getConstantBuffer();
 	void update(DirectX::Keyboard::State kb, DirectX::Mouse::State ms, float deltaSeconds);
 	void followObject(DirectX::XMVECTOR objPosition, float deltaSeconds);

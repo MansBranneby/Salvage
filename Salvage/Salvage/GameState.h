@@ -4,7 +4,7 @@
 class GameState : public State
 {
 public:
-	virtual void handleInput(Game* game);
-	virtual void update(Game* game);
-	virtual void draw(Game* game, GraphicResources * graphicResources);
+	void handleInput(Game* game);
+	void update(Game* game);
+	void draw(Game* game);
 };

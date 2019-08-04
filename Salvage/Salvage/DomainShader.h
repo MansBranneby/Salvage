@@ -11,4 +11,5 @@ private:
 public:
 	DomainShader(LPCWSTR filename, ID3D11Device* device);
 	~DomainShader();
+	ID3D11DomainShader & getDomainShader();
 };

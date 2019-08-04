@@ -38,3 +38,8 @@ DomainShader::~DomainShader()
 	if(_domainShader)
 		_domainShader->Release();
 }
+
+ID3D11DomainShader & DomainShader::getDomainShader()
+{
+	return *_domainShader;
+}

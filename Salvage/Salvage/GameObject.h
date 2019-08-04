@@ -28,13 +28,12 @@ protected:
 public:
 	GameObject(ObjectType objectType, DirectX::XMVECTOR startingPosition);
 	GameObject(ID3D11Device* device, ID3D11DeviceContext* deviceContext, ObjectType objType, DirectX::XMVECTOR position, std::string modelFile);
-	virtual ~GameObject();
+	virtual ~GameObject() = 0;
 
 	Model* getModel();
 	bool createModel(ID3D11Device* device, ID3D11DeviceContext* deviceContext, std::string modelFile); //Return true if everything works out
 	void draw(ID3D11DeviceContext* deviceContext);
 	void drawBoundingVolume(ID3D11DeviceContext* deviceContext);
-	virtual void updateLogic() = 0;
 
 	XMVECTOR getPosition();
 	virtual BoundingVolume* getBoundingVolume();

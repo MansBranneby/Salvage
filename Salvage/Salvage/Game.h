@@ -14,10 +14,8 @@ class State; //Forward declare https://stackoverflow.com/questions/6515143/user-
 class Game
 {
 private:
-	ID3D11Device* _device = nullptr;
-	ID3D11DeviceContext* _deviceContext = nullptr;
+	GraphicResources* _graphicResources;
 	Camera* _camera = nullptr;
-	Player* _player = nullptr;
 	InputController* _inputController = nullptr; //Input from player
 	Clock* _clock = nullptr; //Get delta seconds
 	std::vector<State*> _states; //Holds states that should be updated
@@ -25,7 +23,7 @@ private:
 	void updateCameraBuffers();
 	
 public:
-	Game(ID3D11Device* device, ID3D11DeviceContext* deviceContext, float width, float height, Clock* clock, InputController* inputController);
+	Game(Clock* clock, InputController* inputController, GraphicResources* graphicResources);
 	~Game();
 
 	void changeState(State* state);
@@ -34,9 +32,9 @@ public:
 
 	void handleInput();												   //Calls handleInput of the current state
 	void update();													   //Calls update on current state
-	void draw(GraphicResources * graphicResources);													   //Calls draw on current state
+	void draw();													   //Calls draw on current state
 
-	ID3D11DeviceContext* getDeviceContext() const;
+	GraphicResources* getGraphicResources();
 	Clock* getClock();
 	InputController* getInputController();
 	LevelHandler* getLevelHandler();

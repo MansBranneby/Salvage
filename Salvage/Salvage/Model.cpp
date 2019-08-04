@@ -423,13 +423,6 @@ bool Model::loadModel(ID3D11Device * device, ID3D11DeviceContext * deviceContext
 //	//}
 //}
 
-void Model::draw(ID3D11DeviceContext* deviceContext, ID3D11Buffer* transformationBuffer)
-{
-	for (int i = 0; i < _meshes.size(); i++)
-	{
-		_meshes[i]->draw(deviceContext, *_transformationBuffer->getConstantBuffer());
-	}
-}
 void Model::draw(ID3D11DeviceContext* deviceContext)
 {
 	for (int i = 0; i < _meshes.size(); i++)

@@ -26,7 +26,6 @@
 #include "PixelShader.h"
 #include "InputController.h"
 #include "Clock.h"
-#include "Drawable.h"
 #include "Model.h"
 #include "GameState.h"
 #include "Light.h"
@@ -92,7 +91,7 @@ void initializeResources(HWND wndHandle)
 	//Clock
 	gClock = new Clock();
 	//GAME
-	gGame = new Game(gGR->getDevice(), gGR->getDeviceContext(), WIDTH, HEIGHT, gClock, gInputCtrl);
+	gGame = new Game(gClock, gInputCtrl, gGR);
 	gGame->pushState(&gGameState); // Change which state the game is in, not done yet.
 
 	Light lit = Light(gGR->getDevice(), gGR->getDeviceContext(), XMFLOAT4(250.0f, 75.0f, 250.0f, 0.0f), XMFLOAT4(1.0, 1.0f, 1.0f, 0.0f));
@@ -151,7 +150,7 @@ void render()
 	//gGR->getDeviceContext()->IASetInputLayout(&gGR->getShaderHandler()->getObjectVS()->getVertexLayout());
 	//gGR->getDeviceContext()->PSSetSamplers(0, 1, gGR->getSamplerState());
 
-	gGame->draw(gGR);
+	gGame->draw();
 
 	gGR->getDeviceContext()->VSSetShader(&gGR->getShaderHandler()->getBoundingVolumeVS()->getVertexShader(), nullptr, 0);
 	gGR->getDeviceContext()->HSSetShader(nullptr, nullptr, 0);
@@ -167,7 +166,7 @@ void render()
 	{
 		// Temporary solution to drawing bounding volumes (Drawing these in gamestate does not work because we have to set shaders (look above))
 		// draw player bounding volume
-		gGame->getLevelHandler()->getPlayer()->drawBoundingVolume(gGR->getDeviceContext()); // draw player bounding volume
+		gGame->getLevelHandler()->getPlayer()->drawBoundingVolume(gGR->getDeviceContext());
 		// Loop through all the objects in levelhandler and draw their bounding volumes
 		for(int i = 0; i < gGame->getLevelHandler()->getNrOfGameObjects(); i++)
 			gGame->getLevelHandler()->getGameObject(i)->drawBoundingVolume(gGR->getDeviceContext());

@@ -93,9 +93,6 @@
     <ClCompile Include="ConstantBuffer.cpp">
       <Filter>RenderSystem\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Drawable.cpp">
-      <Filter>RenderSystem\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Model.cpp">
       <Filter>RenderSystem\Source Files</Filter>
     </ClCompile>
@@ -171,9 +168,6 @@
     <ClCompile Include="Robot.cpp">
       <Filter>GameSystem\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="StartOfGameState.cpp">
-      <Filter>GameSystem\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="StaticObject.cpp">
       <Filter>GameSystem\Source Files</Filter>
     </ClCompile>
@@ -237,6 +231,9 @@
     <ClCompile Include="DomainShader.cpp">
       <Filter>RenderSystem\Source Files\Shaders</Filter>
     </ClCompile>
+    <ClCompile Include="StartOfGameState.cpp">
+      <Filter>GameSystem\Source Files\States</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -279,9 +276,6 @@
       <Filter>RenderSystem\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Clock.h">
-      <Filter>RenderSystem\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Drawable.h">
       <Filter>RenderSystem\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Model.h">

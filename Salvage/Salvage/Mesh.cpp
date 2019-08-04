@@ -70,7 +70,6 @@ Mesh::Mesh()
 
 Mesh::Mesh(ID3D11Device* device, std::vector<Vertex> vertices, std::vector<int> indices, std::vector<Texture> textures)
 {
-	_vertexSize = sizeof(Vertex);
 	_indices = indices;
 	_textures = textures;
 
@@ -79,7 +78,6 @@ Mesh::Mesh(ID3D11Device* device, std::vector<Vertex> vertices, std::vector<int> 
 
 Mesh::Mesh(ID3D11Device* device, std::vector<TerrainVertex> vertices, std::vector<int> indices, std::vector<Texture> textures)
 {
-	_vertexSize = sizeof(TerrainVertex);
 	_indices = indices;
 	_textures = textures;
 
@@ -88,24 +86,8 @@ Mesh::Mesh(ID3D11Device* device, std::vector<TerrainVertex> vertices, std::vecto
 
 Mesh::~Mesh()
 {
-	//RUNTIME ERROR
 	if(_vertexBuffer)
 		_vertexBuffer->Release();
 	if(_indexBuffer)
 		_indexBuffer->Release();
-}
-
-void Mesh::draw(ID3D11DeviceContext * deviceContext, ID3D11Buffer* transformationBuffer)
-{
-	UINT32 offset = 0;
-
-	deviceContext->IASetVertexBuffers(0, 1, &_vertexBuffer, &_vertexSize, &offset);
-	deviceContext->IASetIndexBuffer(_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
-	deviceContext->VSSetConstantBuffers(1, 1, &transformationBuffer);
-	
-	for (int i = 0; i < _textures.size(); i++)
-		deviceContext->PSSetShaderResources(i, 1, &_textures[i]._texture);
-
-
-	deviceContext->DrawIndexed((UINT)_indices.size(), 0, 0);
 }

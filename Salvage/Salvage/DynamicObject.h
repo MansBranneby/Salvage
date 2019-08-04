@@ -8,6 +8,4 @@ public:
 	virtual ~DynamicObject();
 
 	void move(DirectX::XMVECTOR velocity);
-	void updateLogic();
-	virtual void abstract() = 0;
 };

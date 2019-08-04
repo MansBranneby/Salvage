@@ -12,13 +12,24 @@ class Terrain : public StaticObject
 private:
 	std::string _filename;
 	UINT _terrainWidth;
-	UINT _terrainHeight;
+	UINT _terrainDepth;
 	float _heightFactor;
-	std::vector<DirectX::XMFLOAT3> _heightmap;
-	ID3D11ShaderResourceView* _heightmapSRV; // used for tesselation
+	std::vector<float> _heightmap;
+	ID3D11ShaderResourceView* _heightmapSRV;
+
+	// GLENN
+	UINT _nrOfPatchVertRows;
+	UINT _nrOfPatchVertCols;
+	UINT _nrOfPatchVertices;
+	UINT _nrOfPatchFaces;
+	int _nrOfCellsPerPatch;
+	float _cellSpacing;
+
+	float getWidth() const;
+	float getDepth() const;
 
 	void loadHeightmap();
-	void processHeightmap(ID3D11Device* device, ID3D11DeviceContext* deviceContext, UINT terrainWidth, UINT terrainHeight, std::vector<DirectX::XMFLOAT3> heightmap);
+	void buildGrid(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
 	
 	// Smooth out terrain
 	bool inBounds(int i, int j); 
