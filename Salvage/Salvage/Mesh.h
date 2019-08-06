@@ -1,6 +1,7 @@
 #pragma once
 #define NOMINMAX
 
+#include "GraphicResources.h"
 #include "Texture.h"
 #include "Vertex.h"
 #include "TerrainVertex.h"
@@ -31,5 +32,5 @@ public:
 	Mesh(ID3D11Device* device, std::vector<TerrainVertex> vertices, std::vector<int> indices, std::vector<Texture> textures);
 	virtual ~Mesh() = 0;
 
-	virtual void draw(ID3D11DeviceContext* deviceContext, ID3D11Buffer* transformationBuffer) = 0;
+	virtual void draw(GraphicResources* graphicResources) = 0;
 };

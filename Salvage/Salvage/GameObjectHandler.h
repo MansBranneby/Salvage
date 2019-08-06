@@ -3,6 +3,7 @@
 #include "Enemy.h"
 #include "StaticObject.h"
 #include "Terrain.h"
+#include "GraphicResources.h"
 
 class GameObjectHandler
 {
@@ -31,10 +32,10 @@ public:
 	std::vector<Terrain*> getTerrain();
 	Player* getPlayer();
 
-	void drawPlayer();
-	void drawTerrain();
-	void drawObjects();
+	void drawPlayer(GraphicResources* graphicResources);
+	void drawTerrain(GraphicResources* graphicResources);
+	void drawObjects(GraphicResources* graphicResources);
 
-	void drawPlayerBV();
+	void drawPlayerBV(GraphicResources* graphicResources);
 	GameObject* getGameObject(int index) const;
 };

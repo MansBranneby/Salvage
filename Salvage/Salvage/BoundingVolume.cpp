@@ -38,7 +38,8 @@ BoundingVolume::BoundingVolume()
 
 BoundingVolume::BoundingVolume(DirectX::XMFLOAT3 minCoordinates, DirectX::XMFLOAT3 maxCoordinates)
 {
-	//Center
+	//Center which is the same as position
+	_world = DirectX::XMMatrixIdentity();
 	_center =
 	{
 		(maxCoordinates.x + minCoordinates.x) / 2,
@@ -46,8 +47,6 @@ BoundingVolume::BoundingVolume(DirectX::XMFLOAT3 minCoordinates, DirectX::XMFLOA
 		(maxCoordinates.z + minCoordinates.z) / 2,
 		1.0f
 	};
-
-	_worldMatrix = DirectX::XMMatrixIdentity();
 }
 
 BoundingVolume::~BoundingVolume()
@@ -64,6 +63,11 @@ DirectX::XMVECTOR BoundingVolume::getCenter()
 	return _center;
 }
 
+DirectX::XMMATRIX BoundingVolume::getWorldMatrix()
+{
+	return _world;
+}
+
 std::vector<BoundingVolumeVertex>* BoundingVolume::getVertices()
 {
 	return &_vertices;
@@ -74,36 +78,22 @@ std::vector<int>* BoundingVolume::getIndices()
 	return &_indices;
 }
 
-DirectX::XMMATRIX BoundingVolume::getWorldMatrix()
-{
-	return _worldMatrix;
-}
-
 void BoundingVolume::setCenter(DirectX::XMVECTOR center)
 {
 	_center = center;
 }
 
-void BoundingVolume::setWorldMatrix(DirectX::XMMATRIX worldMatrix)
-{
-	_worldMatrix = worldMatrix;
-}
-
 void BoundingVolume::move(DirectX::XMVECTOR speed)
 {
-	using namespace DirectX;
-
-	_center += speed;
+	_center = DirectX::XMVectorAdd(_center, speed);
 }
 
-void BoundingVolume::draw(ID3D11DeviceContext * deviceContext, ID3D11Buffer * transformationBuffer)
+void BoundingVolume::draw(GraphicResources* graphicResources)
 {
 	UINT offset = 0;
 	UINT vertexSize = sizeof(BoundingVolumeVertex);
 
-	deviceContext->IASetVertexBuffers(0, 1, &_vertexBuffer, &vertexSize, &offset);
-	deviceContext->IASetIndexBuffer(_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
-	deviceContext->VSSetConstantBuffers(1, 1, &transformationBuffer);
-
-	deviceContext->DrawIndexed((UINT)_indices.size(), 0, 0);
+	graphicResources->getDeviceContext()->IASetVertexBuffers(0, 1, &_vertexBuffer, &vertexSize, &offset);
+	graphicResources->getDeviceContext()->IASetIndexBuffer(_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	graphicResources->getDeviceContext()->DrawIndexed((UINT)_indices.size(), 0, 0);
 }

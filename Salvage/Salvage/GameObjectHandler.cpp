@@ -87,26 +87,26 @@ Player * GameObjectHandler::getPlayer()
 	return _player;
 }
 
-void GameObjectHandler::drawPlayer()
+void GameObjectHandler::drawPlayer(GraphicResources* graphicResources)
 {
-	_player->draw(_deviceContext);
+	_player->draw(graphicResources);
 }
 
-void GameObjectHandler::drawTerrain()
+void GameObjectHandler::drawTerrain(GraphicResources* graphicResources)
 {
 	for (size_t i = 0; i < _terrain.size(); i++)
-		_terrain[i]->draw(_deviceContext);
+		_terrain[i]->draw(graphicResources);
 }
 
-void GameObjectHandler::drawObjects()
+void GameObjectHandler::drawObjects(GraphicResources* graphicResources)
 {
 	for (size_t i = 0; i < _nrOfObjects; i++)
-		_gameObjects[i]->draw(_deviceContext);
+		_gameObjects[i]->draw(graphicResources);
 }
 
-void GameObjectHandler::drawPlayerBV()
+void GameObjectHandler::drawPlayerBV(GraphicResources* graphicResources)
 {
-	_player->drawBoundingVolume(_deviceContext);
+	_player->drawBoundingVolume(graphicResources);
 }
 
 GameObject * GameObjectHandler::getGameObject(int index) const

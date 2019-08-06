@@ -94,7 +94,7 @@ void initializeResources(HWND wndHandle)
 	gGame = new Game(gClock, gInputCtrl, gGR);
 	gGame->pushState(&gGameState); // Change which state the game is in, not done yet.
 
-	Light lit = Light(gGR->getDevice(), gGR->getDeviceContext(), XMFLOAT4(250.0f, 75.0f, 250.0f, 0.0f), XMFLOAT4(1.0, 1.0f, 1.0f, 0.0f));
+	Light lit = Light(gGR->getDevice(), gGR->getDeviceContext(), XMFLOAT4(0.0f, 40.0f, 0.0f, 0.0f), XMFLOAT4(1.0, 1.0f, 1.0f, 0.0f));
 	gGR->getDeviceContext()->PSSetConstantBuffers(0, 1, ConstantBuffer(gGR->getDevice(), &lit, sizeof(lit)).getConstantBuffer());
 
 	//IMGUI
@@ -111,8 +111,6 @@ void initializeResources(HWND wndHandle)
 
 void imGuiUpdate()
 {
-	gGR->getDeviceContext()->GSSetShader(nullptr, nullptr, 0);
-
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
@@ -166,10 +164,10 @@ void render()
 	{
 		// Temporary solution to drawing bounding volumes (Drawing these in gamestate does not work because we have to set shaders (look above))
 		// draw player bounding volume
-		gGame->getLevelHandler()->getPlayer()->drawBoundingVolume(gGR->getDeviceContext());
+		gGame->getLevelHandler()->getPlayer()->drawBoundingVolume(gGR);
 		// Loop through all the objects in levelhandler and draw their bounding volumes
 		for(int i = 0; i < gGame->getLevelHandler()->getNrOfGameObjects(); i++)
-			gGame->getLevelHandler()->getGameObject(i)->drawBoundingVolume(gGR->getDeviceContext());
+			gGame->getLevelHandler()->getGameObject(i)->drawBoundingVolume(gGR);
 	}
 }
 

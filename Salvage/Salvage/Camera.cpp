@@ -90,20 +90,6 @@ void Camera::followObject(DirectX::XMVECTOR objPosition, float deltaSeconds)
 	_view = XMMatrixLookAtLH(_position, _lookAt, _up);
 	_view = XMMatrixTranspose(_view);
 	_viewProjection = XMMatrixMultiply(_projection, _view);
-
-	//_transMatrices.world = _world;
-	/*_transMatrices.view = _view;
-	_transMatrices.projection = _projection;*/
-	_transMatrices.viewProjection = _viewProjection;
-	_transMatrices.camPos = _position;
-
-	// GLENN
-	_transMatrices.minTess = 0;
-	_transMatrices.maxTess = 6;
-	_transMatrices.minDist = 20;
-	_transMatrices.maxDist = 100;
-
-	_transMatrices.texScale = { 50.0f, 50.0f };
 }
 
 Camera::Camera()
@@ -153,38 +139,11 @@ Camera::Camera(ID3D11Device* device, float width, float height)
 	_projection = XMMatrixPerspectiveFovLH(0.45f * DirectX::XM_PI, width / height, 0.1f, 200.0f);
 	_view = XMMatrixTranspose(_view);
 	_projection = XMMatrixTranspose(_projection);
-	_transMatrices.viewProjection = XMMatrixMultiply(_projection, _view);
-
-	/*_transMatrices.world = _world;
-	_transMatrices.view = _view;
-	_transMatrices.projection = _projection;
-	_transMatrices.WVP = _WVP;*/
-
-	//CONSTANT BUFFER
-	D3D11_BUFFER_DESC cbDesc;
-	cbDesc.ByteWidth = sizeof(perFrameCB);
-	cbDesc.Usage = D3D11_USAGE_DYNAMIC;
-	cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	cbDesc.MiscFlags = 0;
-	cbDesc.StructureByteStride = 0;
-
-	// Fill in the subresource data.
-	D3D11_SUBRESOURCE_DATA InitData;
-	InitData.pSysMem = &_transMatrices;
-	InitData.SysMemPitch = 0;
-	InitData.SysMemSlicePitch = 0;
-
-	// create a Constant Buffer
-	HRESULT result = device->CreateBuffer(&cbDesc, &InitData, &_constantBuffer);
-	if (FAILED(result))
-		MessageBox(NULL, L"Error CreateConstantBuffer", L"Error", MB_OK | MB_ICONERROR);
+	_viewProjection = XMMatrixMultiply(_projection, _view);
 }
 
 Camera::~Camera()
 {
-	if(_constantBuffer)
-		_constantBuffer->Release();
 }
 
 void Camera::updateRotation(float deltaAngle)
@@ -216,14 +175,14 @@ void Camera::setLookAtSpeed(float lookAtSpeed)
 	_lookAtSpeed = lookAtSpeed;
 }
 
-perFrameCB * Camera::getTransformMatrices()
+DirectX::XMVECTOR Camera::getPosition()
 {
-	return &_transMatrices;
+	return _position;
 }
 
-ID3D11Buffer** Camera::getConstantBuffer()
+DirectX::XMMATRIX Camera::getViewProjection()
 {
-	return &_constantBuffer;
+	return _viewProjection;
 }
 
 void Camera::update(DirectX::Keyboard::State kb, DirectX::Mouse::State ms, float deltaSeconds)

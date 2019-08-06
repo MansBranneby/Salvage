@@ -20,7 +20,6 @@ private:
 	Clock* _clock = nullptr; //Get delta seconds
 	std::vector<State*> _states; //Holds states that should be updated
 	LevelHandler* _levelHandler = nullptr;
-	void updateCameraBuffers();
 	
 public:
 	Game(Clock* clock, InputController* inputController, GraphicResources* graphicResources);
@@ -39,5 +38,7 @@ public:
 	InputController* getInputController();
 	LevelHandler* getLevelHandler();
 	Camera* getCamera();
+	
+	void updateCameraBuffers();
 };
 

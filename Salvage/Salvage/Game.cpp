@@ -2,15 +2,9 @@
 
 void Game::updateCameraBuffers()
 {
-	D3D11_MAPPED_SUBRESOURCE mappedMemory;
-	_graphicResources->getDeviceContext()->Map(*_camera->getConstantBuffer(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedMemory);
-	memcpy(mappedMemory.pData, _camera->getTransformMatrices(), sizeof(*_camera->getTransformMatrices()));
-	_graphicResources->getDeviceContext()->Unmap(*_camera->getConstantBuffer(), 0);
-
-	_graphicResources->getDeviceContext()->VSSetConstantBuffers(0, 1, _camera->getConstantBuffer());
-	_graphicResources->getDeviceContext()->HSSetConstantBuffers(0, 1, _camera->getConstantBuffer()); // GLENN
-	_graphicResources->getDeviceContext()->DSSetConstantBuffers(0, 1, _camera->getConstantBuffer());
-
+	_graphicResources->getPerFrameData()->VP = _camera->getViewProjection();
+	_graphicResources->getPerFrameData()->camPos = _camera->getPosition();
+	_graphicResources->updatePerFrameCB();
 }
 
 Game::Game(Clock* clock, InputController* inputController, GraphicResources* graphicResources)
@@ -76,11 +70,6 @@ void Game::handleInput()
 
 void Game::update()
 {
-	// GLENN
-	//Först uppdatera kamerans ConstantBuffers
-	//_graphicResources->updateConstantBuffers();
-	updateCameraBuffers();
-
 	//Update game logic if not paused
 	for (int i = 0; i < _states.size(); i++)
 		if (!_states[i]->isPaused())

@@ -20,8 +20,8 @@ void Level::drawLevel(GraphicResources* graphicResources)
 	graphicResources->getDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	graphicResources->getDeviceContext()->IASetInputLayout(&graphicResources->getShaderHandler()->getObjectVS()->getVertexLayout());
 
-	_objHandler->drawPlayer();
-	_objHandler->drawObjects();
+	_objHandler->drawPlayer(graphicResources);
+	_objHandler->drawObjects(graphicResources);
 
 	graphicResources->getDeviceContext()->VSSetShader(&graphicResources->getShaderHandler()->getTerrainVS()->getVertexShader(), nullptr, 0);
 	graphicResources->getDeviceContext()->HSSetShader(&graphicResources->getShaderHandler()->getTerrainHS()->getHullShader() , nullptr, 0);
@@ -31,7 +31,7 @@ void Level::drawLevel(GraphicResources* graphicResources)
 	graphicResources->getDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST);
 	graphicResources->getDeviceContext()->IASetInputLayout(&graphicResources->getShaderHandler()->getTerrainVS()->getVertexLayout());
 
-	_objHandler->drawTerrain();
+	_objHandler->drawTerrain(graphicResources);
 }
 
 int Level::getNrOfGameObjects() const

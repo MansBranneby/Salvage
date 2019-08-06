@@ -1,7 +1,7 @@
 #pragma once
 
 #include <DirectXMath.h>
-#include "ConstantBuffer.h"
+#include <d3d11.h>
 
 // DirectXTK
 #include "Keyboard.h"
@@ -56,10 +56,6 @@ private:
 	XMMATRIX _projection;
 	XMMATRIX _viewProjection;
 
-	perFrameCB _transMatrices;
-
-	ID3D11Buffer* _constantBuffer;
-
 	void updateWVP();
 	void updateDebugCam(DirectX::Keyboard::State kb, DirectX::Mouse::State ms, float deltaSeconds);
 	void updateGameCam(DirectX::Keyboard::State kb, DirectX::Mouse::State ms, float deltaSeconds);
@@ -87,8 +83,8 @@ public:
 	void setSmoothSpeed(float smoothSpeed);
 	void setLookAtSpeed(float lookAtSpeed);
 
-	perFrameCB* getTransformMatrices();
-	ID3D11Buffer** getConstantBuffer();
+	DirectX::XMVECTOR getPosition();
+	DirectX::XMMATRIX getViewProjection();
 	void update(DirectX::Keyboard::State kb, DirectX::Mouse::State ms, float deltaSeconds);
 	void followObject(DirectX::XMVECTOR objPosition, float deltaSeconds);
 

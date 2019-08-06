@@ -124,7 +124,7 @@ void GraphicResources::setSamplerState()
 	ID3D11SamplerState* pointClamp;
 	D3D11_SAMPLER_DESC sampDesc;
 	ZeroMemory(&sampDesc, sizeof(sampDesc));
-	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+	sampDesc.Filter = D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT;
 	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
 	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
 	sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
@@ -137,7 +137,7 @@ void GraphicResources::setSamplerState()
 		MessageBox(NULL, L"_samplerState", L"Error", MB_OK | MB_ICONERROR);
 
 
-	ID3D11SamplerState* pointWrap;
+	ID3D11SamplerState* linearWrap;
 	ZeroMemory(&sampDesc, sizeof(sampDesc));
 	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
 	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
@@ -147,25 +147,38 @@ void GraphicResources::setSamplerState()
 	sampDesc.MinLOD = 0;
 	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
-	hr = _device->CreateSamplerState(&sampDesc, &pointWrap);
+	hr = _device->CreateSamplerState(&sampDesc, &linearWrap);
 	if (FAILED(hr))
 		MessageBox(NULL, L"_samplerState", L"Error", MB_OK | MB_ICONERROR);
 
 	// Set samplers
 	_deviceContext->VSSetSamplers(0, 1, &pointClamp);
 	_deviceContext->DSSetSamplers(0, 1, &pointClamp);
-	_deviceContext->PSSetSamplers(0, 1, &pointWrap);
-
+	_deviceContext->PSSetSamplers(0, 1, &linearWrap);
+	_deviceContext->PSSetSamplers(1, 1, &pointClamp);
 	// release pointers to sampler states
 	pointClamp->Release();
-	pointWrap->Release();
+	linearWrap->Release();
 }
 
 void GraphicResources::setConstantBuffers()
 {
-	_deviceContext->VSSetConstantBuffers(0, 1, ConstantBuffer(_device, &_perFrameCB, sizeof(_perFrameCB)).getConstantBuffer());
-	_deviceContext->HSSetConstantBuffers(0, 1, ConstantBuffer(_device, &_perFrameCB, sizeof(_perFrameCB)).getConstantBuffer());
-	_deviceContext->DSSetConstantBuffers(0, 1, ConstantBuffer(_device, &_perFrameCB, sizeof(_perFrameCB)).getConstantBuffer());
+
+	// GLENN
+	_perFrameData.minTess = 0;
+	_perFrameData.maxTess = 6;
+	_perFrameData.minDist = 20;
+	_perFrameData.maxDist = 100;
+	_perFrameData.texScale = { 50.0f, 50.0f };
+
+	_perFrameCB = new ConstantBuffer(_device, &_perFrameCB, sizeof(_perFrameData));
+	_deviceContext->VSSetConstantBuffers(0, 1, _perFrameCB->getConstantBuffer());
+	_deviceContext->HSSetConstantBuffers(0, 1, _perFrameCB->getConstantBuffer());
+	_deviceContext->DSSetConstantBuffers(0, 1, _perFrameCB->getConstantBuffer());
+
+	_perObjectCB = new ConstantBuffer(_device, &_perObjectCB, sizeof(_perObjectData));
+	_deviceContext->VSSetConstantBuffers(1, 1, _perObjectCB->getConstantBuffer());
+
 }
 
 HRESULT GraphicResources::createDirect3DContext(HWND wndHandle)
@@ -220,6 +233,7 @@ GraphicResources::GraphicResources()
 GraphicResources::GraphicResources(HWND wndHandle)
 {
 	initializeResources(wndHandle);
+	setConstantBuffers();
 }
 
 GraphicResources::~GraphicResources()
@@ -240,6 +254,11 @@ GraphicResources::~GraphicResources()
 		_samplerState->Release();
 	if (_shaderHandler)
 		delete _shaderHandler;
+
+	if (_perFrameCB)
+		delete _perFrameCB;
+	if (_perObjectCB)
+		delete _perObjectCB;
 }
 
 ID3D11Device * GraphicResources::getDevice()
@@ -282,12 +301,28 @@ ShaderHandler * GraphicResources::getShaderHandler()
 	return _shaderHandler;
 }
 
-PerFrameData* GraphicResources::getPerFrameData()
+PerFrameData * GraphicResources::getPerFrameData()
 {
-	return _perFrameData;
+	return &_perFrameData;
 }
 
-void GraphicResources::updateConstantBuffers()
+PerObjectData * GraphicResources::getPerObjectData()
 {
-	_deviceContext->UpdateSubresource(*_perFrameCB->getConstantBuffer(), 0, nullptr, &_perFrameData, 0, 0);
+	return &_perObjectData;
+}
+
+void GraphicResources::updatePerFrameCB()
+{
+	D3D11_MAPPED_SUBRESOURCE mappedMemory;
+	_deviceContext->Map(*_perFrameCB->getConstantBuffer(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedMemory);
+	memcpy(mappedMemory.pData, &_perFrameData, sizeof(_perFrameData));
+	_deviceContext->Unmap(*_perFrameCB->getConstantBuffer(), 0);
+}
+
+void GraphicResources::updatePerObjectCB()
+{
+	D3D11_MAPPED_SUBRESOURCE mappedMemory;
+	_deviceContext->Map(*_perObjectCB->getConstantBuffer(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedMemory);
+	memcpy(mappedMemory.pData, &_perObjectData, sizeof(_perObjectData));
+	_deviceContext->Unmap(*_perObjectCB->getConstantBuffer(), 0);
 }

@@ -14,9 +14,6 @@ struct HS_OUT
 
 cbuffer HS_CONSTANT_BUFFER : register(b0)
 {
-	matrix world;
-	matrix view;
-	matrix projection;
 	matrix WVP;
 	float4 camPos;
 

@@ -303,9 +303,6 @@ Model::Model()
 
 Model::~Model()
 {
-	if (_transformationBuffer)
-		delete _transformationBuffer;
-
 	for (size_t i = 0; i < _meshes.size(); i++)
 		delete _meshes[i];
 
@@ -331,19 +328,11 @@ BoundingVolume * Model::getBoundingVolume()
 	return _boundingVolume;
 }
 
-void Model::setTransformationBuffer(ConstantBuffer * transformationBuffer)
-{
-	_transformationBuffer = transformationBuffer;
-}
-
 void Model::updateTransformation(DirectX::XMFLOAT3 position)
 {
 	_scene->mRootNode->mTransformation = aiMatrix4x4(aiVector3D(1, 1, 1), aiQuaternion(0, 0, 0), aiVector3D(position.x, position.y, position.z));
-
-	D3D11_MAPPED_SUBRESOURCE mappedMemory;
-	_deviceContext->Map(*_transformationBuffer->getConstantBuffer(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedMemory);
-	memcpy(mappedMemory.pData, &_scene->mRootNode->mTransformation, sizeof(_scene->mRootNode->mTransformation));
-	_deviceContext->Unmap(*_transformationBuffer->getConstantBuffer(), 0);
+	_world = _scene->mRootNode->mTransformation;
+	
 }
 
 bool Model::loadModel(ID3D11Device * device, ID3D11DeviceContext * deviceContext, std::string filename)
@@ -361,8 +350,6 @@ bool Model::loadModel(ID3D11Device * device, ID3D11DeviceContext * deviceContext
 	
 	//Start processing all the nodes in the model
 	processNode(device, _scene->mRootNode);
-
-	_transformationBuffer = new ConstantBuffer(_device, &_scene->mRootNode->mTransformation, sizeof(_scene->mRootNode->mTransformation));
 
 	return true;
 }
@@ -423,15 +410,21 @@ bool Model::loadModel(ID3D11Device * device, ID3D11DeviceContext * deviceContext
 //	//}
 //}
 
-void Model::draw(ID3D11DeviceContext* deviceContext)
+void Model::draw(GraphicResources* graphicResources)
 {
+	graphicResources->getPerObjectData()->world = _world;
+	graphicResources->updatePerObjectCB();
+
 	for (int i = 0; i < _meshes.size(); i++)
 	{
-		_meshes[i]->draw(deviceContext, *_transformationBuffer->getConstantBuffer());
+		_meshes[i]->draw(graphicResources);
 	}
 }
 
-void Model::drawBoundingVolume(ID3D11DeviceContext * deviceContext)
+void Model::drawBoundingVolume(GraphicResources* graphicResources)
 {
-	_boundingVolume->draw(deviceContext, *_transformationBuffer->getConstantBuffer());
+	graphicResources->getPerObjectData()->world = _world;
+	graphicResources->updatePerObjectCB();
+
+	_boundingVolume->draw(graphicResources);
 }

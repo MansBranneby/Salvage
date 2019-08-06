@@ -47,14 +47,14 @@ bool GameObject::createModel(ID3D11Device* device, ID3D11DeviceContext* deviceCo
 	return true;
 }
 
-void GameObject::draw(ID3D11DeviceContext * deviceContext)
+void GameObject::draw(GraphicResources* graphicResources)
 {
-	_model.draw(deviceContext);
+	_model.draw(graphicResources);
 }
 
-void GameObject::drawBoundingVolume(ID3D11DeviceContext * deviceContext)
+void GameObject::drawBoundingVolume(GraphicResources* graphicResources)
 {
-	_model.drawBoundingVolume(deviceContext);
+	_model.drawBoundingVolume(graphicResources);
 }
 
 XMVECTOR GameObject::getPosition()

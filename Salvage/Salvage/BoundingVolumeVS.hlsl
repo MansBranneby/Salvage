@@ -12,9 +12,6 @@ struct VS_OUT
 
 cbuffer VS_CONSTANT_BUFFER : register(b0)
 {
-	matrix world;
-	matrix view;
-	matrix projection;
 	matrix WVP;
 	float4 camPos;
 	//// When distance is minimum, the tessellation is maximum.
@@ -31,14 +28,14 @@ cbuffer VS_CONSTANT_BUFFER : register(b0)
 
 cbuffer VS_CONSTANT_BUFFER : register(b1)
 {
-	matrix transformMatrix;
+	matrix world;
 };
 
 VS_OUT VS_main(VS_IN input)
 {
 	VS_OUT output = (VS_OUT)0;
 
-	output.pos = mul(float4(input.pos, 1.0f), transformMatrix);
+	output.pos = mul(float4(input.pos, 1.0f), world);
 	output.pos = mul(output.pos, WVP);
 	output.col = input.col;
 

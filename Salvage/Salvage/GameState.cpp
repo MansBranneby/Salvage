@@ -26,6 +26,8 @@ void GameState::handleInput(Game* game)
 
 void GameState::update(Game* game)
 {
+	game->updateCameraBuffers();
+
 	// currently just moves player in the opposite direction until no collision. This also prevents player from "gliding along the surface" which isn't good.
 	// In order to fix not being able to slide along the surface one has to find the collision normal and push out that way
 	int nrOfObjects = game->getLevelHandler()->getNrOfGameObjects();

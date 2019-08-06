@@ -154,9 +154,6 @@ void Terrain::buildGrid(ID3D11Device* device, ID3D11DeviceContext* deviceContext
 
 	// Create a mesh with vertices, indices and textures computed in the code above
 	getModel()->getMeshes()->push_back(new TerrainMesh(device, vertices, indices, textures));
-
-	// Create transformationbuffer, this buffer is sent into vertex shader to transform the terrain, currently just identity matrix
-	getModel()->setTransformationBuffer(new ConstantBuffer(device, &DirectX::XMMatrixIdentity(), sizeof(DirectX::XMMatrixIdentity())));
 }
 
 bool Terrain::inBounds(int i, int j)

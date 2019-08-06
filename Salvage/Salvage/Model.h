@@ -9,6 +9,7 @@
 #include "TextureLoader.h" //Används inte i nuvarande version
 #include "WICTextureLoader.h" //Denna används
 
+#include "GraphicResources.h"
 #include "Mesh.h"
 #include "TerrainMesh.h"
 #include "ObjectMesh.h"
@@ -18,7 +19,6 @@
 #include "assimp/postprocess.h"
 #include "BoundingVolume.h"
 #include "OBB.h"
-#include "ConstantBuffer.h"
 
 struct BoneInfo
 {
@@ -31,7 +31,6 @@ class Model
 private:
 	ID3D11Device* _device;
 	ID3D11DeviceContext* _deviceContext;
-	ConstantBuffer* _transformationBuffer;
 	std::string _directory;
 	std::vector<Mesh*> _meshes;
 	std::vector<Texture> _loadedTextures;
@@ -43,6 +42,9 @@ private:
 	std::map<std::string, int> _boneMapping;
 	std::vector<BoneInfo> _boneInfo; //Tror att denna ska vara i Model och inte i Mesh
 	//aiNode* findNodeRecursivelyByName(const aiNode* node, aiString channelName);
+
+	// Moving
+	aiMatrix4x4 _world;
 
 	//Loading models
 	void processNode(ID3D11Device* device, aiNode* node);
@@ -64,11 +66,10 @@ public:
 	std::vector<Mesh*>* getMeshes();
 	std::vector<Texture>* getLoadedTextures();
 	BoundingVolume* getBoundingVolume();
-	void setTransformationBuffer(ConstantBuffer* transformationBuffer);
 
 	void updateTransformation(DirectX::XMFLOAT3 position);
 	bool loadModel(ID3D11Device* device, ID3D11DeviceContext* deviceContext, std::string filename);
 	//void animate(float timeInSec);
-	void draw(ID3D11DeviceContext* deviceContext);
-	void drawBoundingVolume(ID3D11DeviceContext* deviceContext);
+	void draw(GraphicResources* graphicResources);
+	void drawBoundingVolume(GraphicResources* graphicResources);
 };

@@ -1,16 +1,13 @@
 #pragma once
+#include "assimp/scene.h"
 #include <d3d11.h>
 #include "ShaderHandler.h"
 #include "ConstantBuffer.h"
-
 #define WIDTH 1920.0f
 #define HEIGHT 1080.0f
 
 struct PerFrameData
 {
-	/*DirectX::XMMATRIX world;
-	DirectX::XMMATRIX view;
-	DirectX::XMMATRIX projection;*/
 	DirectX::XMMATRIX VP;
 	DirectX::XMVECTOR camPos;
 	float minTess;
@@ -19,6 +16,11 @@ struct PerFrameData
 	float maxDist;
 	DirectX::XMFLOAT2 texScale;
 	DirectX::XMFLOAT2 padding;
+};
+
+struct PerObjectData
+{
+	aiMatrix4x4 world;
 };
 
 class GraphicResources
@@ -46,8 +48,10 @@ private:
 	ID3D11SamplerState* _samplerState = nullptr;
 
 	// CONSTANTBUFFERS //
-	PerFrameData* _perFrameData;
+	PerFrameData _perFrameData;
+	PerObjectData _perObjectData;
 	ConstantBuffer* _perFrameCB;
+	ConstantBuffer* _perObjectCB;
 
 	// SHADERS //
 	ShaderHandler* _shaderHandler;
@@ -69,6 +73,8 @@ public:
 	ShaderHandler* getShaderHandler();
 
 	PerFrameData* getPerFrameData();
+	PerObjectData* getPerObjectData();
 
-	void updateConstantBuffers();
+	void updatePerFrameCB();
+	void updatePerObjectCB();
 };
