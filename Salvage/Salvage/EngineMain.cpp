@@ -123,6 +123,7 @@ void imGuiUpdate()
 	gGame->getCamera()->setLookAtSpeed(gLookAtSpeed);
 	ImGui::Text("Player position: X: %.2f, Y: %.2f, Z: %.2f", XMVectorGetX(gGame->getLevelHandler()->getPlayer()->getPosition()), XMVectorGetY(gGame->getLevelHandler()->getPlayer()->getPosition()), XMVectorGetZ(gGame->getLevelHandler()->getPlayer()->getPosition()));
 	ImGui::Checkbox("Draw bounding volume", &drawBoundingVolume);
+	ImGui::Text("FPS: %.f", ImGui::GetIO().Framerate);
 	ImGui::End();
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
