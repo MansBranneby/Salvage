@@ -17,14 +17,9 @@ cbuffer VS_CONSTANT_BUFFER : register(b0)
 {
 	matrix VP;
 	float4 camPos;
-	//// When distance is minimum, the tessellation is maximum.
-//// When distance is maximum, the tessellation is minimum.
+	float4 frustumPlanes[6];
 	float gMinDist;
 	float gMaxDist;
-	//// Exponents for power of 2 tessellation. The tessellation
-	//// range is [2^(gMinTess), 2^(gMaxTess)]. Since the maximum
-	//// tessellation is 64, this means gMaxTess can be at most 6
-	//// since 2^6 = 64, and gMinTess must be at least 0 since 2^0 = 1.
 	float gMinTess;
 	float gMaxTess;
 };

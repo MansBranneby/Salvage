@@ -8,24 +8,11 @@
 #include "Mouse.h"
 #include "GamePad.h"
 
+#include "ViewFrustum.h"
+
 using namespace DirectX;
 
 enum cameraMode {DEBUG, GAME};
-
-struct perFrameCB
-{
-	XMMATRIX world;
-	XMMATRIX view;
-	XMMATRIX projection;
-	XMMATRIX viewProjection;
-	XMVECTOR camPos;
-	float minTess;
-	float maxTess;
-	float minDist;
-	float maxDist;
-	DirectX::XMFLOAT2 texScale;
-	DirectX::XMFLOAT2 padding;
-};
 
 class Camera
 {
@@ -56,6 +43,8 @@ private:
 	XMMATRIX _projection;
 	XMMATRIX _viewProjection;
 
+	ViewFrustum _viewFrustum;
+
 	void updateWVP();
 	void updateDebugCam(DirectX::Keyboard::State kb, DirectX::Mouse::State ms, float deltaSeconds);
 	void updateGameCam(DirectX::Keyboard::State kb, DirectX::Mouse::State ms, float deltaSeconds);
@@ -77,7 +66,8 @@ public:
 	void setVelocity(XMFLOAT3 velocity);
 
 	XMFLOAT3 getVelocity() const;
-	
+	ViewFrustum getViewFrustum();
+
 	// DEBUG and GAME mode
 	void setMode(cameraMode cameraMode);
 	void setSmoothSpeed(float smoothSpeed);

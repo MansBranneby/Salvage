@@ -4,6 +4,9 @@ void Game::updateCameraBuffers()
 {
 	_graphicResources->getPerFrameData()->VP = _camera->getViewProjection();
 	_graphicResources->getPerFrameData()->camPos = _camera->getPosition();
+	for(int i = 0; i < 6; ++i)
+		_graphicResources->getPerFrameData()->viewFrustumPlanes[i] = _camera->getViewFrustum().getPlanes()[i];
+
 	_graphicResources->updatePerFrameCB();
 }
 

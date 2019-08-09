@@ -26,8 +26,9 @@ struct PatchTess
 
 cbuffer DS_CONSTANT_BUFFER : register(b0)
 {
-	matrix WVP;
+	matrix VP;
 	float4 camPos;
+	float4 frustumPlanes[6];
 	//// When distance is minimum, the tessellation is maximum.
 	//// When distance is maximum, the tessellation is minimum.
 	float gMinDist;
@@ -65,7 +66,7 @@ DS_OUT DS_main(PatchTess patchTess, float2 uv : SV_DomainLocation, const OutputP
 	// artifacts as the normal changes. Therefore, we moved the
 	// calculation to the pixel shader.
 	// Project to homogeneous clip space.
-	dout.posH = mul(float4(dout.posW, 1.0f), WVP);
+	dout.posH = mul(float4(dout.posW, 1.0f), VP);
 
 	return dout;
 }

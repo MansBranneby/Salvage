@@ -17,12 +17,11 @@ private:
 	std::vector<float> _heightmap;
 	ID3D11ShaderResourceView* _heightmapSRV;
 
-	// GLENN
 	UINT _nrOfPatchVertRows;
 	UINT _nrOfPatchVertCols;
 	UINT _nrOfPatchVertices;
 	UINT _nrOfPatchFaces;
-	int _nrOfCellsPerPatch;
+	int _cellsPerPatch;
 	float _cellSpacing;
 
 	float getWidth() const;
@@ -31,6 +30,11 @@ private:
 	void loadHeightmap();
 	void buildGrid(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
 	
+	// Height bounds
+	std::vector <DirectX::XMFLOAT2> _patchHeightBounds;
+	void calculateAllHeightBounds();
+	void calculateHeightBounds(UINT i, UINT j);
+
 	// Smooth out terrain
 	bool inBounds(int i, int j); 
 	float average(int i, int j);

@@ -13,7 +13,6 @@ Level::~Level()
 
 void Level::drawLevel(GraphicResources* graphicResources)
 {
-	// GLENN
 	graphicResources->getDeviceContext()->VSSetShader(&graphicResources->getShaderHandler()->getObjectVS()->getVertexShader(), nullptr, 0);
 	graphicResources->getDeviceContext()->PSSetShader(&graphicResources->getShaderHandler()->getObjectPS()->getPixelShader(), nullptr, 0);
 

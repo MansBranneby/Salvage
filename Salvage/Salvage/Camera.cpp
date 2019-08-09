@@ -90,6 +90,7 @@ void Camera::followObject(DirectX::XMVECTOR objPosition, float deltaSeconds)
 	_view = XMMatrixLookAtLH(_position, _lookAt, _up);
 	_view = XMMatrixTranspose(_view);
 	_viewProjection = XMMatrixMultiply(_projection, _view);
+	_viewFrustum = ViewFrustum(_viewProjection);
 }
 
 Camera::Camera()
@@ -140,6 +141,8 @@ Camera::Camera(ID3D11Device* device, float width, float height)
 	_view = XMMatrixTranspose(_view);
 	_projection = XMMatrixTranspose(_projection);
 	_viewProjection = XMMatrixMultiply(_projection, _view);
+
+	_viewFrustum = ViewFrustum(_viewProjection);
 }
 
 Camera::~Camera()
@@ -158,6 +161,11 @@ void Camera::setVelocity(XMFLOAT3 velocity)
 XMFLOAT3 Camera::getVelocity() const
 {
 	return _velocity;
+}
+
+ViewFrustum Camera::getViewFrustum()
+{
+	return _viewFrustum;
 }
 
 void Camera::setMode(cameraMode cameraMode)

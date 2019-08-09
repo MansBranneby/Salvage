@@ -10,6 +10,7 @@ struct PerFrameData
 {
 	DirectX::XMMATRIX VP;
 	DirectX::XMVECTOR camPos;
+	DirectX::XMVECTOR viewFrustumPlanes[6];
 	float minTess;
 	float maxTess;
 	float minDist;

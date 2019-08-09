@@ -75,6 +75,7 @@
     <ClCompile Include="UpgradePart.cpp" />
     <ClCompile Include="Vertex.cpp" />
     <ClCompile Include="VertexShader.cpp" />
+    <ClCompile Include="ViewFrustum.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -138,6 +139,7 @@
     <ClInclude Include="UpgradePart.h" />
     <ClInclude Include="Vertex.h" />
     <ClInclude Include="VertexShader.h" />
+    <ClInclude Include="ViewFrustum.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="PixelShader.hlsl">

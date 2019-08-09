@@ -163,8 +163,6 @@ void GraphicResources::setSamplerState()
 
 void GraphicResources::setConstantBuffers()
 {
-
-	// GLENN
 	_perFrameData.minTess = 0;
 	_perFrameData.maxTess = 6;
 	_perFrameData.minDist = 20;

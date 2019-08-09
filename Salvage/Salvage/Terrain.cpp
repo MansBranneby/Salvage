@@ -75,8 +75,8 @@ void Terrain::buildGrid(ID3D11Device* device, ID3D11DeviceContext* deviceContext
 	// Why ++i instead of i++?: https://stackoverflow.com/questions/4706199/post-increment-and-pre-increment-within-a-for-loop-produce-same-output
 
 	// TERRAIN (CREATING GRID) //
-	_nrOfPatchVertRows = (_terrainDepth - 1) / _nrOfCellsPerPatch;
-	_nrOfPatchVertCols = (_terrainWidth - 1) / _nrOfCellsPerPatch;
+	_nrOfPatchVertRows = (_terrainDepth - 1) / _cellsPerPatch;
+	_nrOfPatchVertCols = (_terrainWidth - 1) / _cellsPerPatch;
 	_nrOfPatchVertices = _nrOfPatchVertRows * _nrOfPatchVertCols;
 	_nrOfPatchFaces = (_nrOfPatchVertRows - 1) * (_nrOfPatchVertCols - 1);
 
@@ -103,19 +103,18 @@ void Terrain::buildGrid(ID3D11Device* device, ID3D11DeviceContext* deviceContext
 		}
 	}
 
-	// calc bounds
-
-
-	//// BOUNDING VOLUME
-	//// Store axis-aligned bounding box y-bounds in upper-left patch corner.
-	//for (UINT i = 0; i < mNumPatchVertRows - 1; ++i)
-	//{
-	//	for (UINT j = 0; j < mNumPatchVertCols - 1; ++j)
-	//	{
-	//		UINT patchID = i * (mNumPatchVertCols - 1) + j;
-	//		patchVertices[i*mNumPatchVertCols + j].BoundsY = mPatchBoundsY[patchID];
-	//	}
-	//}
+	// AXIS-ALIGNED BOUNDING BOX
+	// Fill _patchHeightBounds
+	_patchHeightBounds.resize(_nrOfPatchFaces);
+	calculateAllHeightBounds();
+	for (UINT i = 0; i < _nrOfPatchVertRows - 1; ++i)
+	{
+		for (UINT j = 0; j < _nrOfPatchVertCols - 1; ++j)
+		{
+			UINT patchID = i * (_nrOfPatchVertCols - 1) + j;
+			vertices[i* _nrOfPatchVertCols + j]._heightBounds = _patchHeightBounds[patchID];
+		}
+	}
 
 	// INDICES
 	std::vector<int> indices(_nrOfPatchFaces * 4);
@@ -136,7 +135,7 @@ void Terrain::buildGrid(ID3D11Device* device, ID3D11DeviceContext* deviceContext
 			k += 4; 
 		}
 	}
-
+	
 	// TEXTURES
 	std::vector<Texture> textures;
 	textures.push_back(Texture(device, ".\\Resources\\Textures\\grass.jpg"));
@@ -154,6 +153,41 @@ void Terrain::buildGrid(ID3D11Device* device, ID3D11DeviceContext* deviceContext
 
 	// Create a mesh with vertices, indices and textures computed in the code above
 	getModel()->getMeshes()->push_back(new TerrainMesh(device, vertices, indices, textures));
+}
+
+void Terrain::calculateAllHeightBounds()
+{
+	for (UINT i = 0; i < _nrOfPatchVertRows - 1; ++i)
+	{
+		for (UINT j = 0; j < _nrOfPatchVertCols - 1; ++j)
+		{
+			calculateHeightBounds(i, j);
+		}
+	}
+}
+
+void Terrain::calculateHeightBounds(UINT i, UINT j)
+{
+	UINT xStart = i * _cellsPerPatch;
+	UINT xEnd = (i + 1) * _cellsPerPatch;
+	UINT yStart = j * _cellsPerPatch;
+	UINT yEnd = (j + 1) * _cellsPerPatch;
+
+	float minHeight = +INFINITY;
+	float maxHeight = -INFINITY;
+
+	for (UINT y = yStart; y < yEnd; ++y)
+	{
+		for (UINT x = xStart; x < xEnd; ++x)
+		{
+			UINT index = y * _terrainWidth + x;
+			minHeight = std::min(minHeight, _heightmap[index]);
+			maxHeight = std::max(minHeight, _heightmap[index]);
+		}
+	}
+
+	UINT patchID = i * (_nrOfPatchVertCols - 1) + j;
+	_patchHeightBounds[patchID] = XMFLOAT2(minHeight, maxHeight); 
 }
 
 bool Terrain::inBounds(int i, int j)
@@ -174,7 +208,7 @@ float Terrain::average(int i, int j)
 	//| i+1, j-1 | i+1, j | i+1, j+1 |
 	// ------------------------------
 
-	float sumOfHeights = 0; //sum of the sampled heights from neighbors
+	float sumOfHeights = 0; // sum of the sampled heights from neighbors
 	float nrOfSamples = 0;  // number of neighbors that have been sampled
 
 	for (int m = i - 1; m < i + 1; ++m)
@@ -248,7 +282,7 @@ void Terrain::createSRV(ID3D11Device* device)
 Terrain::Terrain(ID3D11Device* device, ID3D11DeviceContext* deviceContext, DirectX::XMVECTOR startingPosition, std::string filename)
 	:StaticObject(TERRAIN, startingPosition)
 {
-	_nrOfCellsPerPatch = 64;
+	_cellsPerPatch = 64;
 	_cellSpacing = 1.0f;
 
 	_filename = ".\\Resources\\HeightMaps\\" + filename;
