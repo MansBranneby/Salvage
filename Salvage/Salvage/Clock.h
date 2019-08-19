@@ -13,11 +13,12 @@ private:
 	float _deltaSeconds;
 	float _timeInSec;
 
+	void startClock();
+
 public:
 	Clock();
 	~Clock();
 
-	void startClock();
 	void reset(); 
 	float getDeltaSeconds();
 	// time since the start of the program

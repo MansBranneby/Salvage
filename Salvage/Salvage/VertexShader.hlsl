@@ -44,9 +44,13 @@ VS_OUT VS_main(VS_IN input)
 		boneTransform += bones[input.boneIDs[2]] * input.boneWeights[2];
 		boneTransform += bones[input.boneIDs[3]] * input.boneWeights[3];
 
+		// Position
 		float4 posL = mul(float4(input.pos, 1.0f), boneTransform);
 		output.posW = mul(posL, world);
 		output.posH = mul(output.posW, VP);
+
+		// Normal
+		input.normal = mul(input.normal, boneTransform);
 	}
 	else
 	{

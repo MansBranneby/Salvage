@@ -4,8 +4,8 @@ Clock::Clock()
 {
 	_deltaSeconds = 0;
 	_timeInSec = 0;
-	QueryPerformanceFrequency(&_clockFreq);
-	QueryPerformanceCounter(&_startTime);
+
+	startClock();
 }
 
 Clock::~Clock()
