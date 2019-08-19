@@ -31,17 +31,27 @@ class Model
 private:
 	ID3D11Device* _device;
 	ID3D11DeviceContext* _deviceContext;
-	std::string _directory;
+	std::string _fileDirectory;
 	std::vector<Mesh*> _meshes;
 	std::vector<Texture> _loadedTextures;
 	Assimp::Importer _importer;
 	const aiScene* _scene;
 
 	//Animation
-	DirectX::XMMATRIX _inverseTransform;
-	std::map<std::string, int> _boneMapping;
+	float  _testTime = 0.07f;
+	float _incrementTime = 0.001f;
+	std::map<std::string, UINT> _boneMapping;
+	UINT _nrOfBones = 0;
 	std::vector<BoneInfo> _boneInfo; //Tror att denna ska vara i Model och inte i Mesh
-	//aiNode* findNodeRecursivelyByName(const aiNode* node, aiString channelName);
+	void boneTransform(float timeInSec, std::vector<aiMatrix4x4>& transforms);
+	void readNodeHierachy(float animationTime, const aiNode* node, const aiMatrix4x4& parentTransform);
+	aiNodeAnim* findNodeAnimation(const aiAnimation * animation, const std::string nodeName) const;
+	aiVector3D calculateInterporlatedScaling(float animationTime, const aiNodeAnim* nodeAnimation);
+	aiQuaternion calculateInterporlatedRotation(float animationTime, const aiNodeAnim* nodeAnimation);
+	aiVector3D calculateInterpolatedPosition(float animationTime, const aiNodeAnim* nodeAnimation);
+	UINT findScaling(float animationTime, const aiNodeAnim* nodeAnimation);
+	UINT findRotation(float animationTime, const aiNodeAnim* nodeAnimation);
+	UINT findPosition(float animationTime, const aiNodeAnim* nodeAnimation);
 
 	// Moving
 	aiMatrix4x4 _world;
@@ -63,13 +73,14 @@ public:
 	Model();
 	~Model();
 	
+	bool loadModel(ID3D11Device* device, ID3D11DeviceContext* deviceContext, std::string filename);
+	void updateTransformation(DirectX::XMFLOAT3 position);
+	void animate(float timeInSec);
+	void draw(GraphicResources* graphicResources);
+	void draw(GraphicResources* graphicResources, float timeInSec);
+	void drawBoundingVolume(GraphicResources* graphicResources);
+
 	std::vector<Mesh*>* getMeshes();
 	std::vector<Texture>* getLoadedTextures();
 	BoundingVolume* getBoundingVolume();
-
-	void updateTransformation(DirectX::XMFLOAT3 position);
-	bool loadModel(ID3D11Device* device, ID3D11DeviceContext* deviceContext, std::string filename);
-	//void animate(float timeInSec);
-	void draw(GraphicResources* graphicResources);
-	void drawBoundingVolume(GraphicResources* graphicResources);
 };

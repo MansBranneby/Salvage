@@ -11,9 +11,9 @@ LevelHandler::~LevelHandler()
 	delete _level;
 }
 
-void LevelHandler::drawLevel(GraphicResources* graphicResources)
+void LevelHandler::drawLevel(GraphicResources* graphicResources, float timeInSec)
 {
-	_level->drawLevel(graphicResources);
+	_level->drawLevel(graphicResources, timeInSec);
 }
 
 int LevelHandler::getNrOfGameObjects() const

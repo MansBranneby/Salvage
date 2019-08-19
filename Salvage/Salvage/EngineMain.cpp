@@ -160,9 +160,9 @@ void render()
 	gGR->getDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
 	gGR->getDeviceContext()->IASetInputLayout(&gGR->getShaderHandler()->getBoundingVolumeVS()->getVertexLayout());
 	gGR->getDeviceContext()->PSSetSamplers(0, 0, nullptr);
-
 	if (drawBoundingVolume == true)
 	{
+
 		// Temporary solution to drawing bounding volumes (Drawing these in gamestate does not work because we have to set shaders (look above))
 		// draw player bounding volume
 		gGame->getLevelHandler()->getPlayer()->drawBoundingVolume(gGR);

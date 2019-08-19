@@ -47,6 +47,11 @@ bool GameObject::createModel(ID3D11Device* device, ID3D11DeviceContext* deviceCo
 	return true;
 }
 
+void GameObject::draw(GraphicResources* graphicResources, float timeInSec)
+{
+	_model.draw(graphicResources, timeInSec);
+}
+
 void GameObject::draw(GraphicResources* graphicResources)
 {
 	_model.draw(graphicResources);

@@ -9,7 +9,6 @@ struct HS_OUT
 {
 	float3 posW    : POSITION;
 	float2 tex     : TEXCOORD0;
-	float2 boundsY : TEXCOORD1;
 };
 
 cbuffer HS_CONSTANT_BUFFER : register(b0)

@@ -55,5 +55,5 @@ void GameState::draw(Game* game)
 {
 	// Draw active level. 
 	// A level may contain terrain, objects and a player
-	game->getLevelHandler()->drawLevel(game->getGraphicResources());      
+	game->getLevelHandler()->drawLevel(game->getGraphicResources(), game->getClock()->getTimeInSec());      
 }

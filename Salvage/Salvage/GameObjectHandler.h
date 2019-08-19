@@ -32,7 +32,7 @@ public:
 	std::vector<Terrain*> getTerrain();
 	Player* getPlayer();
 
-	void drawPlayer(GraphicResources* graphicResources);
+	void drawPlayer(GraphicResources* graphicResources, float timeInSec);
 	void drawTerrain(GraphicResources* graphicResources);
 	void drawObjects(GraphicResources* graphicResources);
 

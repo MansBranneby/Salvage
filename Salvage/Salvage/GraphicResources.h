@@ -3,6 +3,7 @@
 #include <d3d11.h>
 #include "ShaderHandler.h"
 #include "ConstantBuffer.h"
+
 #define WIDTH 1920.0f
 #define HEIGHT 1080.0f
 
@@ -22,6 +23,10 @@ struct PerFrameData
 struct PerObjectData
 {
 	aiMatrix4x4 world;
+	aiMatrix4x4 boneMatrices[4];
+	bool hasAnimation;
+	bool padding1[3];
+	DirectX::XMFLOAT3 padding2; 
 };
 
 class GraphicResources

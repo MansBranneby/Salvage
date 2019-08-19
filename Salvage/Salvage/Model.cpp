@@ -1,66 +1,188 @@
 #include "Model.h"
+#include "Model.h"
+#include <iostream>
 
-//aiNode * Model::findNodeRecursivelyByName(const aiNode* node, aiString channelName)
-//{
-//	aiNode thisNode = *node;
-//	aiNode* returnNode;
-//	//Check name for current node
-//	if (node->mName == channelName)
-//		returnNode = &thisNode;
-//	else
-//		returnNode = NULL;
-//	//Go down tree and process all nodes
-//	if (node->mNumChildren && returnNode == NULL)
-//	{
-//		for (size_t i = 0; i < node->mNumChildren && returnNode == NULL; i++)
-//		{
-//			returnNode = findNodeRecursivelyByName(node->mChildren[i], channelName);
-//
-//		}
-//	}
-//	if (node->mName == channelName)
-//	{
-//
-//	}
-//	return returnNode;
-//
-//	//aiNode* returnNode;
-//	////Check name for current node
-//	//if (node->mName == channelName)
-//	//{
-//	//	returnNode = node;
-//	//	return node;
-//	//}
-//	//else
-//	//	returnNode = NULL;
-//	////Go down tree and process all nodes
-//	//if (node->mNumChildren && returnNode == NULL)
-//	//{
-//	//	for (size_t i = 0; i < node->mNumChildren && returnNode == NULL; i++)
-//	//	{
-//	//		return findNodeRecursivelyByName(node->mChildren[i], channelName);
-//
-//	//	}
-//	//}
-//	//if (node->mName == channelName)
-//	//{
-//
-//	//}
-//	//return returnNode;
-//}
+void Model::boneTransform(float timeInSec, std::vector<aiMatrix4x4>& transforms)
+{
+	aiMatrix4x4 identityMatrix;
+	// if animation has ticksPerSeconds that's not 0.0f pick that else pick 25.0f 
+	float ticksPerSecond = _scene->mAnimations[0]->mTicksPerSecond != 0.0f ? (float)_scene->mAnimations[0]->mTicksPerSecond : 25.0f;
+	float timeInTicks = timeInSec * ticksPerSecond;
+	float animationTime = fmod(timeInTicks, (float)_scene->mAnimations[0]->mDuration);
+
+	readNodeHierachy(animationTime, _scene->mRootNode, identityMatrix);
+
+	transforms.resize(_nrOfBones);
+
+	for (UINT i = 0; i < _nrOfBones; ++i)
+		transforms[i] = _boneInfo[i].finalTransformation;
+}
+
+void Model::readNodeHierachy(float animationTime, const aiNode* node, const aiMatrix4x4& parentTransform)
+{
+	std::string nodeName = node->mName.data;
+	const aiAnimation* animation = _scene->mAnimations[0];
+	aiMatrix4x4 nodeTransform = node->mTransformation;
+	const aiNodeAnim* nodeAnimation = findNodeAnimation(animation, nodeName);
+
+	if (nodeAnimation != nullptr)
+	{
+		// Scaling
+		aiVector3D scaling = calculateInterporlatedScaling(animationTime, nodeAnimation);
+		aiMatrix4x4 scalingMatrix;
+		aiMatrix4x4::Scaling(scaling, scalingMatrix);
+
+		// Rotation
+		aiQuaternion rotation = calculateInterporlatedRotation(animationTime, nodeAnimation);
+		aiMatrix4x4 rotationMatrix = aiMatrix4x4(rotation.GetMatrix());
+
+		// Translation
+		aiVector3D translation = calculateInterpolatedPosition(animationTime, nodeAnimation);
+		aiMatrix4x4 translationMatrix;
+		aiMatrix4x4::Translation(translation, translationMatrix);
+
+		// Combine above matrices
+		nodeTransform = translationMatrix * rotationMatrix * scalingMatrix;
+	}
+
+	aiMatrix4x4 globalInverse = _scene->mRootNode->mTransformation;
+	globalInverse.Inverse();
+	aiMatrix4x4 globalTransform = parentTransform * nodeTransform;
+
+		if (_boneMapping.find(nodeName) != _boneMapping.end())
+		{
+			UINT boneIndex = _boneMapping[nodeName];
+			_boneInfo[boneIndex].finalTransformation = globalInverse * globalTransform * _boneInfo[boneIndex].boneOffset;
+		}
+
+		for (UINT i = 0; i < node->mNumChildren; ++i)
+			readNodeHierachy(animationTime, node->mChildren[i], globalTransform);
+}
+
+aiNodeAnim * Model::findNodeAnimation(const aiAnimation * animation, const std::string nodeName) const
+{
+	for (UINT i = 0; i < animation->mNumChannels; ++i)
+	{
+		if (animation->mChannels[i]->mNodeName.data == nodeName)
+			return animation->mChannels[i];
+	}
+
+	return nullptr;
+}
+
+aiVector3D Model::calculateInterporlatedScaling(float animationTime, const aiNodeAnim * nodeAnimation)
+{
+	// If there's only one scaling key we will return that since we can't interpolate 1 value
+	if (nodeAnimation->mNumScalingKeys == 1)
+		return nodeAnimation->mScalingKeys[0].mValue;
+
+	UINT scalingIndex = findScaling(animationTime, nodeAnimation);
+	UINT nextScalingIndex = scalingIndex + 1;
+
+	float deltaTime = (float)(nodeAnimation->mScalingKeys[nextScalingIndex].mTime - nodeAnimation->mScalingKeys[scalingIndex].mTime);
+	float factor = (animationTime - (float)nodeAnimation->mScalingKeys[scalingIndex].mTime) / deltaTime;
+
+	aiVector3D start = nodeAnimation->mScalingKeys[scalingIndex].mValue;
+	aiVector3D end = nodeAnimation->mScalingKeys[nextScalingIndex].mValue;
+	aiVector3D delta = end - start;
+	
+	return start + factor * delta;
+}
+
+aiQuaternion Model::calculateInterporlatedRotation(float animationTime, const aiNodeAnim * nodeAnimation)
+{
+	if (nodeAnimation->mNumRotationKeys == 1)
+		return nodeAnimation->mRotationKeys[0].mValue;
+
+	UINT rotationIndex = findRotation(animationTime, nodeAnimation);
+	UINT nextRotationIndex = rotationIndex + 1;
+	float deltaTime  = (float)(nodeAnimation->mRotationKeys[nextRotationIndex].mTime - nodeAnimation->mRotationKeys[rotationIndex].mTime);
+	float factor = (animationTime - (float)nodeAnimation->mRotationKeys[rotationIndex].mTime) / deltaTime;
+
+	const aiQuaternion& startRotation = nodeAnimation->mRotationKeys[rotationIndex].mValue;
+	const aiQuaternion& endRotation = nodeAnimation->mRotationKeys[nextRotationIndex].mValue;
+	
+	aiQuaternion finalRotation;
+	aiQuaternion::Interpolate(finalRotation, startRotation, endRotation, factor);
+
+	return 	finalRotation.Normalize();
+}
+
+aiVector3D Model::calculateInterpolatedPosition(float animationTime, const aiNodeAnim * nodeAnimation)
+{
+	if (nodeAnimation->mNumPositionKeys == 1)
+		return nodeAnimation->mPositionKeys[0].mValue;
+
+	UINT positionIndex = findPosition(animationTime, nodeAnimation);
+	UINT nextPositionIndex = positionIndex + 1;
+
+	float deltaTime = (float)(nodeAnimation->mPositionKeys[nextPositionIndex].mTime - nodeAnimation->mPositionKeys[positionIndex].mTime);
+	float factor = (animationTime - (float)nodeAnimation->mPositionKeys[positionIndex].mTime) / deltaTime;
+
+	aiVector3D start = nodeAnimation->mPositionKeys[positionIndex].mValue;
+	aiVector3D end = nodeAnimation->mPositionKeys[nextPositionIndex].mValue;
+	aiVector3D delta = end - start;
+
+	return start + factor * delta;
+}
+
+UINT Model::findScaling(float animationTime, const aiNodeAnim * nodeAnimation)
+{
+	for (UINT i = 0; i < nodeAnimation->mNumScalingKeys - 1; ++i)
+	{
+		if (animationTime < (float)nodeAnimation->mScalingKeys[i + 1].mTime)
+			return i;
+	}
+
+	assert(0);
+	return 0;
+}
+
+UINT Model::findRotation(float animationTime, const aiNodeAnim * nodeAnimation)
+{
+	for (UINT i = 0; i < nodeAnimation->mNumRotationKeys - 1; ++i)
+	{
+		if (animationTime < (float)nodeAnimation->mRotationKeys[i + 1].mTime)
+			return i;
+	}
+
+	assert(0);
+	return 0;
+}
+
+UINT Model::findPosition(float animationTime, const aiNodeAnim * nodeAnimation)
+{
+	for (UINT i = 0; i < nodeAnimation->mNumPositionKeys - 1; ++i)
+	{
+		if (animationTime < (float)nodeAnimation->mPositionKeys[i + 1].mTime)
+			return i;
+	}
+
+	assert(0);
+	return 0;
+}
 
 void Model::processNode(ID3D11Device* device, aiNode * node)
 {
-	//Cycle all meshes for current node
-	for (size_t i = 0; i < node->mNumMeshes; i++)
-	{
-		aiMesh* mesh = _scene->mMeshes[node->mMeshes[i]];
-		_meshes.push_back(this->processMesh(device, mesh));
-	}
+	//// Cycle all meshes for current node
+	//for (size_t i = 0; i < node->mNumMeshes; i++)
+	//{
+	//	aiMesh* tempAiMesh = _scene->mMeshes[node->mMeshes[i]];
+	//	_meshes.push_back(this->processMesh(device, tempAiMesh));
+	//}
 
-	//Go down tree and process all nodes
-	for (size_t i = 0; i < node->mNumChildren; i++)
-		this->processNode(device, node->mChildren[i]);
+	//// Go down tree and process all nodes
+	//for (size_t i = 0; i < node->mNumChildren; i++)
+	//	this->processNode(device, node->mChildren[i]);
+
+
+	// Glenn: I have a tough time understanding nodes
+	// so i'm going with this instead
+	for (size_t i = 0; i < _scene->mNumMeshes; i++)
+	{
+		aiMesh* tempAiMesh = _scene->mMeshes[i];
+		_meshes.push_back(processMesh(device, tempAiMesh));
+	}
 }
 
 std::string texType;
@@ -71,9 +193,6 @@ Mesh* Model::processMesh(ID3D11Device* device, aiMesh * mesh)
 	std::vector<int> indices;
 	std::vector<Texture> textures;
 
-	//std::vector<VertexBoneData> bones;
-	//bones.resize(mesh->mNumVertices); // Kanske rätt? Hoppas det är numVer för mesh och inte för scene...
-	//int numBones = 0; //Kom ihåg att skicka denna till Mesh konstruktorn
 
 	if (mesh->mMaterialIndex >= 0)
 	{
@@ -85,8 +204,9 @@ Mesh* Model::processMesh(ID3D11Device* device, aiMesh * mesh)
 	// Bounding volume
 	DirectX::XMFLOAT3 maxCoordinates = { 0, 0, 0 };
 	DirectX::XMFLOAT3 minCoordinates = { 0, 0, 0 };
+
 	// Loop vertices
-	for (size_t i = 0; i < mesh->mNumVertices; i++)
+	for (size_t i = 0; i < mesh->mNumVertices; ++i)
 	{
 		Vertex vertex;
 
@@ -147,14 +267,14 @@ Mesh* Model::processMesh(ID3D11Device* device, aiMesh * mesh)
 	//Loop through each vertex
 	if (mesh->HasBones())
 	{
-		for (size_t i = 0; i < vertices.size(); i++)
+		for (size_t i = 0; i < vertices.size(); ++i)
 		{
 			index.clear();
 			weights.clear();
 			//Loop through each bone
-			for (size_t j = 0; j < mesh->mNumBones; j++)
+			for (size_t j = 0; j < mesh->mNumBones; ++j)
 			{
-				for (size_t k = 0; k < mesh->mBones[j]->mNumWeights; k++)
+				for (size_t k = 0; k < mesh->mBones[j]->mNumWeights; ++k)
 				{
 					//Check if vertex is affected by bone
 					if (mesh->mBones[j]->mWeights[k].mVertexId == i)
@@ -166,12 +286,12 @@ Mesh* Model::processMesh(ID3D11Device* device, aiMesh * mesh)
 			}
 			//Pick top 4 weights for shader
 			int nrOfweights = 0; //not always four
-			for (size_t j = 0; j < 4 && weights.size() != 0; j++) //Här kan det nog krascha om en vertex har färre än 4 weights
+			for (size_t j = 0; j < 4 && weights.size() != 0; ++j) //Här kan det nog krascha om en vertex har färre än 4 weights
 			{
 				int maxIndex = -1;
 				float maxValue = -1;
 				int eraseIndex = -1;
-				for (size_t k = 0; k < weights.size(); k++)
+				for (size_t k = 0; k < weights.size(); ++k)
 				{
 					if (weights[k] > maxValue)
 					{
@@ -181,7 +301,7 @@ Mesh* Model::processMesh(ID3D11Device* device, aiMesh * mesh)
 					}
 				}
 				//Insert vertex boneinfo
-				vertices[i].boneIndices[j] = (float)maxIndex;
+				vertices[i].boneIndices[j] = maxIndex;
 				vertices[i].weights[j] = maxValue;
 				nrOfweights++;
 				weights.erase(weights.begin() + eraseIndex);
@@ -197,6 +317,29 @@ Mesh* Model::processMesh(ID3D11Device* device, aiMesh * mesh)
 				vertices[i].weights[j] = vertices[i].weights[j] + ((vertices[i].weights[0] / prevPer)*missPer);
 		}
 	}
+
+	// load bones
+	// GLENN
+	// get bone name
+	for (UINT i = 0; i < mesh->mNumBones; ++i)
+	{
+		std::string boneName = mesh->mBones[i]->mName.data;
+		UINT boneIndex = 0;
+		if (_boneMapping.find(boneName) == _boneMapping.end())
+		{
+			boneIndex = _nrOfBones++;
+			BoneInfo boneInfo;
+			_boneInfo.push_back(boneInfo);
+			_boneInfo[boneIndex].boneOffset = mesh->mBones[i]->mOffsetMatrix;
+			_boneMapping[boneName] = boneIndex;
+		}
+		else
+		{
+			boneIndex = _boneMapping[boneName];
+		}
+	}
+
+
 	Mesh* returnMesh = new ObjectMesh(device, vertices, indices, textures);
 	return returnMesh;
 }
@@ -233,7 +376,7 @@ std::vector<Texture> Model::loadTextures(aiMaterial* material, aiTextureType tex
 			else
 			{
 				std::string filename = std::string(str.C_Str()); //Some string magic
-				filename = _directory + '\\' + filename;
+				filename = _fileDirectory + '\\' + filename;
 				std::wstring filenamews = std::wstring(filename.begin(), filename.end());
 				hr = CoInitialize(NULL);
 				hr = DirectX::CreateWICTextureFromFile(_device, filenamews.c_str(), NULL, &texture._texture);
@@ -313,105 +456,132 @@ Model::~Model()
 		_loadedTextures[i]._texture->Release();
 }
 
-std::vector<Mesh*>* Model::getMeshes()
-{
-	return &_meshes;
-}
 
-std::vector<Texture>* Model::getLoadedTextures()
+bool Model::loadModel(ID3D11Device * device, ID3D11DeviceContext * deviceContext, std::string filename)
 {
-	return &_loadedTextures;
-}
+	// Load model from file
+	_scene = _importer.ReadFile(filename, aiProcess_Triangulate | aiProcess_ConvertToLeftHanded); // aiProcessPreset_TargetRealtime_Quality kanske denna för optimisering
 
-BoundingVolume * Model::getBoundingVolume()
-{
-	return _boundingVolume;
+	// Failed import
+	if (_scene == nullptr)
+	{
+		MessageBox(NULL, L"loadModel inside model.cpp", L"Error!", MB_ICONERROR | MB_OK);
+		return false;
+	}
+
+	// Save member variables
+	_fileDirectory = filename.substr(0, filename.find_last_of('\\'));
+	_device = device;
+	_deviceContext = deviceContext;
+
+	// Start processing all the nodes in the model
+	processNode(device, _scene->mRootNode);
+
+	return true;
 }
 
 void Model::updateTransformation(DirectX::XMFLOAT3 position)
 {
 	_scene->mRootNode->mTransformation = aiMatrix4x4(aiVector3D(1, 1, 1), aiQuaternion(0, 0, 0), aiVector3D(position.x, position.y, position.z));
 	_world = _scene->mRootNode->mTransformation;
-	
 }
 
-bool Model::loadModel(ID3D11Device * device, ID3D11DeviceContext * deviceContext, std::string filename)
+
+void Model::animate(float timeInSec)
 {
-	//Load model from file
-	_scene = _importer.ReadFile(filename, aiProcess_Triangulate | aiProcess_ConvertToLeftHanded); // aiProcessPreset_TargetRealtime_Quality kanske denna för optimisering
+	if (_scene->HasAnimations())
+	{
+		// if animation has ticksPerSeconds that's not 0.0f pick that else pick 25.0f 
+		float ticksPerSecond = _scene->mAnimations[0]->mTicksPerSecond != 0.0f ? (float)_scene->mAnimations[0]->mTicksPerSecond : 25.0f;
+		float timeInTicks = timeInSec * ticksPerSecond;
+		float AnimationTime = fmod(timeInTicks, (float)_scene->mAnimations[0]->mDuration);
 
-	if (_scene == NULL)
-		return false;
-
-	//Save member variables
-	_directory = filename.substr(0, filename.find_last_of('\\')); //Tror inte det ska vara '/'
-	_device = device;
-	_deviceContext = deviceContext;
-	
-	//Start processing all the nodes in the model
-	processNode(device, _scene->mRootNode);
-
-	return true;
+		for (size_t i = 0; i < _scene->mAnimations[0]->mNumChannels; ++i)
+		{
+			const aiNodeAnim* channel = _scene->mAnimations[0]->mChannels[i];
+			aiVector3D curPosition;
+			aiQuaternion curRotation;
+			// scaling purposefully left out 
+			// find the node which the channel affects
+			aiNode* targetNode = _scene->mRootNode->FindNode(channel->mNodeName);
+			
+			// find current position
+			size_t posIndex = 0;
+			while (1)
+			{
+				// break if this is the last key - there are no more keys after this one, we need to use it
+				if (posIndex + 1 >= channel->mNumPositionKeys)
+					break;
+				// break if the next key lies in the future - the current one is the correct one then
+				if (channel->mPositionKeys[posIndex + 1].mTime > AnimationTime)
+					break;
+				posIndex++;
+			}
+			// maybe add a check here if the anim has any position keys at all
+			curPosition = channel->mPositionKeys[posIndex].mValue;
+			// same goes for rotation, but I shorten it now
+			size_t rotIndex = 0;
+			while (1)
+			{
+				if (rotIndex + 1 >= channel->mNumRotationKeys)
+					break;
+				if (channel->mRotationKeys[rotIndex + 1].mTime > AnimationTime)
+					break;
+				rotIndex++;
+			}
+			curRotation = channel->mRotationKeys[posIndex].mValue;
+			// now build a transformation matrix from it. First rotation, thenn push position in it as well. 
+			aiMatrix4x4 trafo = aiMatrix4x4(curRotation.GetMatrix());
+			trafo.a4 = curPosition.x; trafo.b4 = curPosition.y; trafo.c4 = curPosition.z;
+			// assign this transformation to the node
+			targetNode->mTransformation = trafo;
+		}
+	}
 }
 
-//void Model::animate(float timeInSec)
-//{
-//	//_scene->mRootNode->mTransformation = aiMatrix4x4(aiVector3D(1, 1, 1), aiQuaternion(0, 0, 0), aiVector3D(0, timeInSec, 0));
-//
-//	//D3D11_MAPPED_SUBRESOURCE mappedMemory;
-//	//_deviceContext->Map(_transformationBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedMemory);
-//	//memcpy(mappedMemory.pData, &_scene->mRootNode->mTransformation, sizeof(_scene->mRootNode->mTransformation));
-//	//_deviceContext->Unmap(_transformationBuffer, 0);
-//
-//	//if (_scene->HasAnimations())
-//	//{
-//
-//	//}
-//	//const aiAnimation* anim = _scene->mAnimations[0];
-//	//double currentTime = fmod(timeInSec * 1000, anim->mDuration);
-//	//for (size_t i = 0; i < anim->mNumChannels; ++i)
-//	//{
-//	//	const aiNodeAnim* channel = anim->mChannels[i];
-//	//	aiVector3D curPosition;
-//	//	aiQuaternion curRotation;
-//	//	// scaling purposefully left out 
-//	//	// find the node which the channel affects
-//	//	aiNode* targetNode = findNodeRecursivelyByName(_scene->mRootNode, channel->mNodeName);
-//	//	// find current position
-//	//	size_t posIndex = 0;
-//	//	while (1)
-//	//	{
-//	//		// break if this is the last key - there are no more keys after this one, we need to use it
-//	//		if (posIndex + 1 >= channel->mNumPositionKeys)
-//	//			break;
-//	//		// break if the next key lies in the future - the current one is the correct one then
-//	//		if (channel->mPositionKeys[posIndex + 1].mTime > currentTime)
-//	//			break;
-//	//		posIndex++;
-//	//	}
-//	//	// maybe add a check here if the anim has any position keys at all
-//	//	curPosition = channel->mPositionKeys[posIndex].mValue;
-//	//	// same goes for rotation, but I shorten it now
-//	//	size_t rotIndex = 0;
-//	//	while (1)
-//	//	{
-//	//		if (rotIndex + 1 >= channel->mNumRotationKeys)
-//	//			break;
-//	//		if (channel->mRotationKeys[rotIndex + 1].mTime > currentTime)
-//	//			break;
-//	//		rotIndex++;
-//	//	}
-//	//	curRotation = channel->mRotationKeys[posIndex].mValue;
-//	//	// now build a transformation matrix from it. First rotation, thenn push position in it as well. 
-//	//	aiMatrix4x4 trafo = aiMatrix4x4(curRotation.GetMatrix());
-//	//	trafo.a4 = curPosition.x; trafo.b4 = curPosition.y; trafo.c4 = curPosition.z;
-//	//	// assign this transformation to the node
-//	//	targetNode->mTransformation = trafo;
-//	//}
-//}
-
-void Model::draw(GraphicResources* graphicResources)
+void Model::draw(GraphicResources * graphicResources)
 {
+	if (_scene != nullptr && _scene->HasAnimations() == true)
+	{
+		std::vector<aiMatrix4x4> transforms;
+		boneTransform(0.0f, transforms);
+
+		for (int i = 0; i < transforms.size(); ++i)
+			graphicResources->getPerObjectData()->boneMatrices[i] = transforms[i];
+
+		graphicResources->getPerObjectData()->hasAnimation = true;
+	}
+	else
+	{
+		graphicResources->getPerObjectData()->hasAnimation = false;
+	}
+
+	graphicResources->getPerObjectData()->world = _world;
+	graphicResources->updatePerObjectCB();
+
+	for (int i = 0; i < _meshes.size(); i++)
+	{
+		_meshes[i]->draw(graphicResources);
+	}
+}
+
+void Model::draw(GraphicResources* graphicResources, float timeInSec)
+{
+	if (_scene != nullptr && _scene->HasAnimations() == true)
+	{
+		std::vector<aiMatrix4x4> transforms;
+		boneTransform(timeInSec, transforms);
+
+		for(int i = 0; i < transforms.size(); ++i)
+			graphicResources->getPerObjectData()->boneMatrices[i] = transforms[i];
+
+		graphicResources->getPerObjectData()->hasAnimation = true;
+	}
+	else
+	{
+		graphicResources->getPerObjectData()->hasAnimation = false;
+	}
+
 	graphicResources->getPerObjectData()->world = _world;
 	graphicResources->updatePerObjectCB();
 
@@ -427,4 +597,19 @@ void Model::drawBoundingVolume(GraphicResources* graphicResources)
 	graphicResources->updatePerObjectCB();
 
 	_boundingVolume->draw(graphicResources);
+}
+
+std::vector<Mesh*>* Model::getMeshes()
+{
+	return &_meshes;
+}
+
+std::vector<Texture>* Model::getLoadedTextures()
+{
+	return &_loadedTextures;
+}
+
+BoundingVolume * Model::getBoundingVolume()
+{
+	return _boundingVolume;
 }

@@ -1,4 +1,4 @@
-0 0.0 0.0 0.0 gubbe1ani.dae
+0 0.0 0.0 0.0 animationTest.dae
 2 47.0 12.0 35.0 gubbe1.dae
 2 40.0 12.0 32.0 gubbe1.dae
 3 0.0 0.0 2.0 heightmap1.bmp

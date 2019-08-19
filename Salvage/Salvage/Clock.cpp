@@ -2,6 +2,8 @@
 
 Clock::Clock()
 {
+	_deltaSeconds = 0;
+	_timeInSec = 0;
 	QueryPerformanceFrequency(&_clockFreq);
 	QueryPerformanceCounter(&_startTime);
 }
@@ -25,21 +27,12 @@ float Clock::getDeltaSeconds()
 {
 	QueryPerformanceCounter(&_currTime);
 	_delta.QuadPart = _currTime.QuadPart - _startTime.QuadPart;
-	float deltaSeconds = (float)_delta.QuadPart / _clockFreq.QuadPart;
+	_deltaSeconds = (float)_delta.QuadPart / _clockFreq.QuadPart;
 	
-	return deltaSeconds;
+	return _deltaSeconds;
 }
 
-void Clock::startAnimation()
+float Clock::getTimeInSec()
 {
-	QueryPerformanceCounter(&_animationStart);
-}
-
-float Clock::getAnimationTime()
-{
-	QueryPerformanceCounter(&_currTime);
-	_delta.QuadPart = _currTime.QuadPart - _animationStart.QuadPart;
-	float deltaSeconds = (float)_delta.QuadPart / _clockFreq.QuadPart;
-
-	return deltaSeconds;
+	return 	_timeInSec += _deltaSeconds;
 }

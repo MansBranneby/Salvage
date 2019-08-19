@@ -6,20 +6,20 @@
 class Clock
 {
 private:
-	// TID
 	LARGE_INTEGER _clockFreq;
 	LARGE_INTEGER _startTime;
-	LARGE_INTEGER _delta;
 	LARGE_INTEGER _currTime;
-	LARGE_INTEGER _animationStart;
+	LARGE_INTEGER _delta;
+	float _deltaSeconds;
+	float _timeInSec;
 
 public:
 	Clock();
 	~Clock();
 
 	void startClock();
-	void reset();
+	void reset(); 
 	float getDeltaSeconds();
-	void startAnimation();
-	float getAnimationTime();
+	// time since the start of the program
+	float getTimeInSec();
 };

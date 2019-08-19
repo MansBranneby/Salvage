@@ -33,6 +33,7 @@ public:
 	Model* getModel();
 	bool createModel(ID3D11Device* device, ID3D11DeviceContext* deviceContext, std::string modelFile); //Return true if everything works out
 	void draw(GraphicResources* graphicResources);
+	void draw(GraphicResources* graphicResources, float timeInSec);
 	void drawBoundingVolume(GraphicResources* graphicResources);
 
 	XMVECTOR getPosition();

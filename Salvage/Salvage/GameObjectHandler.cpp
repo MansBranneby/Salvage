@@ -87,9 +87,9 @@ Player * GameObjectHandler::getPlayer()
 	return _player;
 }
 
-void GameObjectHandler::drawPlayer(GraphicResources* graphicResources)
+void GameObjectHandler::drawPlayer(GraphicResources* graphicResources, float timeInSec)
 {
-	_player->draw(graphicResources);
+	_player->draw(graphicResources, timeInSec);
 }
 
 void GameObjectHandler::drawTerrain(GraphicResources* graphicResources)

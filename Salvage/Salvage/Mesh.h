@@ -7,12 +7,6 @@
 #include "TerrainVertex.h"
 #include <vector>
 
-struct VertexBoneData
-{
-	int* ids; // NUM_BONES_PER_VERTEX?
-	float weights[4]; // NUM_BONES_PER_VERTEX?
-};
-
 class Mesh
 {
 private:

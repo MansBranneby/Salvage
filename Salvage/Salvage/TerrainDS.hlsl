@@ -6,7 +6,6 @@ struct DS_IN
 {
 	float3 posW    : POSITION;
 	float2 tex     : TEXCOORD0;
-	float2 boundsY : TEXCOORD1;
 };
 
 struct DS_OUT

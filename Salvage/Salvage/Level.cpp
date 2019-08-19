@@ -11,20 +11,24 @@ Level::~Level()
 	delete _objHandler;
 }
 
-void Level::drawLevel(GraphicResources* graphicResources)
+void Level::drawLevel(GraphicResources* graphicResources, float timeInSec)
 {
 	graphicResources->getDeviceContext()->VSSetShader(&graphicResources->getShaderHandler()->getObjectVS()->getVertexShader(), nullptr, 0);
+	graphicResources->getDeviceContext()->HSSetShader(nullptr, nullptr, 0);
+	graphicResources->getDeviceContext()->DSSetShader(nullptr, nullptr, 0);
+	graphicResources->getDeviceContext()->GSSetShader(nullptr, nullptr, 0);
 	graphicResources->getDeviceContext()->PSSetShader(&graphicResources->getShaderHandler()->getObjectPS()->getPixelShader(), nullptr, 0);
 
 	graphicResources->getDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	graphicResources->getDeviceContext()->IASetInputLayout(&graphicResources->getShaderHandler()->getObjectVS()->getVertexLayout());
 
-	_objHandler->drawPlayer(graphicResources);
+	_objHandler->drawPlayer(graphicResources, timeInSec);
 	_objHandler->drawObjects(graphicResources);
-
+	
 	graphicResources->getDeviceContext()->VSSetShader(&graphicResources->getShaderHandler()->getTerrainVS()->getVertexShader(), nullptr, 0);
 	graphicResources->getDeviceContext()->HSSetShader(&graphicResources->getShaderHandler()->getTerrainHS()->getHullShader() , nullptr, 0);
 	graphicResources->getDeviceContext()->DSSetShader(&graphicResources->getShaderHandler()->getTerrainDS()->getDomainShader(), nullptr, 0);
+	graphicResources->getDeviceContext()->GSSetShader(nullptr, nullptr, 0);
 	graphicResources->getDeviceContext()->PSSetShader(&graphicResources->getShaderHandler()->getTerrainPS()->getPixelShader(), nullptr, 0);
 
 	graphicResources->getDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST);
