@@ -541,22 +541,8 @@ void Model::animate(float timeInSec)
 
 void Model::draw(GraphicResources * graphicResources)
 {
-	if (_scene != nullptr && _scene->HasAnimations() == true)
-	{
-		std::vector<aiMatrix4x4> transforms;
-		boneTransform(0.0f, transforms);
-
-		for (int i = 0; i < transforms.size(); ++i)
-			graphicResources->getPerObjectData()->boneMatrices[i] = transforms[i];
-
-		graphicResources->getPerObjectData()->hasAnimation = true;
-	}
-	else
-	{
-		graphicResources->getPerObjectData()->hasAnimation = false;
-	}
-
 	graphicResources->getPerObjectData()->world = _world;
+	graphicResources->getPerObjectData()->hasAnimation = false;
 	graphicResources->updatePerObjectCB();
 
 	for (int i = 0; i < _meshes.size(); i++)

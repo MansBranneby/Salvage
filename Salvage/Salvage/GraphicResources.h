@@ -6,6 +6,7 @@
 
 #define WIDTH 1920.0f
 #define HEIGHT 1080.0f
+#define MAX_BONES 100
 
 struct PerFrameData
 {
@@ -23,7 +24,7 @@ struct PerFrameData
 struct PerObjectData
 {
 	aiMatrix4x4 world;
-	aiMatrix4x4 boneMatrices[4];
+	aiMatrix4x4 boneMatrices[MAX_BONES];
 	bool hasAnimation;
 	bool padding1[3];
 	DirectX::XMFLOAT3 padding2; 

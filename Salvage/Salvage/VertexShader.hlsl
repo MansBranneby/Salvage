@@ -29,7 +29,7 @@ cbuffer VS_CONSTANT_BUFFER : register(b0)
 cbuffer VS_CONSTANT_BUFFER : register(b1)
 {
 	matrix world;
-	matrix bones[4];
+	matrix bones[100];
 	bool hasAnimation;
 };
 
