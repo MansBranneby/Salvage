@@ -62,9 +62,28 @@ void GameObject::drawBoundingVolume(GraphicResources* graphicResources)
 	_model.drawBoundingVolume(graphicResources);
 }
 
-XMVECTOR GameObject::getPosition()
+XMVECTOR GameObject::getPositionVector()
 {
 	return _position;
+}
+
+DirectX::XMFLOAT3 GameObject::getPositionFloat3()
+{
+	DirectX::XMFLOAT3 position;
+	DirectX::XMStoreFloat3(&position, _position);
+
+	return position;
+}
+
+void GameObject::setPosition(DirectX::XMVECTOR position)
+{
+	_position = position;
+}
+
+void GameObject::setHeight(float height)
+{
+	_position = DirectX::XMVectorSet(DirectX::XMVectorGetX(_position), height + 1.5f, DirectX::XMVectorGetZ(_position), 1.0f);
+	getBoundingVolume()->setCenter(DirectX::XMVectorSet(DirectX::XMVectorGetX(_position), height + 1.5f, DirectX::XMVectorGetZ(_position), 1.0f));
 }
 
 BoundingVolume * GameObject::getBoundingVolume()

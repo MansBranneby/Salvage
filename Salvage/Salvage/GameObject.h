@@ -15,13 +15,12 @@ class GameObject
 {
 private:
 	Model _model;
-	XMMATRIX _rotMatrix;
 	ObjectType _objectType;
 	std::string _modelDirectory = ".\\Resources\\Models\\";
+	XMVECTOR _position;
 	
 
 protected:
-	XMVECTOR _position;
 	XMVECTOR _lookAt;
 	void updateTransformations(XMFLOAT3 position);
 
@@ -36,6 +35,12 @@ public:
 	void draw(GraphicResources* graphicResources, float timeInSec);
 	void drawBoundingVolume(GraphicResources* graphicResources);
 
-	XMVECTOR getPosition();
+	void setPosition(DirectX::XMVECTOR position);
+	void setHeight(float height);
+
+	DirectX::XMVECTOR getPositionVector();
+	DirectX::XMFLOAT3 getPositionFloat3();
+
 	virtual BoundingVolume* getBoundingVolume();
+
 };

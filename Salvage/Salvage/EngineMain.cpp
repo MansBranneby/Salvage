@@ -58,10 +58,6 @@ using namespace DirectX;
 HWND InitWindow(HINSTANCE hInstance);
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
-//Behövs dessa kopior. Finns i GraphicsResources
-#define WIDTH 1920.0f
-#define HEIGHT 1080.0f
-
 // GLOBALS //
 Game* gGame = nullptr;
 GraphicResources* gGR = nullptr;
@@ -104,9 +100,6 @@ void initializeResources(HWND wndHandle)
 	ImGui_ImplWin32_Init(wndHandle);
 	ImGui_ImplDX11_Init(gGR->getDevice(), gGR->getDeviceContext());
 	ImGui::StyleColorsDark();
-
-	//Tillfällig för test av animation
-	//gClock.startAnimation();
 }
 
 void imGuiUpdate()
@@ -121,7 +114,10 @@ void imGuiUpdate()
 	ImGui::SliderFloat("LookAtSpeed", &gLookAtSpeed, 0.0f, 20.0f);
 	gGame->getCamera()->setSmoothSpeed(gSmoothSpeed);
 	gGame->getCamera()->setLookAtSpeed(gLookAtSpeed);
-	ImGui::Text("Player position: X: %.2f, Y: %.2f, Z: %.2f", XMVectorGetX(gGame->getLevelHandler()->getPlayer()->getPosition()), XMVectorGetY(gGame->getLevelHandler()->getPlayer()->getPosition()), XMVectorGetZ(gGame->getLevelHandler()->getPlayer()->getPosition()));
+
+	DirectX::XMFLOAT3 playerPos = gGame->getLevelHandler()->getPlayer()->getPositionFloat3();
+	ImGui::Text("Player position: X: %.2f, Y: %.2f, Z: %.2f", playerPos.x, playerPos.y, playerPos.z);
+
 	ImGui::Checkbox("Draw bounding volume", &drawBoundingVolume);
 	ImGui::Text("FPS: %.f", ImGui::GetIO().Framerate);
 	ImGui::End();

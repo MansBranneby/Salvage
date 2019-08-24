@@ -39,16 +39,18 @@ void GameState::update(Game* game)
 
 	// if collision between player and object change travel direction
 	if (colliding)
-		player->move(-player->getVelocity());
+	{
+		player->move(-player->getAcceleration(), game->getClock()->getDeltaSeconds());
+	}
 	else
-		player->move(player->getVelocity());
+		player->move(player->getAcceleration(), game->getClock()->getDeltaSeconds());
 	
 	// Set player height to terrain
 	Terrain* terrain = game->getLevelHandler()->getTerrain(0); // currently only works for one terrain
-	float height = terrain->getHeight(DirectX::XMVectorGetX(player->getPosition()), DirectX::XMVectorGetZ(player->getPosition()));
+	float height = terrain->getHeight(player->getPositionFloat3().x, player->getPositionFloat3().z);
 	player->setHeight(height);
 
-	game->getCamera()->followObject(player->getPosition(), game->getClock()->getDeltaSeconds()); //Update camera based on player position
+	game->getCamera()->followObject(player->getPositionVector(), game->getClock()->getDeltaSeconds()); //Update camera based on player position
 }
 
 void GameState::draw(Game* game)

@@ -8,7 +8,6 @@ class Player : public Robot
 public:
 	Player(ID3D11Device* device, ID3D11DeviceContext* deviceContext, DirectX::XMVECTOR startingPosition, std::string modelFile);
 	virtual ~Player();
-	void setHeight(float height);
 
 	void handleInput(Keyboard::State kb, GamePad::State gp, float deltaSeconds);
 };
