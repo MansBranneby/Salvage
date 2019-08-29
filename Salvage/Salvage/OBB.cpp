@@ -61,11 +61,12 @@ OBB::OBB(ID3D11Device* device, DirectX::XMFLOAT3 minCoordinates, DirectX::XMFLOA
 	createBuffers(device, *getVertices(), *getIndices());
 }
 
-bool OBB::intersectsWithOBB(BoundingVolume * other)
+CollisionInfo OBB::intersectsWithOBB(BoundingVolume * other)
 {
 	using namespace DirectX;
 	// dynamic_cast is useful when you don't know what the dynamic type of the object is.
 	//It returns a null pointer if the object referred to doesn't contain the type casted to as a base class 
+	CollisionInfo collInfo;
 	if(OBB* otherOBB = dynamic_cast<OBB*> (other))
 	{
 		// Convert otherOBB center to this local space
@@ -86,7 +87,7 @@ bool OBB::intersectsWithOBB(BoundingVolume * other)
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.y*XMVector3Dot(_xAxis, otherOBB->_yAxis))))) +
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.z*XMVector3Dot(_xAxis, otherOBB->_zAxis)))));
 		if ((projection/2) > boxProjection)
-			return false;
+			return collInfo;
 		// 2. SA = _yAxis
 		projection = abs(XMVectorGetX((XMVector3Dot(vectorToOBB, _yAxis))));
 		boxProjection = _halfXYZ.y +
@@ -94,7 +95,7 @@ bool OBB::intersectsWithOBB(BoundingVolume * other)
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.y*XMVector3Dot(_yAxis, otherOBB->_yAxis))))) +
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.z*XMVector3Dot(_yAxis, otherOBB->_zAxis)))));
 		if ((projection / 2) > boxProjection)
-			return false;
+			return collInfo;
 		// 3. SA = _zAxis
 		projection = abs(XMVectorGetX((XMVector3Dot(vectorToOBB, _zAxis))));
 		boxProjection = _halfXYZ.z +
@@ -102,7 +103,7 @@ bool OBB::intersectsWithOBB(BoundingVolume * other)
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.y*XMVector3Dot(_zAxis, otherOBB->_yAxis))))) +
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.z*XMVector3Dot(_zAxis, otherOBB->_zAxis)))));
 		if ((projection / 2) > boxProjection)
-			return false;
+			return collInfo;
 
 		// Face normals of other OBB
 		// 4. SA = xAxis
@@ -112,7 +113,7 @@ bool OBB::intersectsWithOBB(BoundingVolume * other)
 			abs(XMVectorGetX(((_halfXYZ.y*XMVector3Dot(_yAxis, otherOBB->_xAxis))))) +
 			abs(XMVectorGetX(((_halfXYZ.z*XMVector3Dot(_zAxis, otherOBB->_xAxis)))));
 		if ((projection / 2) > boxProjection)
-			return false;
+			return collInfo;
 		// 5. SA = yAxis
 		projection = abs(XMVectorGetX((XMVector3Dot(vectorToOBB, otherOBB->_yAxis))));
 		boxProjection = otherOBB->_halfXYZ.y +
@@ -120,7 +121,7 @@ bool OBB::intersectsWithOBB(BoundingVolume * other)
 			abs(XMVectorGetX(((_halfXYZ.y*XMVector3Dot(_yAxis, otherOBB->_yAxis))))) +
 			abs(XMVectorGetX(((_halfXYZ.z*XMVector3Dot(_zAxis, otherOBB->_yAxis)))));
 		if ((projection / 2) > boxProjection)
-			return false;
+			return collInfo;
 		// 6. SA = zAxis
 		projection = abs(XMVectorGetX((XMVector3Dot(vectorToOBB, otherOBB->_zAxis))));
 		boxProjection = otherOBB->_halfXYZ.z +
@@ -128,7 +129,7 @@ bool OBB::intersectsWithOBB(BoundingVolume * other)
 			abs(XMVectorGetX(((_halfXYZ.y*XMVector3Dot(_yAxis, otherOBB->_zAxis))))) +
 			abs(XMVectorGetX(((_halfXYZ.z*XMVector3Dot(_zAxis, otherOBB->_zAxis)))));
 		if ((projection / 2) > boxProjection)
-			return false;
+			return collInfo;
 
 		// All edge combinations
 		// 7. SA = _xAxis x xAxis
@@ -139,7 +140,7 @@ bool OBB::intersectsWithOBB(BoundingVolume * other)
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.y*XMVector3Dot(_xAxis, otherOBB->_zAxis))))) +
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.z*XMVector3Dot(_xAxis, otherOBB->_yAxis)))));
 		if ((projection / 2) > boxProjection)
-			return false;
+			return collInfo;
 		// 8. SA = _xAxis x yAxis
 		projection = abs(XMVectorGetX((XMVector3Dot(vectorToOBB, XMVector3Cross(_xAxis, otherOBB->_yAxis)))));
 		boxProjection =
@@ -148,7 +149,7 @@ bool OBB::intersectsWithOBB(BoundingVolume * other)
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.x*XMVector3Dot(_xAxis, otherOBB->_zAxis))))) +
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.z*XMVector3Dot(_xAxis, otherOBB->_xAxis)))));
 		if ((projection / 2) > boxProjection)
-			return false;
+			return collInfo;
 		//9. SA = _xAxis x zAxis
 		projection = abs(XMVectorGetX((XMVector3Dot(vectorToOBB, XMVector3Cross(_xAxis, otherOBB->_zAxis)))));
 		boxProjection =
@@ -157,7 +158,7 @@ bool OBB::intersectsWithOBB(BoundingVolume * other)
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.x*XMVector3Dot(_xAxis, otherOBB->_yAxis))))) +
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.y*XMVector3Dot(_xAxis, otherOBB->_xAxis)))));
 		if ((projection / 2) > boxProjection)
-			return false;
+			return collInfo;
 		//10. SA = _yAxis x xAxis
 		projection = abs(XMVectorGetX((XMVector3Dot(vectorToOBB, XMVector3Cross(_yAxis, otherOBB->_xAxis)))));
 		boxProjection =
@@ -166,7 +167,7 @@ bool OBB::intersectsWithOBB(BoundingVolume * other)
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.y*XMVector3Dot(_yAxis, otherOBB->_zAxis))))) +
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.z*XMVector3Dot(_yAxis, otherOBB->_yAxis)))));
 		if ((projection / 2) > boxProjection)
-			return false;
+			return collInfo;
 		//11. SA = _yAxis x yAxis
 		projection = abs(XMVectorGetX((XMVector3Dot(vectorToOBB, XMVector3Cross(_yAxis, otherOBB->_yAxis)))));
 		boxProjection =
@@ -175,7 +176,7 @@ bool OBB::intersectsWithOBB(BoundingVolume * other)
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.x*XMVector3Dot(_yAxis, otherOBB->_zAxis))))) +
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.z*XMVector3Dot(_yAxis, otherOBB->_xAxis)))));
 		if ((projection / 2) > boxProjection)
-			return false;
+			return collInfo;
 		//12. SA = _yAxis x zAxis
 		projection = abs(XMVectorGetX((XMVector3Dot(vectorToOBB, XMVector3Cross(_yAxis, otherOBB->_zAxis)))));
 		boxProjection =
@@ -184,7 +185,7 @@ bool OBB::intersectsWithOBB(BoundingVolume * other)
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.x*XMVector3Dot(_yAxis, otherOBB->_yAxis))))) +
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.y*XMVector3Dot(_yAxis, otherOBB->_xAxis)))));
 		if ((projection / 2) > boxProjection)
-			return false;
+			return collInfo;
 		//13. SA = _zAxis x xAxis
 		projection = abs(XMVectorGetX((XMVector3Dot(vectorToOBB, XMVector3Cross(_zAxis, otherOBB->_xAxis)))));
 		boxProjection =
@@ -193,7 +194,7 @@ bool OBB::intersectsWithOBB(BoundingVolume * other)
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.y*XMVector3Dot(_zAxis, otherOBB->_zAxis))))) +
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.z*XMVector3Dot(_zAxis, otherOBB->_yAxis)))));
 		if((projection / 2) > boxProjection)
-			return false;
+			return collInfo;
 		//14. SA = _zAxis x yAxis
 		projection = abs(XMVectorGetX((XMVector3Dot(vectorToOBB, XMVector3Cross(_zAxis, otherOBB->_yAxis)))));
 		boxProjection =
@@ -202,7 +203,7 @@ bool OBB::intersectsWithOBB(BoundingVolume * other)
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.x*XMVector3Dot(_zAxis, otherOBB->_zAxis))))) +
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.z*XMVector3Dot(_zAxis, otherOBB->_xAxis)))));
 		if ((projection / 2) > boxProjection)
-			return false;
+			return collInfo;
 		//15. SA = _zAxis x zAxis
 		projection = abs(XMVectorGetX((XMVector3Dot(vectorToOBB, XMVector3Cross(_zAxis, otherOBB->_zAxis)))));
 		boxProjection =
@@ -211,10 +212,10 @@ bool OBB::intersectsWithOBB(BoundingVolume * other)
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.x*XMVector3Dot(_zAxis, otherOBB->_yAxis))))) +
 			abs(XMVectorGetX(((otherOBB->_halfXYZ.y*XMVector3Dot(_zAxis, otherOBB->_xAxis)))));
 		if ((projection / 2) > boxProjection)
-			return false;
+			return collInfo;
 	}
 
 
-
-	return true;
+	collInfo.colliding = true;
+	return collInfo;;
 }

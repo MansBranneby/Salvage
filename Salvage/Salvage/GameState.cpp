@@ -14,7 +14,7 @@ void GameState::handleInput(Game* game)
 	int nrOfObjects = game->getLevelHandler()->getNrOfGameObjects();
 
 	for (int i = 0; i < nrOfObjects && colliding == false; ++i)
-		colliding = player->getBoundingVolume()->intersectsWithOBB(game->getLevelHandler()->getGameObject(i)->getBoundingVolume());
+		colliding = player->getBoundingVolume()->intersectsWithOBB(game->getLevelHandler()->getGameObject(i)->getBoundingVolume()).colliding;
 
 	// Handle input if there is no collison
 	if (colliding == false)
@@ -35,7 +35,7 @@ void GameState::update(Game* game)
 	bool colliding = false;
 
 	for (int i = 0; i < nrOfObjects && colliding == false; i++)
-		colliding = player->getBoundingVolume()->intersectsWithOBB(game->getLevelHandler()->getGameObject(i)->getBoundingVolume()); //Not safe, will crasch if you try to access gameobject outside of array.		
+		colliding = player->getBoundingVolume()->intersectsWithOBB(game->getLevelHandler()->getGameObject(i)->getBoundingVolume()).colliding; //Not safe, will crasch if you try to access gameobject outside of array.		
 
 	// if collision between player and object change travel direction
 	if (colliding)

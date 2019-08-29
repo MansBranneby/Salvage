@@ -12,6 +12,17 @@ struct BoundingVolumeVertex
 	float r, g, b;
 };
 
+// Information acquired from collision detection
+struct CollisionInfo
+{
+	bool colliding;
+
+	CollisionInfo()
+	{
+		colliding = false;
+	}
+};
+
 class BoundingVolume
 {
 private:
@@ -42,5 +53,5 @@ public:
 
 	virtual void draw(GraphicResources* graphicResources);
 	
-	virtual bool intersectsWithOBB(BoundingVolume* other) = 0;
+	virtual CollisionInfo intersectsWithOBB(BoundingVolume* other) = 0;
 };
